@@ -6,7 +6,8 @@ import ModalTester from '/imports/ui/Modal/ModalTester';
 
 import ContentBlock from './ContentBlock';
 
-const StyledContent = styled.main`
+const StyledContent = styled.div`
+  height: 100vh;
   background-color: #ebebeb;
   padding-top: ${rem('64px')};
   display: grid;
@@ -23,6 +24,7 @@ const StyledContent = styled.main`
   `}
   grid-auto-flow: dense;
   grid-auto-rows: ${rem('64px')};
+  overflow: scroll;
 `
 
 const Content = () =>

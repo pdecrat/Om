@@ -8,12 +8,14 @@ const StyledSpaceList = styled.ul`
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow-y: scroll;
+  overflow-x: hidden;
 `
 
 const StyledSpace = styled.li`
 
   /* This image is 687 wide by 1024 tall, similar to your aspect ratio */
-  background-image: url('https://picsum.photos/420/?random');
+  background-image: url(${props => props.url});
 
   /* make a square container */
   width: 150px;
@@ -38,11 +40,18 @@ const StyledSpace = styled.li`
 
 const SpaceList = () =>
   <StyledSpaceList>
-    <StyledSpace>He</StyledSpace>
-    <StyledSpace>Om</StyledSpace>
-    <StyledSpace>Oh</StyledSpace>
-    <StyledSpace>H</StyledSpace>
-    <StyledSpace>U</StyledSpace>
+    <StyledSpace url='https://picsum.photos/420/?random'>He</StyledSpace>
+    <StyledSpace url='https://picsum.photos/420/?random'>Om</StyledSpace>
+    <StyledSpace url='https://picsum.photos/420/?random'>Oh</StyledSpace>
+    <StyledSpace url='https://picsum.photos/420/?random'>H</StyledSpace>
+    <StyledSpace url='https://picsum.photos/420/?random'>H</StyledSpace>
+    <StyledSpace url='https://picsum.photos/420/?random'>H</StyledSpace>
+    <StyledSpace url='https://picsum.photos/420/?random'>H</StyledSpace>
+    <StyledSpace url='https://picsum.photos/420/?random'>H</StyledSpace>
+    <StyledSpace url='https://picsum.photos/420/?random'>H</StyledSpace>
+    <StyledSpace url='https://picsum.photos/420/?random'>H</StyledSpace>
+    <StyledSpace url='https://picsum.photos/420/?random'>H</StyledSpace>
+    <StyledSpace url='https://picsum.photos/420/?random'>U</StyledSpace>
   </StyledSpaceList>
 
 export default SpaceList;

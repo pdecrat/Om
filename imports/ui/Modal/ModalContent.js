@@ -8,6 +8,9 @@ const StyledContent = styled.div`
   position: relative;
   min-width: ${rem('320px')};
   background: rgba(255,255,255,0.98);
+  padding: ${rem('15px')};
+  overflow-x: hidden;
+  overflow-y: scroll;
 `
 
 const ModalContent = ({ children }) =>

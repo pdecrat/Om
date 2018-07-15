@@ -5,6 +5,9 @@ import { media, rem } from '/imports/ui/_lib/helpers-css';
 
 const StyledContentBlock = styled.section`
   border: 1px dashed #DDDDDD;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: white;
   padding: ${rem('10px')};
   min-width: ${rem('320px')};
