@@ -1,4 +1,6 @@
 import { css } from 'styled-components'
+import { rem as p_rem } from 'polished';
+
 
 const sizes = {
   huge: 1600,
@@ -17,3 +19,5 @@ export const media = Object.keys(sizes).reduce((accumulator, label) => {
   `
   return accumulator
 }, {})
+
+export const rem = p_rem;

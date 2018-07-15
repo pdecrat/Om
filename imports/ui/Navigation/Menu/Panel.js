@@ -1,11 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { rem } from 'polished';
+
+import { rem } from '/imports/ui/_lib/helpers-css';
 
 import SpaceList from './SpaceList';
 import SpaceMenu from './SpaceMenu';
 
-const StyledSlider = styled.div`
+const StyledPanel = styled.div`
 {
   position: fixed;
   left: 0;
@@ -19,7 +20,7 @@ const StyledSlider = styled.div`
   margin-top: ${rem('64px')};
 
   box-shadow: ${props => props.isOpen ? `0 ${rem('2px')} ${rem('4px')} rgba(0,0,0,0.12)` : 'none'};
-  background: #2f3136;
+  background: rgba(255,255,255,0.98);
   transform-origin: 0% 0%;
   transform: ${props => props.isOpen ? 'none' : 'translate(-100%, 0)'};
   transition: transform 0.4s cubic-bezier(.44,.8,.86,.9);
@@ -43,12 +44,12 @@ const StyledBackground = styled.div`
 
 const Panel = ({ isOpen, toggleMenu }) =>
   <div>
-    <StyledSlider
+    <StyledPanel
       isOpen={isOpen}
     >
       <SpaceList />
-      <SpaceMenu />
-    </StyledSlider>
+      {/* <SpaceMenu /> */}
+    </StyledPanel>
     <StyledBackground
       isOpen={isOpen}
       onClick={e => { toggleMenu() }}

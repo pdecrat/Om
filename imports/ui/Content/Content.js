@@ -1,9 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import { rem } from 'polished';
 
-import { media } from '/imports/ui/_helpers/media-queries';
-import ContentBlock from '/imports/ui/_components/ContentBlock';
+import { media, rem } from '/imports/ui/_lib/helpers-css';
+import ModalTester from '/imports/ui/Modal/ModalTester';
+
+import ContentBlock from './ContentBlock';
 
 const StyledContent = styled.main`
   background-color: #ebebeb;
@@ -29,6 +30,7 @@ const Content = () =>
     <ContentBlock width={4} height={2} />
     <ContentBlock width={1} height={2} />
     <ContentBlock width={3} height={6} />
+    <ModalTester />
     <ContentBlock width={1} height={4} />
     <ContentBlock width={2} height={2} />
     <ContentBlock width={1} height={6} />
@@ -38,7 +40,6 @@ const Content = () =>
     <ContentBlock width={4} height={2} />
     <ContentBlock width={3} height={6} />
     <ContentBlock width={1} height={2} />
-    <ContentBlock width={2} height={2} />
     <ContentBlock width={2} height={2} />
   </StyledContent>
 

@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { User as Fuser } from 'react-feather';
-import { rem } from 'polished';
+
+import { rem } from '/imports/ui/_lib/helpers-css';
 
 const StyledUser = styled.li`
   margin-right: 5px;

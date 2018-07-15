@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { rem } from 'polished';
+
+import { rem } from '/imports/ui/_lib/helpers-css';
+
 
 import Search from './Search';
 import User from './User';

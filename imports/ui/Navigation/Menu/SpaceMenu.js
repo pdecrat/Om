@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { rem } from 'polished';
+
+import { rem } from '/imports/ui/_lib/helpers-css';
 
 const StyleSpaceMenu = styled.div`
   background-color: #2f3136;

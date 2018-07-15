@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { rem } from 'polished';
 
-import { media } from '/imports/ui/_helpers/media-queries';
+import { media, rem } from '/imports/ui/_lib/helpers-css';
 
 const StyledContentBlock = styled.section`
   border: 1px dashed #DDDDDD;
@@ -11,14 +10,15 @@ const StyledContentBlock = styled.section`
   min-width: ${rem('320px')};
   min-height: ${rem('64px')};
   grid-column-end: span ${props => props.width};
-  ${media.medium`grid-column-end: span ${props => props.width >= 3 ? 4 : 2};`}
+  ${media.big`grid-column-end: span ${props => props.width >= 1 ? props.width - 1 : 1};`}
+  ${media.medium`grid-column-end: span ${props => props.width >= 3 ? 2 : 1};`}
   ${media.small`grid-column-end: span 1;`}
   grid-row-end: span ${props => props.height};
 `
 
-const ContentBlock = ({ width = 1, height = 1 }) =>
+const ContentBlock = ({ width = 1, height = 1, children }) =>
   <StyledContentBlock width={width} height={height}>
-
+    {children}
   </StyledContentBlock>
 
 export default ContentBlock;

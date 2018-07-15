@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Bell } from 'react-feather';
-import { rem } from 'polished';
+
+import { rem } from '/imports/ui/_lib/helpers-css';
 
 const StyledAlarm = styled.li`
   margin-right: 10px;
