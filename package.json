@@ -2,12 +2,22 @@
   "name": "Om",
   "private": true,
   "scripts": {
-    "start": "meteor run"
+    "start": "meteor --settings settings-dev.json"
   },
   "dependencies": {
-    "@babel/runtime": "^7.0.0-beta.36",
-    "meteor-node-stubs": "^0.3.2",
+    "@babel/runtime": "^7.0.0-beta.42",
+    "gulp-cli": "^2.0.1",
+    "meteor-node-stubs": "^0.3.3",
+    "normalize.css": "^8.0.0",
+    "polished": "^1.9.3",
     "react": "^16.2.0",
-    "react-dom": "^16.2.0"
+    "react-dom": "^16.2.0",
+    "react-feather": "^1.1.1",
+    "react-redux": "^5.0.7",
+    "react-router-dom": "^4.2.2",
+    "redux": "^3.7.2",
+    "redux-thunk": "^2.2.0",
+    "styled-components": "^3.3.3",
+    "styled-reset": "^1.3.5"
   }
 }
