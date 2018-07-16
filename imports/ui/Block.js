@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { media, rem } from '/imports/ui/_lib/helpers-css';
 
-const StyledContentBlock = styled.section`
+const StyledBlock = styled.section`
   border: 1px dashed #DDDDDD;
   display: flex;
   align-items: center;
@@ -18,9 +18,9 @@ const StyledContentBlock = styled.section`
   grid-row-end: span ${props => props.height};
 `
 
-const ContentBlock = ({ width = 1, height = 1, children }) =>
-  <StyledContentBlock width={width} height={height}>
+const Block = ({ width = 1, height = 1, children }) =>
+  <StyledBlock width={width} height={height}>
     {children}
-  </StyledContentBlock>
+  </StyledBlock>
 
-export default ContentBlock;
+export default Block;

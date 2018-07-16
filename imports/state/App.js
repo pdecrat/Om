@@ -7,15 +7,7 @@ import Interface from '/imports/ui/Interface';
 
 import mainReducer from './main-reducer';
 
-const defaultState = {
-  app: {
-    modal: {
-      open: false
-    }
-  }
-}
-
-const store = createStore(mainReducer, defaultState, applyMiddleware(thunk));
+const store = createStore(mainReducer, {}, applyMiddleware(thunk));
 
 const App = () =>
   <Provider store={store}>

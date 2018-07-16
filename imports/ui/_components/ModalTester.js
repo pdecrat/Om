@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 
 import { openModal } from '/imports/state/app/modal';
-import ContentBlock from '/imports/ui/Content/ContentBlock';
+import Block from '/imports/ui/Block';
 import ModalContent from '/imports/ui/Modal/ModalContent';
 
 const Content = () =>
@@ -21,11 +21,11 @@ Cum autem commodis intervallata temporibus convivia longa et noxia coeperint app
   </ModalContent>
 
 const ModalTester = ({ dispatchOpenModal }) =>
-  <ContentBlock width={1} height={1} >
+  <Block width={1} height={1} >
     <button onClick={e => { dispatchOpenModal(<Content />) }}>
       Open Modal
     </button>
-  </ContentBlock>
+  </Block>
 
 
 const mapStateToProps = state => ({ modal: state.app.modal });

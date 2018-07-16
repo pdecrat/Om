@@ -3,14 +3,14 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 
 import { openMenu } from '/imports/state/app/menu';
-import ContentBlock from '/imports/ui/Content/ContentBlock';
+import Block from '/imports/ui/Block';
 
 const MenuTester = ({ dispatchOpenMenu }) =>
-  <ContentBlock width={1} height={1} >
+  <Block width={1} height={1} >
     <button onClick={e => { dispatchOpenMenu() }}>
       Open Menu
     </button>
-  </ContentBlock>
+  </Block>
 
 
 const mapStateToProps = state => ({ menu: state.app.menu });
