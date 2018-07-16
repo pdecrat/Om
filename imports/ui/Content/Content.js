@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import { media, rem } from '/imports/ui/_lib/helpers-css';
 import ModalTester from '/imports/ui/Modal/ModalTester';
+import MenuTester from '/imports/ui/Navigation/Menu/MenuTester';
 
 import ContentBlock from './ContentBlock';
 
@@ -30,18 +31,15 @@ const StyledContent = styled.div`
 const Content = () =>
   <StyledContent>
     <ContentBlock width={4} height={2} />
+    <ModalTester />
+    <MenuTester />
     <ContentBlock width={1} height={2} />
     <ContentBlock width={3} height={6} />
-    <ModalTester />
     <ContentBlock width={1} height={4} />
     <ContentBlock width={2} height={2} />
     <ContentBlock width={1} height={6} />
     <ContentBlock width={1} height={4} />
     <ContentBlock width={2} height={4} />
-    <ContentBlock width={2} height={2} />
-    <ContentBlock width={4} height={2} />
-    <ContentBlock width={3} height={6} />
-    <ContentBlock width={1} height={2} />
     <ContentBlock width={2} height={2} />
   </StyledContent>
 

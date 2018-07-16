@@ -23,7 +23,7 @@ Cum autem commodis intervallata temporibus convivia longa et noxia coeperint app
 const ModalTester = ({ dispatchOpenModal }) =>
   <ContentBlock width={1} height={1} >
     <button onClick={e => { dispatchOpenModal(<Content />) }}>
-      Open
+      Open Modal
     </button>
   </ContentBlock>
 

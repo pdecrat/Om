@@ -1,7 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
 
 import { rem } from '/imports/ui/_lib/helpers-css';
+import { closeMenu } from '/imports/state/app/menu';
 
 import SpaceList from './SpaceList';
 import SpaceMenu from './SpaceMenu';
@@ -42,18 +44,23 @@ const StyledBackground = styled.div`
 }`
 
 
-const Panel = ({ isOpen, toggleMenu }) =>
+const Panel = ({ menu, dispatchCloseMenu }) =>
   <div>
     <StyledPanel
-      isOpen={isOpen}
+      isOpen={menu.open}
     >
       <SpaceList />
       {/* <SpaceMenu /> */}
     </StyledPanel>
     <StyledBackground
-      isOpen={isOpen}
-      onClick={e => { toggleMenu() }}
+      isOpen={menu.open}
+      onClick={e => { dispatchCloseMenu() }}
     />
   </div>
 
-export default Panel;
+const mapStateToProps = state => ({ menu: state.app.menu });
+const mapDispatchToProps = dispatch => ({
+  dispatchCloseMenu: () => dispatch(closeMenu()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Panel);

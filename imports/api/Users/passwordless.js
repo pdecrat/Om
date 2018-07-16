@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Random } from 'meteor/random';
 import { Base64 } from 'meteor/ostrio:base64';
 import { Email } from 'meteor/email';
+import { check } from 'meteor/check';
 
 const {
   login,
@@ -117,6 +118,14 @@ Accounts.registerLoginHandler('passwordless', (options) => {
   });
 
   return Passwordless.verifyToken(options.passwordless);
+});
+
+Meteor.methods({
+  'passwordless.sendLoginEmail'(email) {
+    check(email, String);
+
+    Passwordless.sendLoginEmail(email);
+  }
 });
 
 export default Passwordless;

@@ -9,11 +9,10 @@ const StyledContentBlock = styled.section`
   align-items: center;
   justify-content: center;
   background-color: white;
-  padding: ${rem('10px')};
   min-width: ${rem('320px')};
   min-height: ${rem('64px')};
   grid-column-end: span ${props => props.width};
-  ${media.big`grid-column-end: span ${props => props.width >= 1 ? props.width - 1 : 1};`}
+  ${media.big`grid-column-end: span ${props => props.width > 1 ? props.width - 1 : 1};`}
   ${media.medium`grid-column-end: span ${props => props.width >= 3 ? 2 : 1};`}
   ${media.small`grid-column-end: span 1;`}
   grid-row-end: span ${props => props.height};
