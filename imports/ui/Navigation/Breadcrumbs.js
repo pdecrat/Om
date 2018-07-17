@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
 
 import { rem } from '/imports/ui/_lib/helpers-css';
 
@@ -13,9 +14,13 @@ const StyledBreacrumbs = styled.ul`
   flex: 0 0 auto;
 `;
 
-const Breadcrumbs = () =>
+const Breadcrumbs = ({ space }) =>
   <StyledBreacrumbs>
-    <StyledBreacrumb>Page title</StyledBreacrumb>
+    <StyledBreacrumb>{space.name}</StyledBreacrumb>
   </StyledBreacrumbs>
 
-export default Breadcrumbs;
+const mapStateToProps = state => ({ space: state.space });
+const mapDispatchToProps = dispatch => ({
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Breadcrumbs);

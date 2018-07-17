@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 
 import { rem } from '/imports/ui/_lib/helpers-css';
-import { toggleMenu } from '/imports/state/app/menu';
+import { toggleMenu } from '/imports/state/redux/ui/menu';
 
 import Panel from './Panel';
 
@@ -78,7 +78,7 @@ const Menu = ({ menu, dispatchToggleMenu }) =>
     <span></span>
   </StyledMenu>
 
-const mapStateToProps = state => ({ menu: state.app.menu });
+const mapStateToProps = state => ({ menu: state.ui.menu });
 const mapDispatchToProps = dispatch => ({
   dispatchToggleMenu: () => dispatch(toggleMenu()),
 });

@@ -1,6 +1,6 @@
-const TOGGLE_MENU = "om/app/menu/toggle";
-const OPEN_MENU = "om/app/menu/open";
-const CLOSE_MENU = "om/app/menu/close";
+const TOGGLE_MENU = "om/ui/menu/toggle";
+const OPEN_MENU = "om/ui/menu/open";
+const CLOSE_MENU = "om/ui/menu/close";
 
 const defaultState = {
   open: false

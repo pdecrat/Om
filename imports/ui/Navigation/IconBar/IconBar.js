@@ -3,7 +3,6 @@ import styled from 'styled-components';
 
 import { rem } from '/imports/ui/_lib/helpers-css';
 
-
 import Search from './Search';
 import User from './User';
 import Alarm from './Alarm';
@@ -17,7 +16,7 @@ const StyledIconBar = styled.ul`
 
 const IconBar = () =>
   <StyledIconBar>
-    <Search />
+    {/* <Search /> */}
     <Alarm />
     <User />
   </StyledIconBar>

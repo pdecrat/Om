@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
 
 import { rem } from '/imports/ui/_lib/helpers-css';
 
@@ -38,20 +39,20 @@ const StyledSpace = styled.li`
   margin-top: ${rem('10px')};
 `
 
-const SpaceList = () =>
+const SpaceList = ({ spaces }) =>
   <StyledSpaceList>
-    <StyledSpace url='https://picsum.photos/420/?random'>He</StyledSpace>
-    <StyledSpace url='https://picsum.photos/420/?random'>Om</StyledSpace>
-    <StyledSpace url='https://picsum.photos/420/?random'>Oh</StyledSpace>
-    <StyledSpace url='https://picsum.photos/420/?random'>H</StyledSpace>
-    <StyledSpace url='https://picsum.photos/420/?random'>H</StyledSpace>
-    <StyledSpace url='https://picsum.photos/420/?random'>H</StyledSpace>
-    <StyledSpace url='https://picsum.photos/420/?random'>H</StyledSpace>
-    <StyledSpace url='https://picsum.photos/420/?random'>H</StyledSpace>
-    <StyledSpace url='https://picsum.photos/420/?random'>H</StyledSpace>
-    <StyledSpace url='https://picsum.photos/420/?random'>H</StyledSpace>
-    <StyledSpace url='https://picsum.photos/420/?random'>H</StyledSpace>
-    <StyledSpace url='https://picsum.photos/420/?random'>U</StyledSpace>
+    {spaces && spaces.map(space =>
+      <StyledSpace
+        key={space}
+        url='https://picsum.photos/420/?random'
+      >
+        {space}
+      </StyledSpace>
+    )}
   </StyledSpaceList>
 
-export default SpaceList;
+  const mapStateToProps = state => ({ spaces: state.user.spaces });
+  const mapDispatchToProps = dispatch => ({
+  });
+
+  export default connect(mapStateToProps, mapDispatchToProps)(SpaceList);

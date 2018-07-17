@@ -18,7 +18,7 @@ const ModalContent = ({ children }) =>
     {children}
   </StyledContent>
 
-const mapStateToProps = state => ({ modal: state.app.modal });
+const mapStateToProps = state => ({ modal: state.ui.modal });
 const mapDispatchToProps = dispatch => ({
 });
 

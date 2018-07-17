@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 
 import { rem } from '/imports/ui/_lib/helpers-css';
-import { closeMenu } from '/imports/state/app/menu';
+import { closeMenu } from '/imports/state/redux/ui/menu';
 
 import SpaceList from './SpaceList';
 import SpaceMenu from './SpaceMenu';
@@ -58,7 +58,7 @@ const Panel = ({ menu, dispatchCloseMenu }) =>
     />
   </div>
 
-const mapStateToProps = state => ({ menu: state.app.menu });
+const mapStateToProps = state => ({ menu: state.ui.menu });
 const mapDispatchToProps = dispatch => ({
   dispatchCloseMenu: () => dispatch(closeMenu()),
 });

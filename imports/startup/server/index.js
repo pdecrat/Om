@@ -1,2 +1,2 @@
 import './apis';
-import './test';
+import './fixtures';
