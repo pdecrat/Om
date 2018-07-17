@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 
 import { media, rem } from '/imports/ui/_lib/helpers-css';
-import Components from '/imports/ui/_components/_index';
+import Components from '/imports/ui/_blocks/_index';
 
 const StyledGrid = styled.div`
   height: 100vh;

@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 
-import Block from '/imports/ui/Block';
+import Block from '/imports/ui/_components/Block';
 
 const CollectionTester = ({ collections }) =>
   <Block width={2} height={2}>

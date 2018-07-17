@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 
 import { openModal } from '/imports/state/redux/ui/modal';
-import Block from '/imports/ui/Block';
+import Block from '/imports/ui/_components/Block';
 import ModalContent from '/imports/ui/Modal/ModalContent';
 
 const Content = () =>

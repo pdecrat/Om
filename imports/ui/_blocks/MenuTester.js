@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 
 import { openMenu } from '/imports/state/redux/ui/menu';
-import Block from '/imports/ui/Block';
+import Block from '/imports/ui/_components/Block';
 
 const MenuTester = ({ dispatchOpenMenu }) =>
   <Block width={1} height={1} >
