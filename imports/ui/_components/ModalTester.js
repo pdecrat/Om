@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 
-import { openModal } from '/imports/state/app/modal';
+import { openModal } from '/imports/state/redux/ui/modal';
 import Block from '/imports/ui/Block';
 import ModalContent from '/imports/ui/Modal/ModalContent';
 
@@ -28,7 +28,7 @@ const ModalTester = ({ dispatchOpenModal }) =>
   </Block>
 
 
-const mapStateToProps = state => ({ modal: state.app.modal });
+const mapStateToProps = state => ({ modal: state.ui.modal });
 const mapDispatchToProps = dispatch => ({
   dispatchOpenModal: content => dispatch(openModal(content)),
 });

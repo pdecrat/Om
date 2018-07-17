@@ -2,12 +2,10 @@ import { combineReducers } from 'redux';
 
 import modal from './modal';
 import menu from './menu';
-import space from './space';
 
-const app = combineReducers({
+const ui = combineReducers({
   modal,
   menu,
-  space,
 });
 
-export default app;
+export default ui;

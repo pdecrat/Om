@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 
-import { openMenu } from '/imports/state/app/menu';
+import { openMenu } from '/imports/state/redux/ui/menu';
 import Block from '/imports/ui/Block';
 
 const MenuTester = ({ dispatchOpenMenu }) =>
@@ -13,7 +13,7 @@ const MenuTester = ({ dispatchOpenMenu }) =>
   </Block>
 
 
-const mapStateToProps = state => ({ menu: state.app.menu });
+const mapStateToProps = state => ({ menu: state.ui.menu });
 const mapDispatchToProps = dispatch => ({
   dispatchOpenMenu: () => dispatch(openMenu()),
 });

@@ -3,15 +3,14 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { createStore, applyMiddleware } from 'redux';
 
-import Interface from '/imports/ui/Interface';
-
-import mainReducer from './main-reducer';
+import DataStore from './DataStore';
+import mainReducer from './redux/main-reducer';
 
 const store = createStore(mainReducer, {}, applyMiddleware(thunk));
 
 const App = () =>
   <Provider store={store}>
-    <Interface />
+    <DataStore />
   </Provider>
 
 export default App

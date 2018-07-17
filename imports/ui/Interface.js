@@ -4,8 +4,7 @@ import { connect } from 'react-redux';
 
 import '/imports/ui/_lib/global-style';
 import { media } from '/imports/ui/_lib/helpers-css';
-import { callGetSpace } from '/imports/state/app/space';
-
+import Collections from '/imports/api/Collections';
 import Grid from '/imports/ui/Grid';
 import Navigation from '/imports/ui/Navigation/Navigation';
 import Modal from '/imports/ui/Modal/Modal';
@@ -13,25 +12,11 @@ import Modal from '/imports/ui/Modal/Modal';
 const StyledInterface = styled.div`
 `
 
-class Interface extends React.Component {
+const Interface = () =>
+  <StyledInterface>
+    <Navigation />
+    <Grid />
+    <Modal />
+  </StyledInterface>
 
-  componentWillMount() {
-    this.props.dispatchGetSpace('Om');
-  }
-
-  render() {
-    return (
-      <StyledInterface>
-        <Navigation />
-        <Grid />
-        <Modal />
-      </StyledInterface>
-    )
-  }
-}
-
-const mapDispatchToProps = dispatch => ({
-  dispatchGetSpace: name => dispatch(callGetSpace(name)),
-});
-
-export default connect(null, mapDispatchToProps)(Interface);
+export default Interface;

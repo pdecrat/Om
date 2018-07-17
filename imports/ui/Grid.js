@@ -34,7 +34,7 @@ const Grid = ({ space }) =>
     })}
   </StyledGrid>
 
-const mapStateToProps = state => ({ space: state.app.space });
+const mapStateToProps = state => ({ space: state.space });
 const mapDispatchToProps = dispatch => ({
 });
 

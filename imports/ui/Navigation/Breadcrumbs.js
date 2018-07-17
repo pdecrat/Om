@@ -19,7 +19,7 @@ const Breadcrumbs = ({ space }) =>
     <StyledBreacrumb>{space.name}</StyledBreacrumb>
   </StyledBreacrumbs>
 
-const mapStateToProps = state => ({ space: state.app.space });
+const mapStateToProps = state => ({ space: state.space });
 const mapDispatchToProps = dispatch => ({
 });
 

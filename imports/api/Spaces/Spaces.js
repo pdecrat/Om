@@ -1,21 +1,16 @@
 import { Meteor } from 'meteor/meteor';
 
-const Spaces = {
-  list: [
-    {
-      name: 'Om',
-      blocks: [
-        'ModalTester',
-        'MenuTester',
-      ]
-    }
-  ]
-};
+import { Collection } from '/imports/api/Collections';
+
+const Spaces = new Collection('spaces');
 
 export default Spaces;
 
 Meteor.methods({
   'spaces.get'(name) {
-    return Spaces.list.find(space => space.name === name && space)
+    return Spaces.findOne({name});
+  },
+  'space.create'(name) {
+    return Spaces.insert({name});
   }
 });

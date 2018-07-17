@@ -1,5 +1,5 @@
-const OPEN_MODAL = "om/app/modal/open";
-const CLOSE_MODAL = "om/app/modal/close";
+const OPEN_MODAL = "om/ui/modal/open";
+const CLOSE_MODAL = "om/ui/modal/close";
 
 const defaultState = {
   open: false,
