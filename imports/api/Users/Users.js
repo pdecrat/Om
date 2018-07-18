@@ -6,7 +6,7 @@ import { Collections, Collection } from '/imports/api/Collections';
 const Users = Meteor.users;
 
 if (Meteor.isServer) {
-  Accounts.onCreateUser((options, { username, ...user }) => {
+  Accounts.onCreateUser((options, user) => {
     new Collection(user._id);
     return {
       ...user,
