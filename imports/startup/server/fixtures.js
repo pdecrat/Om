@@ -17,6 +17,7 @@ Meteor.startup(() => {
       ]
     });
   }
+  Collections['users'].remove({});
   if (Collections['users'].find({}).count() === 0) {
     Accounts.createUser({
       username: 'admin',
