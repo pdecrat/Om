@@ -7,7 +7,13 @@ if (Meteor.isServer) {
   Meteor.publish('datastore', function() {
     return [
       Collections.find(),
-      Collections['spaces'].find()
+      Collections['spaces'].find(),
+      Collections['users'].find(this.userId, {
+        fields: {
+          name: 1,
+          spaces: 1
+        }
+      })
     ];
   })
   Collections.remove({});
@@ -29,9 +35,3 @@ export class Collection extends Mongo.Collection {
     return collection;
   }
 }
-
-Meteor.methods({
-  'collections.get'() {
-    return Collections.find().fetch();
-  }
-})

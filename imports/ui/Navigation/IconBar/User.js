@@ -1,7 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { User as Fuser } from 'react-feather';
+import { connect } from 'react-redux';
 
+import Avatar from '/imports/ui/_components/Avatar';
 import { rem } from '/imports/ui/_lib/helpers-css';
 
 const StyledUser = styled.li`
@@ -12,9 +14,16 @@ const StyledUser = styled.li`
   }
 `
 
-const User = () =>
+const User = ({ user }) =>
   <StyledUser>
-    <Fuser size={32} />
+    {user.username || user.avatar ?
+      <Avatar user={user} />
+      : null
+    }
   </StyledUser>
 
-export default User;
+const mapStateToProps = state => ({ user: state.user });
+const mapDispatchToProps = dispatch => ({
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(User);

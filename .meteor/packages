@@ -24,3 +24,4 @@ standard-minifier-css@1.4.1
 underscore@1.0.10
 force-ssl
 react-meteor-data
+accounts-password

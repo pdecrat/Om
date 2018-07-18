@@ -1,32 +1,46 @@
+import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 
 import { Collections } from '/imports/api/Collections';
 
 const ADD_COLLECTION = 'om/collections/add';
+const REMOVE_COLLECTION = 'om/collections/remove';
 
-export function addCollection(collection, handle) {
+export function addCollection(name, handle) {
   return {
-    collection,
+    name,
     handle,
     type: ADD_COLLECTION
   }
 }
 
-export function callAddCollection(collection) {
+export function callAddCollection(name) {
   return dispatch => {
-    if (!Collections[collection.name]) {
-      const handle = new Mongo.Collection(collection.name);
-      Collections[collection.name] = handle;
-      dispatch(addCollection(collection, handle))
+    if (!Collections[name]) {
+      const handle = new Mongo.Collection(name);
+      Collections[name] = handle;
+      dispatch(addCollection(name, handle))
     }
   }
 }
 
-export function query(query, collection, callback) {
-  return dispatch => {
-    const result = Collections[collection].find(query).fetch();
+export function removeCollection(name) {
+  return {
+    name,
+    type: REMOVE_COLLECTION
+  }
+}
 
-    dispatch(callback(result));
+export function callRemoveCollection(name) {
+  return dispatch => {
+    if (Collections[name]) {
+
+      //remove minimongo collection
+
+      Collections[name] = null;
+      delete Collections[name];
+      dispatch(removeCollection(name))
+    }
   }
 }
 
@@ -38,8 +52,14 @@ function collections(state = defaultState, action) {
     case ADD_COLLECTION:
       return {
         ...state,
-        [action.collection.name]: action.handle
+        [action.name]: action.handle
       };
+    case REMOVE_COLLECTION:
+      const {
+        [action.name]: dump,
+        ...newState
+      } = state;
+      return newState;
     default:
       return state;
   }

@@ -5,7 +5,8 @@ import { connect } from 'react-redux';
 import Block from '/imports/ui/_components/Block';
 
 const CollectionList = ({ collections }) =>
-  <Block width={2} height={4}>
+  <Block width={1} height={4}>
+    <h2>Collection List</h2>
     {Object.keys(collections).map(key => <p key={key}>{key}</p>)}
   </Block>
 

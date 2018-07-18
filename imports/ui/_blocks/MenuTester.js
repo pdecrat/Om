@@ -6,7 +6,7 @@ import { openMenu } from '/imports/state/redux/ui/menu';
 import Block from '/imports/ui/_components/Block';
 
 const MenuTester = ({ dispatchOpenMenu }) =>
-  <Block width={1} height={1} >
+  <Block width={1} height={1}>
     <button onClick={e => { dispatchOpenMenu() }}>
       Open Menu
     </button>

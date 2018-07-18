@@ -3,6 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import { Collections } from '/imports/api/Collections';
 
 const SET_SPACE = "om/space/get";
+const UNSET_SPACE = "om/space/unset";
 
 function setSpace(space) {
   return {
@@ -19,6 +20,12 @@ export function callSetSpace(name) {
   }
 }
 
+export function unsetSpace() {
+  return {
+    type: UNSET_SPACE,
+  }
+}
+
 const defaultState = {
   name: "",
   blocks: [],
@@ -29,6 +36,8 @@ function space(state = defaultState, action) {
   switch (action.type) {
     case SET_SPACE:
       return action.space
+    case UNSET_SPACE:
+      return defaultState
     default:
       return state;
   }
