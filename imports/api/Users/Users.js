@@ -10,7 +10,7 @@ if (Meteor.isServer) {
     new Collection(user._id);
     return {
       ...user,
-      name: username,
+      name: user.username,
       spaces: options.spaces
     }
   })
