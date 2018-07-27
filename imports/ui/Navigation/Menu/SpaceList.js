@@ -17,9 +17,9 @@ const StyledSpaceList = styled.div`
   }
 `
 
-const SpaceList = ({ spaces }) =>
+const SpaceList = ({ spaces = [] }) =>
   <StyledSpaceList>
-    {spaces && spaces.map(space =>
+    {spaces.map(space =>
       <Image
         key={space}
         url='https://picsum.photos/420/?random'

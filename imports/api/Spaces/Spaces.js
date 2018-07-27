@@ -1,16 +1,29 @@
 import { Meteor } from 'meteor/meteor';
+import { check } from 'meteor/check';
+import { Mongo } from 'meteor/mongo';
 
-import { Collection } from '/imports/api/Collections';
-
-const Spaces = new Collection('spaces');
+const Spaces = new Mongo.Collection('spaces');
 
 export default Spaces;
 
+if (Meteor.isServer) {
+  Meteor.publish('current-space-data', function(name) {
+    check(name, String);
+
+    return Spaces.find({ name });
+  });
+}
+
 Meteor.methods({
-  'spaces.get'(name) {
-    return Spaces.findOne({name});
-  },
-  'space.create'(name) {
-    return Spaces.insert({name});
+  'spaces.create'(space) {
+    const _id = Spaces.insert(space)
+    Meteor.users.update(Meteor.userId(), {
+      $addToSet: { spaces: space.name }
+    });
+
+    return {
+      _id,
+      ...space
+    };
   }
-});
+})

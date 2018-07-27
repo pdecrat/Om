@@ -1,5 +1,4 @@
-const SET_USER = "om/user/set";
-const UNSET_USER = "om/user/unset";
+const SET_USER = 'om/user/set';
 
 export function setUser(user) {
   return {
@@ -8,21 +7,13 @@ export function setUser(user) {
   }
 }
 
-export function unsetUser() {
-  return {
-    type: UNSET_USER,
-  }
-}
-
-const defaultState = {
-}
-
-function user(state = defaultState, action) {
+function user(state = {}, action) {
   switch (action.type) {
     case SET_USER:
-      return action.user;
-    case UNSET_USER:
-      return defaultState;
+      return {
+        ...action.user
+      };
+      break;
     default:
       return state;
   }

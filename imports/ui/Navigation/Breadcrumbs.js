@@ -14,7 +14,7 @@ const StyledBreacrumbs = styled.ul`
   flex: 0 0 auto;
 `;
 
-const Breadcrumbs = ({ space }) =>
+const Breadcrumbs = ({ space = {} }) =>
   <StyledBreacrumbs>
     <StyledBreacrumb>{space.name}</StyledBreacrumb>
   </StyledBreacrumbs>
