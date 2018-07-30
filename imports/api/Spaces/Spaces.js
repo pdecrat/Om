@@ -16,7 +16,12 @@ if (Meteor.isServer) {
 
 Meteor.methods({
   'spaces.create'(space) {
-    const _id = Spaces.insert(space)
+    const _id = Spaces.insert({
+      ...space,
+      blocks: [
+        'BlockManager'
+      ]
+    })
     Meteor.users.update(Meteor.userId(), {
       $addToSet: { spaces: space.name }
     });

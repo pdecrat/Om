@@ -15,12 +15,15 @@ Meteor.startup(() => {
     });
   }
   Spaces.remove({});
-  Spaces.insert({
-    name: 'om',
-    blocks: [
-      'MenuTester',
-      'ModalTester',
-      'SpaceCreator',
-    ]
-  })
+  if (Spaces.find().count() === 0) {
+    Spaces.insert({
+      name: 'om',
+      blocks: [
+        'MenuTester',
+        'ModalTester',
+        'BlockManager',
+        'SpaceCreator',
+      ]
+    })
+  }
 })

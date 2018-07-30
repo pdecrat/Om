@@ -17,8 +17,6 @@ const StyledImage = styled.div`
 `
 
 const Image = ({ url, text, size }) =>
-  <StyledImage url={url} size={size}>
-    {text}
-  </StyledImage>
+  <StyledImage url={url} size={size} />
 
 export default Image;

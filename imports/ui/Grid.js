@@ -23,7 +23,6 @@ const StyledGrid = styled.div`
   `}
   grid-auto-flow: dense;
   grid-auto-rows: ${rem('64px')};
-  overflow: scroll;
 `
 
 const Grid = ({ space = {} }) =>
