@@ -5,7 +5,7 @@ import { Search as Fsearch } from 'react-feather';
 const StyledSearch = styled.li`
   width: 100%;
   display: flex;
-  margin: 0 15px;
+  margin: 0 70px;
   padding: 5px 10px;
   justify-content:flex-end;
   border: 1px solid;

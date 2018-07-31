@@ -16,8 +16,8 @@ const StyledIconBar = styled.ul`
 
 const IconBar = () =>
   <StyledIconBar>
-    {/* <Search /> */}
-    {/* <Alarm /> */}
+    <Search />
+    <Alarm />
     <User />
   </StyledIconBar>
 
