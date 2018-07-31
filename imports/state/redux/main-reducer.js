@@ -1,15 +1,13 @@
 import { combineReducers } from 'redux';
 
 import ui from './ui/ui';
-import space from './space';
-import collections from './collections';
 import user from './user';
+import space from './space';
 
 const mainReducer = combineReducers({
   ui,
-  space,
-  collections,
   user,
+  space,
 });
 
 export default mainReducer;

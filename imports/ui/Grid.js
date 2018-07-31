@@ -26,11 +26,11 @@ const StyledGrid = styled.div`
   overflow: scroll;
 `
 
-const Grid = ({ space }) =>
+const Grid = ({ space = {} }) =>
   <StyledGrid>
-    {space.blocks.map(block => {
+    {space.blocks && space.blocks.map((block, index) => {
       const Component = Components[block];
-      return <Component key={block} />
+      return <Component key={index} />
     })}
   </StyledGrid>
 

@@ -3,32 +3,24 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 
 import { rem } from '/imports/ui/_lib/helpers-css';
-import Image from '/imports/ui/_components/Image';
+import Link from '/imports/ui/_components/Link';
+import Scroller from '/imports/ui/_components/Scroller';
 
 const StyledSpaceList = styled.div`
-  width: ${rem('70px')};
+  min-width: ${rem('70px')};
+  width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  overflow-y: scroll;
-  overflow-x: hidden;
-  & > div {
-    margin-top: ${rem('10px')};
-  }
 `
 
-const SpaceList = ({ spaces }) =>
-  <StyledSpaceList>
-    {spaces && spaces.map(space =>
-      <Image
-        key={space}
-        url='https://picsum.photos/420/?random'
-        size={50}
-      >
-        {space}
-      </Image>
-    )}
-  </StyledSpaceList>
+const SpaceList = ({ spaces = [] }) =>
+  <Scroller>
+    <StyledSpaceList>
+      {spaces.map(space =>
+        <Link key={space} space={space} />
+      )}
+    </StyledSpaceList>
+  </Scroller>
 
 const mapStateToProps = state => ({ spaces: state.user.spaces });
 const mapDispatchToProps = dispatch => ({

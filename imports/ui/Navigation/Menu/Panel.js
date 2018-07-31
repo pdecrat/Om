@@ -19,7 +19,7 @@ const StyledPanel = styled.div`
   align-items: stretch;
 
   height: 100%;
-  margin-top: ${rem('64px')};
+  padding-top: ${rem('64px')};
 
   box-shadow: ${props => props.isOpen ? `0 ${rem('2px')} ${rem('4px')} rgba(0,0,0,0.12)` : 'none'};
   background: rgba(255,255,255,0.98);

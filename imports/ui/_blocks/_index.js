@@ -1,13 +1,13 @@
 import MenuTester from './MenuTester';
 import ModalTester from './ModalTester';
-import CollectionList from './CollectionList';
-import CollectionTester from './CollectionTester';
+import SpaceCreator from './SpaceCreator';
+import BlockManager from './BlockManager';
 
 const Components = {
   MenuTester,
   ModalTester,
-  CollectionList,
-  CollectionTester,
+  SpaceCreator,
+  BlockManager,
 }
 
 export default Components;

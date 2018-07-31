@@ -1,43 +1,31 @@
-import { Meteor } from 'meteor/meteor';
+import { push } from 'connected-react-router'
 
-import { Collections } from '/imports/api/Collections';
+const SET_SPACE = 'om/space/set';
 
-const SET_SPACE = "om/space/get";
-const UNSET_SPACE = "om/space/unset";
-
-function setSpace(space) {
+export function setSpace(space) {
   return {
-    space,
     type: SET_SPACE,
+    space
   }
 }
 
-export function callSetSpace(name) {
+export function callCreateSpace(space) {
   return dispatch => {
-    const result = Collections['spaces'].findOne({name});
-
-    dispatch(setSpace(result));
+    Meteor.call('spaces.create', space, (err, res) => {
+      if (!err) {
+        dispatch(push(`/s/${space.name}`))
+      }
+    })
   }
 }
 
-export function unsetSpace() {
-  return {
-    type: UNSET_SPACE,
-  }
-}
-
-const defaultState = {
-  name: "",
-  blocks: [],
-  handle: null
-}
-
-function space(state = defaultState, action) {
+function space(state = {}, action) {
   switch (action.type) {
     case SET_SPACE:
-      return action.space
-    case UNSET_SPACE:
-      return defaultState
+      return {
+        ...action.space
+      };
+      break;
     default:
       return state;
   }
