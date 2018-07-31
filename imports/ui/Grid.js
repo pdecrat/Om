@@ -23,13 +23,14 @@ const StyledGrid = styled.div`
   `}
   grid-auto-flow: dense;
   grid-auto-rows: ${rem('64px')};
+  overflow: scroll;
 `
 
 const Grid = ({ space = {} }) =>
   <StyledGrid>
-    {space.blocks && space.blocks.map(block => {
+    {space.blocks && space.blocks.map((block, index) => {
       const Component = Components[block];
-      return <Component key={block} />
+      return <Component key={index} />
     })}
   </StyledGrid>
 

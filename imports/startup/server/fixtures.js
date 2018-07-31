@@ -10,7 +10,21 @@ Meteor.startup(() => {
       username: 'admin',
       password: 'alpaga',
       spaces: [
-        'om'
+        'om',
+        'test1',
+        'test2',
+        'test3',
+        'test4',
+        'test5',
+        'test6',
+        'test11',
+        'test12',
+        'test13',
+        'test14',
+        'test15',
+        'test15654',
+        'test1765',
+        'test7',
       ]
     });
   }
@@ -20,9 +34,18 @@ Meteor.startup(() => {
       name: 'om',
       blocks: [
         'MenuTester',
+        'BlockManager',
+        'ModalTester',
+        'SpaceCreator',
+        'BlockManager',
+        'SpaceCreator',
+        'ModalTester',
         'ModalTester',
         'BlockManager',
         'SpaceCreator',
+        'ModalTester',
+        'SpaceCreator',
+        'BlockManager',
       ]
     })
   }
