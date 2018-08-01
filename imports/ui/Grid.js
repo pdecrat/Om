@@ -26,15 +26,15 @@ const StyledGrid = styled.div`
   overflow: scroll;
 `
 
-const Grid = ({ space = {} }) =>
+const Grid = ({ blocks = [] }) =>
   <StyledGrid>
-    {space.blocks && space.blocks.map((block, index) => {
-      const Component = Components[block];
+    {blocks.map((block, index) => {
+      const Component = Components[block.name];
       return <Component key={index} />
     })}
   </StyledGrid>
 
-const mapStateToProps = state => ({ space: state.space });
+const mapStateToProps = state => ({ blocks: state.space.displayedBlocks });
 const mapDispatchToProps = dispatch => ({
 });
 

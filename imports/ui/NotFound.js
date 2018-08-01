@@ -5,7 +5,7 @@ import { rem } from '/imports/ui/_lib/helpers-css';
 
 const StyledNotFound = styled.div`
   height: 100vh;
-  padding-top: ${rem('64px')};
+  padding-top: ${rem('164px')};
   text-align: center;
   vertical-align: middle;
 `

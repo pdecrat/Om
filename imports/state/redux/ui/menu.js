@@ -1,3 +1,5 @@
+import { push } from 'connected-react-router';
+
 const TOGGLE_MENU = "om/ui/menu/toggle";
 const OPEN_MENU = "om/ui/menu/open";
 const CLOSE_MENU = "om/ui/menu/close";
@@ -21,6 +23,13 @@ export function openMenu() {
 export function closeMenu() {
   return {
     type: CLOSE_MENU,
+  }
+}
+
+export function clickLink(url) {
+  return dispatch => {
+    dispatch(push(url));
+    dispatch(closeMenu())
   }
 }
 

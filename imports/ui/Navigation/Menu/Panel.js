@@ -16,7 +16,7 @@ const StyledPanel = styled.div`
   width: ${rem('300px')};
   z-index: -1;
   display: flex;
-  align-items: stretch;
+  ${'' /* align-items: stretch; */}
 
   height: 100%;
   padding-top: ${rem('64px')};
