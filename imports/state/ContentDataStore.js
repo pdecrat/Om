@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import React from 'react';
 import { connect } from 'react-redux';
 import { withTracker } from 'meteor/react-meteor-data';
+import { push } from 'connected-react-router';
 
 import Spaces from '/imports/api/Spaces/Spaces';
 import { setSpace } from '/imports/state/redux/space';
@@ -17,6 +18,7 @@ const notFound = {
 
 const SpaceDataStore = withTracker(props => {
   const name = props.match.params.spaceName;
+  const hash = props.location.hash.slice(1) || name;
 
   Meteor.subscribe('current-space-data', name, () => {
     // Spaces.find({ name }).observeChanges({
@@ -30,9 +32,9 @@ const SpaceDataStore = withTracker(props => {
     const space = Spaces.findOne({ name });
 
     if (!!space) {
-      props.dispatchSetSpace(space)
+      props.dispatchSetSpace(space, hash)
     } else {
-      props.dispatchSetSpace(notFound)
+      props.dispatchPush('/not-found')
     }
 
   })
@@ -41,7 +43,8 @@ const SpaceDataStore = withTracker(props => {
 })(Grid);
 
 const mapDispatchToProps = dispatch => ({
-  dispatchSetSpace: space => dispatch(setSpace(space))
+  dispatchSetSpace: (space, hash) => dispatch(setSpace(space, hash)),
+  dispatchPush: url => dispatch(push(url)),
 });
 
 export default connect(null, mapDispatchToProps)(SpaceDataStore);

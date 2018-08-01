@@ -2,10 +2,11 @@ import { push } from 'connected-react-router'
 
 const SET_SPACE = 'om/space/set';
 
-export function setSpace(space) {
+export function setSpace(space, category) {
   return {
     type: SET_SPACE,
-    space
+    space,
+    category
   }
 }
 
@@ -19,11 +20,28 @@ export function callCreateSpace(space) {
   }
 }
 
-function space(state = {}, action) {
-  switch (action.type) {
+function space(state = {}, { type, space, category }) {
+  switch (type) {
     case SET_SPACE:
+      const availableCategories = [space.name];
+      Object.keys(space.blocks)
+        .forEach(key => {
+          if (!availableCategories.includes(space.blocks[key].category)) {
+            availableCategories.push(space.blocks[key].category)
+          }
+        })
       return {
-        ...action.space
+        ...space,
+        category,
+        displayedBlocks: Object.keys(space.blocks)
+          .filter(block => space.blocks[block].category === category)
+          .map(block => {
+            return {
+              ...space.blocks[block],
+              name: block,
+            }
+          }),
+        availableCategories,
       };
       break;
     default:

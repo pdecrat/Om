@@ -17,36 +17,33 @@ Meteor.startup(() => {
         'test4',
         'test5',
         'test6',
+        'test7',
         'test11',
         'test12',
-        'test13',
         'test14',
+        'test13',
         'test15',
-        'test15654',
-        'test1765',
-        'test7',
       ]
     });
   }
-  // Spaces.remove({});
+  Spaces.remove({});
   if (Spaces.find().count() === 0) {
     Spaces.insert({
       name: 'om',
-      blocks: [
-        'MenuTester',
-        'BlockManager',
-        'ModalTester',
-        'SpaceCreator',
-        'BlockManager',
-        'SpaceCreator',
-        'ModalTester',
-        'ModalTester',
-        'BlockManager',
-        'SpaceCreator',
-        'ModalTester',
-        'SpaceCreator',
-        'BlockManager',
-      ]
+      blocks: {
+        'BlockManager': {
+          category: 'configuration'
+        },
+        'MenuTester': {
+          category: 'configuration'
+        },
+        'ModalTester': {
+          category: 'configuration'
+        },
+        'SpaceCreator': {
+          category: 'om'
+        }
+      }
     })
   }
 })

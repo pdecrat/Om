@@ -34,11 +34,14 @@ const App = () =>
       <div>
         <UserDataStore />
         <Switch>
-          <Route path="/s/:spaceName" component={ContentDataStore} />
+          <Route exact path="/s/:spaceName" component={ContentDataStore} />
           <Route exact path="/" render={() =>
             <Redirect to="/s/om"/>
           }/>
-          <Route component={NotFound} />
+          <Route exact path="/not-found" component={NotFound} />
+          <Route render={() =>
+            <Redirect to="/not-found"/>
+          }/>
         </Switch>
 
         <Modal />

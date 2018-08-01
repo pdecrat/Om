@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { push } from 'connected-react-router';
 
+import { clickLink } from '/imports/state/redux/ui/menu';
 import { rem } from '/imports/ui/_lib/helpers-css';
 import Image from '/imports/ui/_components/Image';
 
@@ -17,17 +17,21 @@ const StyledLink = styled.div`
   }
 `
 
-const Link = ({ space, dispatchGo }) =>
-  <StyledLink onClick={e => { dispatchGo(`/s/${space}`) }}>
+const Link = ({ url, label = null, dispatchClickLink }) =>
+  <StyledLink onClick={e => { dispatchClickLink(url) }}>
     <Image
       url='https://picsum.photos/420/?random'
       size={50}
     />
-    <p>{space}</p>
+    {
+      !!label ?
+        <p>{label}</p>
+        : null
+    }
   </StyledLink>
 
 const mapDispatchToProps = dispatch => ({
-  dispatchGo: link => dispatch(push(link))
+  dispatchClickLink: link => dispatch(clickLink(link))
 });
 
 export default connect(null, mapDispatchToProps)(Link);
