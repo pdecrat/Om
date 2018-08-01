@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 
-import { openModal } from '/imports/state/redux/ui/modal';
 import Block from '/imports/ui/_components/Block';
+import { openModal } from '/imports/state/redux/ui/modal';
 import ModalContent from '/imports/ui/Modal/ModalContent';
 
 const Content = () =>
@@ -27,10 +27,8 @@ const ModalTester = ({ dispatchOpenModal }) =>
     </button>
   </Block>
 
-
-const mapStateToProps = state => ({ modal: state.ui.modal });
 const mapDispatchToProps = dispatch => ({
   dispatchOpenModal: content => dispatch(openModal(content)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ModalTester);
+export default connect(null, mapDispatchToProps)(ModalTester);

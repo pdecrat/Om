@@ -19,19 +19,32 @@ const StyledCategory = styled.div`
   cursor: pointer;
 `
 
-const SpaceMenu = ({ categories = [], dispatchClickLink, path }) =>
+const isMainCategory = (path, category) => {
+  const split = path.split('/')
+  const space = split[split.length - 1];
+
+  return space === category;
+}
+
+const SpaceMenu = ({ categories = [], dispatchClickLink, path, location }) =>
   <StyledSpaceMenu>
     {categories.map(category =>
       <StyledCategory
         key={category}
-        onClick={e => { dispatchClickLink(`${path}#${category}`) }}
-      >{category}</StyledCategory>
+        onClick={e => {
+          dispatchClickLink(isMainCategory(path, category) ?
+          path : `${path}#${category}`)
+        }}
+      >
+        {category}
+      </StyledCategory>
     )}
   </StyledSpaceMenu>
 
 const mapStateToProps = state => ({
   categories: state.space.availableCategories,
   path: state.router.location.pathname,
+  location: state.router.location,
 });
 const mapDispatchToProps = dispatch => ({
   dispatchClickLink: url => dispatch(clickLink(url)),

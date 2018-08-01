@@ -5,10 +5,6 @@ import { media, rem } from '/imports/ui/_lib/helpers-css';
 
 const StyledBlock = styled.section`
   border: 1px dashed #DDDDDD;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   background-color: white;
   min-width: ${rem('320px')};
   min-height: ${rem('64px')};
@@ -18,6 +14,10 @@ const StyledBlock = styled.section`
   ${media.medium`grid-column-end: span ${props => props.width >= 3 ? 2 : 1};`}
   ${media.small`grid-column-end: span 1;`}
   grid-row-end: span ${props => props.height};
+  & > * {
+    width: 100%;
+    height: 100%;
+  }
 `
 
 const Block = ({ width = 1, height = 1, children }) =>

@@ -29,7 +29,7 @@ class NotFound extends React.Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-  dispatchSpaceReset: () => dispatch(setSpace(notFoundSpace, "???"))
+  dispatchSpaceReset: () => dispatch(setSpace(notFoundSpace, notFoundSpace.name))
 });
 
 export default connect(null, mapDispatchToProps)(NotFound);

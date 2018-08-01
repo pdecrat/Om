@@ -20,7 +20,13 @@ export function callCreateSpace(space) {
   }
 }
 
-function space(state = {}, { type, space, category }) {
+const defaultState = {
+  category: '',
+  availableCategories: [],
+  displayedBlocks: []
+}
+
+function space(state = defaultState, { type, space, category }) {
   switch (type) {
     case SET_SPACE:
       const availableCategories = [space.name];
@@ -34,7 +40,8 @@ function space(state = {}, { type, space, category }) {
         ...space,
         category,
         displayedBlocks: Object.keys(space.blocks)
-          .filter(block => space.blocks[block].category === category)
+          .filter(block => space.blocks[block].category === category
+            || category === space.name)
           .map(block => {
             return {
               ...space.blocks[block],
