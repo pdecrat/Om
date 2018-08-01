@@ -34,15 +34,9 @@ Meteor.startup(() => {
         'BlockManager': {
           category: 'configuration'
         },
-        'MenuTester': {
-          category: 'configuration'
-        },
-        'ModalTester': {
-          category: 'configuration'
-        },
         'SpaceCreator': {
           category: 'om'
-        }
+        },
       }
     })
   }

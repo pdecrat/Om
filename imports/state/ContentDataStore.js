@@ -8,14 +8,6 @@ import Spaces from '/imports/api/Spaces/Spaces';
 import { setSpace } from '/imports/state/redux/space';
 import Grid from '/imports/ui/Grid';
 
-const notFound = {
-  _id: '1234',
-  name: "???",
-  blocks: [
-    'NotFound'
-  ]
-}
-
 const SpaceDataStore = withTracker(props => {
   const name = props.match.params.spaceName;
   const hash = props.location.hash.slice(1) || name;
@@ -36,7 +28,6 @@ const SpaceDataStore = withTracker(props => {
     } else {
       props.dispatchPush('/not-found')
     }
-
   })
 
   return props;

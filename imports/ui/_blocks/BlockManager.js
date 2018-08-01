@@ -15,9 +15,8 @@ const StyledBlockManager = styled.div`
 class BlockManager extends React.Component {
   render() {
     return (
-      <Block width={3} height={4}>
+      <Block width={1} height={4}>
         <StyledBlockManager>
-          <Select />
           <Select />
         </StyledBlockManager>
       </Block>
