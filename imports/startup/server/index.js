@@ -1,2 +1,1 @@
-import './apis';
 import './fixtures';

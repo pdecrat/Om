@@ -9,7 +9,8 @@ if (Meteor.isServer) {
     return {
       ...user,
       name: user.username,
-      spaces: options.spaces
+      spaces: options.spaces,
+      type: 'user'
     }
   })
 

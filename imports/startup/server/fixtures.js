@@ -4,7 +4,7 @@ import { Accounts } from 'meteor/accounts-base';
 import Spaces from '/imports/api/Spaces/Spaces';
 
 Meteor.startup(() => {
-  // Meteor.users.remove({});
+  Meteor.users.remove({});
   if (Meteor.users.find({}).count() === 0) {
     Accounts.createUser({
       username: 'admin',

@@ -7,8 +7,6 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import { createBrowserHistory } from 'history';
 import { connectRouter, routerMiddleware } from 'connected-react-router';
 
-import '/imports/api/Actions';
-
 import UserDataStore from './UserDataStore';
 import ContentDataStore from './ContentDataStore';
 import mainReducer from './redux/main-reducer';

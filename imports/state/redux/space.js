@@ -12,7 +12,12 @@ export function setSpace(space, category) {
 
 export function callCreateSpace(space) {
   return dispatch => {
-    Meteor.call('spaces.create', space, (err, res) => {
+    Meteor.call('do', {
+      data: {
+        space
+      },
+      name: 'createSpace',
+    }, (err, res) => {
       if (!err) {
         dispatch(push(`/s/${space.name}`))
       }

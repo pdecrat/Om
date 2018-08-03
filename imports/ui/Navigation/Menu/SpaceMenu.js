@@ -28,9 +28,9 @@ const isMainCategory = (path, category) => {
 
 const SpaceMenu = ({ categories = [], dispatchClickLink, path, location }) =>
   <StyledSpaceMenu>
-    {categories.map(category =>
+    {categories.map((category, index) =>
       <StyledCategory
-        key={category}
+        key={index}
         onClick={e => {
           dispatchClickLink(isMainCategory(path, category) ?
           path : `${path}#${category}`)

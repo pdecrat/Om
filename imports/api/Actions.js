@@ -32,26 +32,25 @@ Actions.registerEffect = (name, effect) => {
 
 Actions.do = ({ action, origin, target, data }) => {
   let effects = action.effects;
-  const targetEffects = !!target && !!target.actions && !!target.actions[action.name] && target.actions[action.name].effects || null;
-  const originEffects = !!origin.actions && !!origin.actions[action.name] && origin.actions[action.name].effects || null;
+  const targetEffects = !!target && !!target.actions && !!target.actions[action.name] && target.actions[action.name].effects || {};
+  const originEffects = !!origin.actions && !!origin.actions[action.name] && origin.actions[action.name].effects || {};
 
   if (!!action.data)
     data = { ...data, ...action.data };
-  // if (!!targetEffects)
-  //   effects = { ...effects, ...targetEffects };
-  //   Object.keys(targetEffects).forEach(effect => {
-  //     if (typeof(targetEffects[effect]) !== 'boolean')
-  //       data = { ...data, ...targetEffects[effect] }
-  //   })
-  // if (!!originEffects)
-  //   effects = { ...effects, ...originEffects };
-  //   Object.keys(originEffects).forEach(effect => {
-  //     if (typeof(originEffects[effect]) !== 'boolean')
-  //       data = { ...data, ...originEffects[effect] }
-  //   })
+  if (!!targetEffects)
+    effects = { ...effects, ...targetEffects };
+    Object.keys(targetEffects).forEach(effect => {
+      if (typeof(targetEffects[effect]) !== 'boolean')
+        data = { ...data, ...targetEffects[effect] }
+    })
+  if (!!originEffects)
+    effects = { ...effects, ...originEffects };
+    Object.keys(originEffects).forEach(effect => {
+      if (typeof(originEffects[effect]) !== 'boolean')
+        data = { ...data, ...originEffects[effect] }
+    })
 
   Object.keys(effects).forEach(effect => {
-    console.log(effect)
     Actions._effects[effect]({ origin, target, data });
   });
 
@@ -71,13 +70,13 @@ Actions.validateDataSchema = ({ action, origin, target, data }) => {
   if (originAction)
     effects = { ...effects, ...originAction.effects };
 
-  // const keys = Object.keys(effects);
-  // const validationSchema = new SimpleSchema({});
-  // if (keys.length > 0) {
-  //   keys.forEach(effect => {
-  //     validationSchema.extend(Actions._effects[effect].dataSchema);
-  //   });
-  // }
+  const keys = Object.keys(effects);
+  const validationSchema = new SimpleSchema({});
+  if (keys.length > 0) {
+    keys.forEach(effect => {
+      validationSchema.extend(Actions._effects[effect].dataSchema);
+    });
+  }
 }
 
 Meteor.methods({

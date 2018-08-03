@@ -8,9 +8,11 @@ const createSpace = ({ origin, data }) => {
   const { space } = data;
   const _id = Spaces.insert({
     ...space,
-    blocks: [
-      'BlockManager'
-    ]
+    blocks: {
+      'BlockManager': {
+        category: 'configuration'
+      }
+    }
   })
   origin.spaces.push(space.name);
 }
