@@ -13,22 +13,3 @@ if (Meteor.isServer) {
     return Spaces.find({ name });
   });
 }
-
-Meteor.methods({
-  'spaces.create'(space) {
-    const _id = Spaces.insert({
-      ...space,
-      blocks: [
-        'BlockManager'
-      ]
-    })
-    Meteor.users.update(Meteor.userId(), {
-      $addToSet: { spaces: space.name }
-    });
-
-    return {
-      _id,
-      ...space
-    };
-  }
-})

@@ -1,2 +1,2 @@
-import '/imports/api/Users/Users';
-import '/imports/api/Spaces/Spaces';
+import '/imports/api/Actions';
+import '/imports/api/Spaces/effects/index';
