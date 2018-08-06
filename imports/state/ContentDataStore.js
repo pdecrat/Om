@@ -9,7 +9,7 @@ import { setSpace } from '/imports/state/redux/space';
 import Grid from '/imports/ui/Grid';
 
 const SpaceDataStore = withTracker(props => {
-  const name = props.match.params.spaceName;
+  const name = decodeURIComponent(props.match.params.spaceName);
   const hash = props.location.hash.slice(1) || name;
 
   Meteor.subscribe('current-space-data', name, () => {

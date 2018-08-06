@@ -9,7 +9,9 @@ import Users from '/imports/api/Users/Users';
 
 const Actions = new Mongo.Collection('actions');
 
-const getType = type => {
+Actions.add = (action) => Meteor.isServer ? Actions.insert(action) : null;
+
+Actions.getType = type => {
   switch (type) {
     case 'user':
       return Users;
@@ -31,6 +33,7 @@ Actions.registerEffect = (name, effect) => {
 }
 
 Actions.do = ({ action, origin, target, data }) => {
+  const response = {};
   let effects = action.effects;
   const targetEffects = !!target && !!target.actions && !!target.actions[action.name] && target.actions[action.name].effects || {};
   const originEffects = !!origin.actions && !!origin.actions[action.name] && origin.actions[action.name].effects || {};
@@ -51,13 +54,14 @@ Actions.do = ({ action, origin, target, data }) => {
     })
 
   Object.keys(effects).forEach(effect => {
-    Actions._effects[effect]({ origin, target, data });
+    Actions._effects[effect]({ origin, target, data, response });
   });
 
-  getType(origin.type).update(origin._id, origin);
+  Actions.getType(origin.type).update(origin._id, origin);
   if (!!target) {
-    getType(target.type).update(target._id, target);
+    Actions.getType(target.type).update(target._id, target);
   }
+  return response;
 }
 
 Actions.validateDataSchema = ({ action, origin, target, data }) => {
@@ -112,7 +116,7 @@ Meteor.methods({
       );
     }
     if (!!action.target) {
-      action.target = getType(action.target.type).findOne(action.target._id);
+      action.target = Actions.getType(action.target.type).findOne(action.target._id);
       if (!action.target) {
         throw new Meteor.Error(
           'action-method:target-not-found',
@@ -122,7 +126,7 @@ Meteor.methods({
     }
     action.origin = Meteor.user();
     Actions.validateDataSchema({ action: requestedAction, ...action });
-    Actions.do({ action: requestedAction, ...action });
+    return Actions.do({ action: requestedAction, ...action });
   }
 });
 

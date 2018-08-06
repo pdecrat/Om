@@ -16,11 +16,19 @@ if (Meteor.isServer) {
 
   Meteor.publish('current-user-data', function() {
     const userId = this.userId;
+    const user = Meteor.users.findOne(userId, {
+      fields: {
+        spaces: 1
+      }
+    });
 
     if (userId) {
       return [
         Meteor.users.find(userId),
-        Actions.find()
+        Actions.find(),
+        Actions.getType('space').find({
+          name: { $in: user.spaces }
+        })
       ];
     } else {
       this.ready();

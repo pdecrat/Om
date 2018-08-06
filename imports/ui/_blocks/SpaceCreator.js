@@ -1,8 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
+import { push } from 'connected-react-router'
 
-import { callCreateSpace } from '/imports/state/redux/space';
+import { callAction } from '/imports/state/redux/action';
 import Block from '/imports/ui/_components/Block';
 
 const StyledSpaceCreator = styled.div`
@@ -35,9 +36,12 @@ class SpaceCreator extends React.Component {
     )
   }
 }
+const toDispatch = (dispatch, res, { space }) => {
+  dispatch(push(`/s/${space.name}`))
+}
 
 const mapDispatchToProps = dispatch => ({
-  dispatchCreateSpace: space => dispatch(callCreateSpace(space))
+  dispatchCreateSpace: space => dispatch(callAction('createSpace', { space }, toDispatch))
 });
 
 export default connect(null, mapDispatchToProps)(SpaceCreator);

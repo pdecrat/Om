@@ -8,16 +8,23 @@ if (Meteor.isServer) {
     if (Blocks.find().count() === 0) {
       Blocks.insert({
         name: 'SpaceCreator',
-        category: ''
+        content: {
+          category: '',
+        }
       })
       Blocks.insert({
         name: 'BlockManager',
-        category: 'configuration'
+        content: {
+          category: 'configuration',
+        }
       })
       Blocks.insert({
         name: 'MenuTester',
-        category: 'test'
+        content: {
+          category: 'test',
+        }
       })
     }
   })
 }
+export default Blocks;

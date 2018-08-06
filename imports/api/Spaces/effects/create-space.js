@@ -1,8 +1,7 @@
-import { Meteor } from 'meteor/meteor';
 import SimpleSchema from 'simpl-schema';
 
 import Actions from '/imports/api/Actions';
-import Spaces from '../Spaces';
+import Spaces from '/imports/api/Spaces/Spaces';
 
 const createSpace = ({ origin, data }) => {
   const { space } = data;
@@ -25,7 +24,8 @@ createSpace.dataSchema = new SimpleSchema({
   },
 })
 Actions.registerEffect('createSpace', createSpace)
-Actions.insert({
+
+Actions.add({
   name: 'createSpace',
   effects: {
     createSpace: true,

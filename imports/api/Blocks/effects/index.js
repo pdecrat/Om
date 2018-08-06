@@ -1,0 +1,1 @@
+import './get-block-list';

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import { clickLink } from '/imports/state/redux/ui/menu';
 import { rem } from '/imports/ui/_lib/helpers-css';
-import Image from '/imports/ui/_components/Image';
+import Avatar from '/imports/ui/_components/Avatar';
 
 const StyledLink = styled.div`
   margin-top: ${rem('10px')};
@@ -17,11 +17,11 @@ const StyledLink = styled.div`
   }
 `
 
-const Link = ({ url, label = null, dispatchClickLink }) =>
+const Link = ({ url, label = null, dispatchClickLink, object }) =>
   <StyledLink onClick={e => { dispatchClickLink(url) }}>
-    <Image
-      url='https://picsum.photos/420/?random'
+    <Avatar
       size={50}
+      object={object}
     />
     {
       !!label ?

@@ -1,4 +1,3 @@
-import { push } from 'connected-react-router'
 
 const SET_SPACE = 'om/space/set';
 
@@ -7,21 +6,6 @@ export function setSpace(space, category) {
     type: SET_SPACE,
     space,
     category
-  }
-}
-
-export function callCreateSpace(space) {
-  return dispatch => {
-    Meteor.call('do', {
-      data: {
-        space
-      },
-      name: 'createSpace',
-    }, (err, res) => {
-      if (!err) {
-        dispatch(push(`/s/${space.name}`))
-      }
-    })
   }
 }
 

@@ -17,6 +17,7 @@ const StyledCategory = styled.div`
   font-size: 140%;
   margin: ${rem('15px')};
   cursor: pointer;
+  text-transform: capitalize;
 `
 
 const isMainCategory = (path, category) => {

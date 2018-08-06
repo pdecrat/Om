@@ -7,6 +7,7 @@ import { rem } from '/imports/ui/_lib/helpers-css';
 const StyledBreacrumb = styled.li`
   margin-left: 15px;
   font-size: 1.4rem;
+  text-transform: capitalize;
 `;
 
 const StyledBreacrumbs = styled.ul`

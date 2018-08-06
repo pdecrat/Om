@@ -22,14 +22,15 @@ const SpaceList = ({ spaces = [] }) =>
         {spaces.map((space, index) =>
           <Link
             key={index}
-            url={`/s/${space}`}
+            url={`/s/${encodeURIComponent(space.name)}`}
+            object={space}
           />
         )}
       </StyledSpaceList>
     </Scroller>
   </StyledWrapper>
 
-const mapStateToProps = state => ({ spaces: state.user.spaces });
+const mapStateToProps = state => ({ spaces: state.spaces });
 const mapDispatchToProps = dispatch => ({
 });
 
