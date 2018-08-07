@@ -81,6 +81,7 @@ Actions.validateDataSchema = ({ action, origin, target, data }) => {
       validationSchema.extend(Actions._effects[effect].dataSchema);
     });
   }
+  validationSchema.validate(data);
 }
 
 Meteor.methods({

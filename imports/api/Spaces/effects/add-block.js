@@ -12,7 +12,7 @@ const addBlock = ({ origin, data, target }) => {
       "The block you're trying to add is already in this space"
     )
   }
-  const block = Blocks.findOne({ name });
+  const block = Actions.getType('block').findOne({ name });
   if (!block) {
     throw new Meteor.Error(
       'effect:add-block:block-not-found',
@@ -31,6 +31,6 @@ Actions.registerEffect('addBlock', addBlock);
 Actions.add({
   name: 'addBlock',
   effects: {
-    addBlock: true
+    addBlock: true,
   }
 })

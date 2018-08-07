@@ -17,7 +17,7 @@ const StyledUser = styled.li`
 const User = ({ user }) =>
   <StyledUser>
     {user.name || user.avatar ?
-      <Avatar object={user} />
+      <Avatar object={user} size={40} />
       : null
     }
   </StyledUser>

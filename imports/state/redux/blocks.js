@@ -1,4 +1,5 @@
 const SET_BLOCKS = 'om/blocks/set'
+const SELECT_BLOCK = 'om/blocks/select'
 
 export function setBlocks(blocks) {
   return {
@@ -7,12 +8,30 @@ export function setBlocks(blocks) {
   }
 }
 
-const defaultState = [];
+export function selectBlock(block) {
+  return {
+    type: SELECT_BLOCK,
+    block
+  }
+}
 
-function blocks(state = defaultState, { type, blocks }) {
+const defaultState = {
+  list: [],
+  selectedBlock: ''
+};
+
+function blocks(state = defaultState, { type, blocks, block }) {
   switch (type) {
     case SET_BLOCKS:
-      return blocks
+      return {
+        list: blocks.map(block => block.name),
+        selectedBlock: blocks[0].name
+      }
+    case SELECT_BLOCK:
+      return {
+        ...state,
+        selectedBlock: block
+      }
     default:
       return state;
   }

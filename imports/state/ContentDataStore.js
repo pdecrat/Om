@@ -5,7 +5,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { push } from 'connected-react-router';
 
 import Spaces from '/imports/api/Spaces/Spaces';
-import { setSpace } from '/imports/state/redux/space';
+import { setSpace, setBlocks } from '/imports/state/redux/space';
 import Grid from '/imports/ui/Grid';
 
 const SpaceDataStore = withTracker(props => {
@@ -13,21 +13,25 @@ const SpaceDataStore = withTracker(props => {
   const hash = props.location.hash.slice(1) || name;
 
   Meteor.subscribe('current-space-data', name, () => {
-    // Spaces.find({ name }).observeChanges({
-    //   added(_id, fields) {
-    //     props.dispatchSetSpace({
-    //       _id,
-    //       ...fields
-    //     });
-    //   }
-    // })
-    const space = Spaces.findOne({ name });
-
-    if (!!space) {
-      props.dispatchSetSpace(space, hash)
-    } else {
+    const cursor = Spaces.find({ name });
+    if (cursor.count() === 0) {
       props.dispatchPush('/not-found')
+    } else {
+      cursor.observeChanges({
+        added(_id, fields) {
+          props.dispatchSetSpace({
+            _id,
+            ...fields
+          }, hash);
+        },
+        changed(_id, { blocks }) {
+          if (blocks) {
+            props.dispatchSetBlocks(blocks);
+          }
+        }
+      })
     }
+
   })
 
   return props;
@@ -35,6 +39,7 @@ const SpaceDataStore = withTracker(props => {
 
 const mapDispatchToProps = dispatch => ({
   dispatchSetSpace: (space, hash) => dispatch(setSpace(space, hash)),
+  dispatchSetBlocks: blocks => dispatch(setBlocks(blocks)),
   dispatchPush: url => dispatch(push(url)),
 });
 

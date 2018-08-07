@@ -5,6 +5,7 @@ const Blocks = new Mongo.Collection('blocks');
 
 if (Meteor.isServer) {
   Meteor.startup(() => {
+    Blocks.remove({})
     if (Blocks.find().count() === 0) {
       Blocks.insert({
         name: 'SpaceCreator',

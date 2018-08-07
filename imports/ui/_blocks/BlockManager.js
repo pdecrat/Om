@@ -3,9 +3,9 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 
 import { callAction } from '/imports/state/redux/action';
-import { setBlocks } from '/imports/state/redux/blocks';
+import { setBlocks, selectBlock } from '/imports/state/redux/blocks';
 import Block from '/imports/ui/_components/Block';
-import { openModal } from '/imports/state/redux/ui/modal';
+import { openModal, closeModal } from '/imports/state/redux/ui/modal';
 import ModalContent from '/imports/ui/Modal/ModalContent';
 import { rem } from '/imports/ui/_lib/helpers-css';
 
@@ -18,45 +18,67 @@ const StyledBlockManager = styled.div`
 
 const StyledBlock = styled.div`
   width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `
 
 class BlockPicker extends React.Component {
-
   componentWillMount() {
     this.props.dispatchGetBlocks();
   }
 
   render() {
+    const {
+      dispatchSelectBlock,
+      dispatchAddBlock,
+      blocks,
+      target,
+    } = this.props;
     return (
       <ModalContent>
-        <select>{
-          this.props.blocks.map((block, index) =>
-            <option key={index}>{block.name}</option>
+        <select onChange={e => { dispatchSelectBlock(e.target.value) }}>{
+          blocks.list.map(block =>
+            <option key={block} value={block}>{block}</option>
           )
         }
         </select>
+        <button onClick={e => { dispatchAddBlock(blocks.selectedBlock, target) }}>Add {this.props.blocks.selectedBlock}</button>
       </ModalContent>
     )
   }
 }
-const BlockPickerToDispatch = (dispatch, res) => {
+const dispatchAfterGetBlocks = (dispatch, res) => {
   if (res.blockList) {
     dispatch(setBlocks(res.blockList))
   }
 }
-const BlockPickerMapState = state => ({ blocks: state.blocks });
+const dispatchAfterAddBlock = (dispatch) => {
+  dispatch(closeModal());
+}
+const BlockPickerMapState = state => ({
+  blocks: state.blocks,
+  target: state.space,
+});
 const BlockPickerMapDispatch = dispatch => ({
-  dispatchGetBlocks: () => dispatch(callAction('getBlockList', {}, BlockPickerToDispatch))
+  dispatchGetBlocks: () => dispatch(callAction('getBlockList', null, {}, dispatchAfterGetBlocks)),
+  dispatchSelectBlock: block => dispatch(selectBlock(block)),
+  dispatchAddBlock: (name, target) => dispatch(callAction('addBlock', target, { name }, dispatchAfterAddBlock)),
 })
 const ConnectedBlockPicker = connect(BlockPickerMapState, BlockPickerMapDispatch)(BlockPicker);
 
 
-const BlockManager = ({ blocks = [], dispatchOpenModal }) =>
+const BlockManager = ({ blocks = [], dispatchOpenModal, dispatchRemoveBlock, space }) =>
   <Block width={1} height={4}>
     <StyledBlockManager>
       <h2>Current Blocks</h2>
       <ul>
-        {blocks.map((block, index) => <StyledBlock key={index}>{block.name}</StyledBlock>)}
+        {blocks.map((block, index) =>
+          <StyledBlock key={index}>
+            {block.name}
+            <button onClick={e => { dispatchRemoveBlock(block.name, space) }}>X</button>
+          </StyledBlock>
+        )}
       </ul>
       <button onClick={e => { dispatchOpenModal(<ConnectedBlockPicker />) }}>Add Block</button>
     </StyledBlockManager>
@@ -69,10 +91,12 @@ const mapStateToProps = ({ space }) => ({
         ...space.blocks[block],
         name: block,
       }
-    })
+    }),
+    space
 })
 const mapDispatchToProps = dispatch => ({
   dispatchOpenModal: content => dispatch(openModal(content)),
+  dispatchRemoveBlock: (name, target) => dispatch(callAction('removeBlock', target, { name }, null)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(BlockManager);

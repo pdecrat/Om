@@ -9,12 +9,14 @@ import Block from '/imports/ui/_components/Block';
 const StyledSpaceCreator = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content:space-between;
 `
 
 class SpaceCreator extends React.Component {
 
   state = {
-    name: ''
+    name: null
   }
   render() {
     return (
@@ -41,7 +43,7 @@ const toDispatch = (dispatch, res, { space }) => {
 }
 
 const mapDispatchToProps = dispatch => ({
-  dispatchCreateSpace: space => dispatch(callAction('createSpace', { space }, toDispatch))
+  dispatchCreateSpace: space => dispatch(callAction('createSpace', null, { space }, toDispatch))
 });
 
 export default connect(null, mapDispatchToProps)(SpaceCreator);
