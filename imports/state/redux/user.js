@@ -1,17 +1,39 @@
-const SET_USER = 'om/user/set';
+const LOG_IN_USER = 'om/user/log-in';
+const LOG_OUT_USER = 'om/user/log-out';
 
-export function setUser(user) {
+export function logInUser(user) {
   return {
-    type: SET_USER,
+    type: LOG_IN_USER,
     user
   }
 }
 
-function user(state = {}, action) {
+export function logOutUser() {
+  return {
+    type: LOG_OUT_USER,
+  }
+}
+
+const defaultState = {
+  doc: null,
+  loggedIn: false,
+  loggingIn: false,
+}
+
+function user(state = defaultState, action) {
   switch (action.type) {
-    case SET_USER:
+    case LOG_IN_USER:
       return {
-        ...action.user
+        ...state,
+        doc: action.user,
+        loggedIn: true,
+      };
+      break;
+    case LOG_OUT_USER:
+      return {
+        ...state,
+        doc: null,
+        loggedIn: false,
       };
       break;
     default:

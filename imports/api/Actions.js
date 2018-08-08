@@ -125,7 +125,7 @@ Meteor.methods({
         )
       }
     }
-    action.origin = Meteor.user();
+    action.origin = Meteor.user() || {};
     Actions.validateDataSchema({ action: requestedAction, ...action });
     return Actions.do({ action: requestedAction, ...action });
   }

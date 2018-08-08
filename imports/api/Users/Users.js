@@ -8,8 +8,8 @@ if (Meteor.isServer) {
   Accounts.onCreateUser((options, user) => {
     return {
       ...user,
-      name: user.username,
-      spaces: options.spaces,
+      name: user.username || '??',
+      spaces: options.spaces || [],
       type: 'user'
     }
   })
@@ -25,7 +25,6 @@ if (Meteor.isServer) {
     if (userId) {
       return [
         Meteor.users.find(userId),
-        Actions.find(),
         Actions.getType('space').find({
           name: { $in: user.spaces }
         })

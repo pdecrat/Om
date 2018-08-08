@@ -22,6 +22,5 @@ accounts-base@1.4.2
 ostrio:base64
 standard-minifier-css@1.4.1
 underscore@1.0.10
-force-ssl
+force-ssl@1.1.0
 react-meteor-data
-accounts-password

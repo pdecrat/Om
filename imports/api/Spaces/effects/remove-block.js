@@ -13,6 +13,13 @@ const removeBlock = ({ data, target }) => {
     )
   }
 
+  if (name === 'BlockManager') {
+    throw new Meteor.Error(
+      'effects:remove-block:cannot-remove-self',
+      "Mh, better not remove this one..."
+    )
+  }
+
   delete target.blocks[name];
 }
 removeBlock.dataSchema = new SimpleSchema({
