@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withTracker } from 'meteor/react-meteor-data';
 
-import { setUser } from '/imports/state/redux/user';
+import { logInUser, logOutUser } from '/imports/state/redux/user';
 import { callSetSpaces } from '/imports/state/redux/spaces';
 import Navigation from '/imports/ui/Navigation/Navigation';
 
@@ -14,11 +14,11 @@ const UserDataStore = withTracker(props => {
     Meteor.subscribe('current-user-data', () => {
       Meteor.users.find(userId).observeChanges({
         added(_id, fields) {
-          props.dispatchSetUser({ _id, ...fields });
+          props.dispatchLogIn({ _id, ...fields });
           props.dispatchSetSpaces(fields.spaces);
         },
         removed(_id) {
-          props.dispatchSetUser({});
+          props.dispatchLogOut();
           props.dispatchSetSpaces([]);
         },
         changed(_id, { spaces }) {
@@ -35,7 +35,8 @@ const UserDataStore = withTracker(props => {
 })(Navigation);
 
 const mapDispatchToProps = dispatch => ({
-  dispatchSetUser: user => dispatch(setUser(user)),
+  dispatchLogIn: user => dispatch(logInUser(user)),
+  dispatchLogOut: () => dispatch(logOutUser()),
   dispatchSetSpaces: spaces => dispatch(callSetSpaces(spaces)),
 });
 

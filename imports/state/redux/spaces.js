@@ -9,7 +9,7 @@ function setSpaces(spaces) {
   }
 }
 
-export function callSetSpaces(names) {
+export function callSetSpaces(names = []) {
   return dispatch => {
     const spaces = Spaces.find({ name: { $in: names } }).fetch() || [];
 

@@ -53,7 +53,7 @@ const dispatchAfterGetBlocks = (dispatch, res) => {
     dispatch(setBlocks(res.blockList))
   }
 }
-const dispatchAfterAddBlock = (dispatch) => {
+const dispatchAfterAddBlock = dispatch => {
   dispatch(closeModal());
 }
 const BlockPickerMapState = state => ({

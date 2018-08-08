@@ -17,9 +17,13 @@ const StyledName = styled.div`
 const Avatar = ({ object, size }) => object.avatar ?
   <Image url={object.avatar} size={size} />
   : <StyledName size={size}>
-    {`${object.name[0].toUpperCase()}${object.name[1] ?
-      object.name[1] : ''
-    }`}
+    {!!object.name ?
+      `${object.name[0].toUpperCase()}${object.name[1] ?
+        object.name[1]
+        : ''
+      }`
+      : '??'
+    }
   </StyledName>
 
 export default Avatar;

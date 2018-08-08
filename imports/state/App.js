@@ -38,6 +38,28 @@ const App = () =>
           <Route exact path="/" render={() =>
             <Redirect to="/s/om"/>
           }/>
+          <Route exact path='/login/:credentials' render={({ history, match }) => {
+              const credentials = match.params.credentials.split(':');
+
+              Accounts.callLoginMethod({
+                methodArguments: [{
+                  'passwordless': {
+                    encodedEmail: credentials[0],
+                    token: credentials[1]
+                  }
+                }],
+                userCallback: function(err, res) {
+                  if (err) console.log(err);
+                  else {
+                    history.push('/');
+                  };
+                }
+              });
+
+              return null;
+            }}
+          />
+
           <Route exact path="/not-found" component={NotFound} />
           <Route render={() =>
             <Redirect to="/not-found"/>

@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { check } from 'meteor/check';
 import { Mongo } from 'meteor/mongo';
 
-import Blocks from '/imports/api/Blocks/Blocks';
+import Actions from '/imports/api/Actions';
 
 const Spaces = new Mongo.Collection('spaces');
 
@@ -14,7 +14,8 @@ if (Meteor.isServer) {
 
     return [
       Spaces.find({ name }),
-      Blocks.find(),
+      Actions.find(),
+      Actions.getType('block').find(),
     ];
   });
 }
