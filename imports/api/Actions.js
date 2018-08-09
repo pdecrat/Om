@@ -8,7 +8,9 @@ import Spaces from '/imports/api/Spaces/Spaces';
 import Users from '/imports/api/Users/Users';
 
 const Actions = new Mongo.Collection('actions');
-Actions.remove({})
+if (Meteor.isServer) {
+  Actions.remove({})
+}
 Actions.add = (action) => Meteor.isServer ? Actions.insert(action) : null;
 
 Actions.getType = type => {
