@@ -15,12 +15,13 @@ const StyledBreacrumbs = styled.ul`
   flex: 0 0 auto;
 `;
 
-const Breadcrumbs = ({ space = {} }) =>
+const Breadcrumbs = ({ space }) => space ?
   <StyledBreacrumbs>
     <StyledBreacrumb>{space.name}</StyledBreacrumb>
   </StyledBreacrumbs>
+  : null
 
-const mapStateToProps = state => ({ space: state.space });
+const mapStateToProps = state => ({ space: state.space.doc });
 const mapDispatchToProps = dispatch => ({
 });
 

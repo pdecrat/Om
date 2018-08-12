@@ -45,14 +45,15 @@ function getDisplayedBlocks(blocks, name, category) {
 const defaultState = {
   category: '',
   availableCategories: [],
-  displayedBlocks: []
+  displayedBlocks: [],
+  doc: null
 }
 
 function space(state = defaultState, { type, space, category, blocks }) {
   switch (type) {
     case SET_SPACE:
       return {
-        ...space,
+        doc: space,
         category,
         displayedBlocks: getDisplayedBlocks(space.blocks, space.name, category),
         availableCategories: getCategories(space.name, space.blocks),
@@ -61,9 +62,12 @@ function space(state = defaultState, { type, space, category, blocks }) {
     case SET_BLOCKS:
       return {
         ...state,
-        blocks,
-        displayedBlocks: getDisplayedBlocks(blocks, state.name, state.category),
-        availableCategories: getCategories(state.name, blocks),
+        doc: {
+          ...state.doc,
+          blocks
+        },
+        displayedBlocks: getDisplayedBlocks(blocks, state.doc.name, state.category),
+        availableCategories: getCategories(state.doc.name, blocks),
       }
     default:
       return state;
