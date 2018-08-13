@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router'
 
-import { callAction } from '/imports/state/redux/action';
+import { callAction } from '/imports/api/Actions';
 import Block from '/imports/ui/_components/Block';
 
 const StyledSpaceCreator = styled.div`

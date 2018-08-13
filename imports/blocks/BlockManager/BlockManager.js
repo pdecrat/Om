@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 
-import { callAction } from '/imports/state/redux/action';
-import { setBlocks, selectBlock } from '/imports/state/redux/blocks';
+import { callAction } from '/imports/api/Actions';
+import { setBlocks, selectBlock } from './blocks-redux';
 import Block from '/imports/ui/_components/Block';
 import { openModal, closeModal } from '/imports/state/redux/ui/modal';
 import ModalContent from '/imports/ui/Modal/ModalContent';
@@ -56,9 +56,9 @@ const dispatchAfterGetBlocks = (dispatch, res) => {
 const dispatchAfterAddBlock = dispatch => {
   dispatch(closeModal());
 }
-const BlockPickerMapState = state => ({
-  blocks: state.blocks,
-  target: state.space,
+const BlockPickerMapState = ({ blocks, space }) => ({
+  blocks: blocks.blockManager,
+  target: space.doc,
 });
 const BlockPickerMapDispatch = dispatch => ({
   dispatchGetBlocks: () => dispatch(callAction('getBlockList', null, {}, dispatchAfterGetBlocks)),
@@ -85,14 +85,14 @@ const BlockManager = ({ blocks = [], dispatchOpenModal, dispatchRemoveBlock, spa
   </Block>
 
 const mapStateToProps = ({ space }) => ({
-  blocks: Object.keys(space.blocks)
+  blocks: Object.keys(space.doc.blocks)
     .map(block => {
       return {
-        ...space.blocks[block],
+        ...space.doc.blocks[block],
         name: block,
       }
     }),
-    space
+    space: space.doc
 })
 const mapDispatchToProps = dispatch => ({
   dispatchOpenModal: content => dispatch(openModal(content)),

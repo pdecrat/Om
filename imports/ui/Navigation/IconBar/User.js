@@ -4,7 +4,7 @@ import { Route, Switch } from 'react-router-dom';
 import { UserPlus } from 'react-feather';
 import { connect } from 'react-redux';
 
-import { callAction } from '/imports/state/redux/action';
+import { callAction } from '/imports/api/Actions';
 import { openModal, closeModal } from '/imports/state/redux/ui/modal';
 import ModalContent from '/imports/ui/Modal/ModalContent';
 import Avatar from '/imports/ui/_components/Avatar';

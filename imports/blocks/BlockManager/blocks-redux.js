@@ -20,7 +20,7 @@ const defaultState = {
   selectedBlock: ''
 };
 
-function blocks(state = defaultState, { type, blocks, block }) {
+function blockManager(state = defaultState, { type, blocks, block }) {
   switch (type) {
     case SET_BLOCKS:
       return {
@@ -36,4 +36,4 @@ function blocks(state = defaultState, { type, blocks, block }) {
       return state;
   }
 }
-export default blocks;
+export default blockManager;

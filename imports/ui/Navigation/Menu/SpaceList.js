@@ -30,7 +30,7 @@ const SpaceList = ({ spaces = [] }) =>
     </Scroller>
   </StyledWrapper>
 
-const mapStateToProps = state => ({ spaces: state.spaces });
+const mapStateToProps = state => ({ spaces: state.user.shortcuts });
 const mapDispatchToProps = dispatch => ({
 });
 

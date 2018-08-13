@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 
 import { media, rem } from '/imports/ui/_lib/helpers-css';
-import Components from '/imports/ui/_blocks/_index';
+import Blocks from '/imports/blocks/blocks-index';
 
 const StyledGrid = styled.div`
   height: 100vh;
@@ -29,7 +29,7 @@ const StyledGrid = styled.div`
 const Grid = ({ blocks = [] }) =>
   <StyledGrid>
     {blocks.map((block, index) => {
-      const Component = Components[block.name];
+      const Component = Blocks[block.name];
       return <Component key={index} />
     })}
   </StyledGrid>
