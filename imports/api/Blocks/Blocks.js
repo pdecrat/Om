@@ -25,6 +25,12 @@ if (Meteor.isServer) {
           category: 'test',
         }
       })
+      Blocks.insert({
+        name: 'TaskList',
+        content: {
+          category: '',
+        }
+      })
     }
   })
 }

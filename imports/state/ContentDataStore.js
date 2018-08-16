@@ -5,7 +5,8 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { push } from 'connected-react-router';
 
 import Spaces from '/imports/api/Spaces/Spaces';
-import { setSpace, setBlocks } from '/imports/state/redux/space';
+import Content from '/imports/api/Content/Content';
+import * as Space from '/imports/state/redux/space';
 import Grid from '/imports/ui/Grid';
 
 const SpaceDataStore = withTracker(props => {
@@ -31,15 +32,14 @@ const SpaceDataStore = withTracker(props => {
         }
       })
     }
-
   })
 
   return props;
 })(Grid);
 
 const mapDispatchToProps = dispatch => ({
-  dispatchSetSpace: (space, hash) => dispatch(setSpace(space, hash)),
-  dispatchSetBlocks: blocks => dispatch(setBlocks(blocks)),
+  dispatchSetSpace: (space, hash, contentHandle) => dispatch(Space.setSpace(space, hash, contentHandle)),
+  dispatchSetBlocks: blocks => dispatch(Space.setBlocks(blocks)),
   dispatchPush: url => dispatch(push(url)),
 });
 

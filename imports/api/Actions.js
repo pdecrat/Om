@@ -133,7 +133,7 @@ Meteor.methods({
   }
 });
 
-export function callAction(name, target = null, data = {}, toDispatch) {
+export function callAction(name, target = null, data = {}, toDispatch = null) {
   const args = {
     target: target ? {
       _id: target._id,

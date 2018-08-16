@@ -11,11 +11,19 @@ export default Spaces;
 if (Meteor.isServer) {
   Meteor.publish('current-space-data', function(name) {
     check(name, String);
+    const cursor = Spaces.find({ name });
 
-    return [
-      Spaces.find({ name }),
-      Actions.find(),
-      Actions.getType('block').find(),
-    ];
+    if (cursor.count() === 0) {
+      this.ready();
+    } else {
+      const parentId = cursor.fetch()[0]._id;
+
+      return [
+        cursor,
+        Actions.find(),
+        Actions.getType('block').find(),
+        Actions.getType('').find({ parentId })
+      ];
+    }
   });
 }
