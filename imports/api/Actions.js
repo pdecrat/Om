@@ -19,7 +19,7 @@ Actions.getType = type => {
       return Users;
     case 'space':
       return Spaces;
-    case 'block':
+    case 'blockTemplate':
       return Blocks;
     case 'action':
       return Actions;
@@ -119,6 +119,7 @@ Meteor.methods({
       );
     }
     if (!!action.target) {
+      console.log(action.target)
       action.target = Actions.getType(action.target.type).findOne(action.target._id);
       if (!action.target) {
         throw new Meteor.Error(
@@ -142,6 +143,7 @@ export function callAction(name, target = null, data = {}, toDispatch = null) {
     data,
     name,
   }
+
   return dispatch => {
     Meteor.call('do', args, (err, res = {}) => {
       if (err) {

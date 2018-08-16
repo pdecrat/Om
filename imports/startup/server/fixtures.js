@@ -1,26 +1,26 @@
 import { Meteor } from 'meteor/meteor';
 
 import Spaces from '/imports/api/Spaces/Spaces';
+import Blocks from '/imports/api/Blocks/Blocks';
+import Content from '/imports/api/Content/Content';
 
 Meteor.startup(() => {
+  Spaces.remove({})
+  Content.remove({})
   if (Spaces.find().count() === 0) {
-    Spaces.insert({
+    const parentId = Spaces.insert({
       name: 'om',
       type: 'space',
-      blocks: {
-        'BlockManager': {
-          category: 'configuration'
-        },
-        'SpaceCreator': {
-          category: ''
-        },
-        'ModalTester': {
-          category: 'test'
-        },
-        'MenuTester': {
-          category: 'test'
-        },
-      }
+    });
+    const { content, name } = Blocks.findOne({
+      name: "BlockManager"
+    });
+    Content.insert({
+      ...content,
+      parentId,
+      name,
+      type: 'block',
+      isActive: true,
     })
   }
 })

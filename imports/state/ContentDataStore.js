@@ -12,33 +12,32 @@ import Grid from '/imports/ui/Grid';
 const SpaceDataStore = withTracker(props => {
   const name = decodeURIComponent(props.match.params.spaceName);
   const hash = props.location.hash.slice(1) || name;
+  const subscription = Meteor.subscribe('current-space-data', name);
 
-  Meteor.subscribe('current-space-data', name, () => {
-    const cursor = Spaces.find({ name });
-    if (cursor.count() === 0) {
-      props.dispatchPush('/not-found')
-    } else {
-      cursor.observeChanges({
-        added(_id, fields) {
-          props.dispatchSetSpace({
-            _id,
-            ...fields
-          }, hash);
-        },
-        changed(_id, { blocks }) {
-          if (blocks) {
-            props.dispatchSetBlocks(blocks);
-          }
-        }
-      })
+  const space = Spaces.findOne({ name });
+  if (subscription.ready() && !space) {
+    props.dispatchPush('/not-found')
+    return props;
+  } else {
+    const blocks = space && Content.find({
+      parentId: space._id,
+      type: 'block',
+      isActive: true,
+    }).fetch();
+
+    console.log(blocks)
+    return {
+      ...props,
+      space,
+      blocks,
+      isLoading: !subscription.ready()
     }
-  })
+  }
 
-  return props;
 })(Grid);
 
 const mapDispatchToProps = dispatch => ({
-  dispatchSetSpace: (space, hash, contentHandle) => dispatch(Space.setSpace(space, hash, contentHandle)),
+  dispatchSetSpace: (space, hash) => dispatch(Space.setSpace(space, hash)),
   dispatchSetBlocks: blocks => dispatch(Space.setBlocks(blocks)),
   dispatchPush: url => dispatch(push(url)),
 });

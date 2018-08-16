@@ -2,12 +2,11 @@ const SET_SPACE = 'om/space/set';
 const REMOVE_BLOCK = 'om/space/remove-block';
 const SET_BLOCKS = 'om/space/set-blocks';
 
-export function setSpace(space, category, contentHandle) {
+export function setSpace(space, category) {
   return {
     type: SET_SPACE,
     space,
     category,
-    contentHandle
   }
 }
 
@@ -58,8 +57,6 @@ function space(state = defaultState,
     space,
     category,
     blocks,
-    doc,
-    idToRemove,
   }) {
   switch (type) {
     case SET_SPACE:

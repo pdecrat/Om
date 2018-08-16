@@ -15,12 +15,16 @@ const createSpace = ({ origin, data }) => {
   const _id = Spaces.insert({
     ...space,
     type: 'space',
-    blocks: {
-      'BlockManager': {
-        category: 'configuration'
-      }
-    }
   })
+  Actions._effects.addBlock({
+    target: {
+      ...target,
+      _id,
+    },
+    data: {
+      name: 'BlockManager'
+    }
+  });
   origin.spaces.push(space.name);
 }
 createSpace.dataSchema = new SimpleSchema({

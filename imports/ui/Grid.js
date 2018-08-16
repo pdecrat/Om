@@ -26,16 +26,12 @@ const StyledGrid = styled.div`
   overflow: scroll;
 `
 
-const Grid = ({ blocks = [] }) =>
+const Grid = ({ blocks = [], space }) =>
   <StyledGrid>
     {blocks.map((block, index) => {
       const Component = Blocks[block.name];
-      return <Component key={index} />
+      return <Component key={index} space={{ _id: space._id, type: space.type }} />
     })}
   </StyledGrid>
 
-const mapStateToProps = state => ({ blocks: state.space.displayedBlocks });
-const mapDispatchToProps = dispatch => ({
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Grid);
+export default Grid;
