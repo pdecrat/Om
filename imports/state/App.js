@@ -6,8 +6,8 @@ import ContentDataStore from './ContentDataStore';
 import Modal from '/imports/ui/Modal/Modal';
 import Grid from '/imports/ui/Grid';
 import '/imports/ui/_lib/global-style';
-import IconBar from '/imports/ui/Navigation/IconBar/IconBar';
-import Menu from '/imports/ui/Navigation/Menu/Menu';
+import IconBar from '/imports/ui/IconBar/IconBar';
+import Menu from '/imports/ui/Menu/Menu';
 import { rem } from '/imports/ui/_lib/helpers-css';
 
 const StyledHeader = styled.header`
