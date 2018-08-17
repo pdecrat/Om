@@ -3,8 +3,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withTracker } from 'meteor/react-meteor-data';
 
-import { setUser, logOutUser, setAsLoggingIn } from '/imports/state/redux/user';
-import App from '/imports/state/App';
+import { setUser, logOutUser, setAsLoggingIn } from '/imports/ui/_state/user';
+import App from '/imports/ui/App';
 
 const UserDataStore = withTracker(props => {
   const user = Meteor.user();

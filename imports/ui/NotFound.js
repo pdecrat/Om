@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 
 import { rem } from '/imports/ui/_lib/helpers-css';
-import { setSpace } from '/imports/state/redux/space';
+import { setSpace } from '/imports/ui/_state/space';
 
 const notFoundSpace = {
   name: "???",

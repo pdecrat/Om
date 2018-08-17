@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 
 import { rem } from '/imports/ui/_lib/helpers-css';
-import { clickLink } from '/imports/state/redux/ui/menu';
+import { clickLink } from '/imports/ui/_state/ui/menu';
 
 const StyledSpaceMenu = styled.div`
   flex-grow: 1;

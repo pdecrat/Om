@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 
 import { rem } from '/imports/ui/_lib/helpers-css';
-import { toggleMenu } from '/imports/state/redux/ui/menu';
+import { toggleMenu } from '/imports/ui/_state/ui/menu';
 
 import Panel from './Panel';
 

@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 
-import { openMenu } from '/imports/state/redux/ui/menu';
+import { openMenu } from '/imports/ui/_state/ui/menu';
 import Block from '/imports/ui/_components/Block';
 
 const MenuTester = ({ dispatchOpenMenu }) =>

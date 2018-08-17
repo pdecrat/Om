@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 
-import { clickLink } from '/imports/state/redux/ui/menu';
+import { clickLink } from '/imports/ui/_state/ui/menu';
 import { rem } from '/imports/ui/_lib/helpers-css';
 import Avatar from '/imports/ui/_components/Avatar';
 

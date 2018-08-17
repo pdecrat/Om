@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 
 import { rem } from '/imports/ui/_lib/helpers-css';
-import { closeMenu } from '/imports/state/redux/ui/menu';
+import { closeMenu } from '/imports/ui/_state/ui/menu';
 
 import SpaceList from './SpaceList';
 import SpaceMenu from './SpaceMenu';

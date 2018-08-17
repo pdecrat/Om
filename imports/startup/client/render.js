@@ -8,8 +8,8 @@ import { render } from 'react-dom';
 import { connectRouter, routerMiddleware } from 'connected-react-router';
 import thunk from 'redux-thunk';
 
-import App from '/imports/state/UserDataStore';
-import mainReducer from '/imports/state/redux/main-reducer';
+import App from '/imports/ui/UserDataStore';
+import mainReducer from '/imports/ui/_state/main-reducer';
 
 const history = createBrowserHistory()
 

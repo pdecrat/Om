@@ -6,7 +6,7 @@ import { push } from 'connected-react-router';
 import { matchPath } from 'react-router';
 
 import Spaces from '/imports/api/Spaces/Spaces';
-import { setSpace } from '/imports/state/redux/space';
+import { setSpace } from '/imports/ui/_state/space';
 import Breadcrumbs from '/imports/ui/Breadcrumbs';
 
 const spacePath = {

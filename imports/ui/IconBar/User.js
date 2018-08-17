@@ -5,7 +5,7 @@ import { UserPlus } from 'react-feather';
 import { connect } from 'react-redux';
 
 import { callAction } from '/imports/api/Actions';
-import { openModal, closeModal } from '/imports/state/redux/ui/modal';
+import { openModal, closeModal } from '/imports/ui/_state/ui/modal';
 import ModalContent from '/imports/ui/Modal/ModalContent';
 import Avatar from '/imports/ui/_components/Avatar';
 import { rem } from '/imports/ui/_lib/helpers-css';

@@ -7,7 +7,7 @@ import Content from '/imports/api/Content/Content';
 import { callAction } from '/imports/api/Actions';
 import { setBlocks, selectBlock } from './blocks-redux';
 import Block from '/imports/ui/_components/Block';
-import { openModal, closeModal } from '/imports/state/redux/ui/modal';
+import { openModal, closeModal } from '/imports/ui/_state/ui/modal';
 import ModalContent from '/imports/ui/Modal/ModalContent';
 import { rem } from '/imports/ui/_lib/helpers-css';
 

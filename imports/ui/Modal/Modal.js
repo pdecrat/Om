@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 
 import { media, rem } from '/imports/ui/_lib/helpers-css';
-import { closeModal } from '/imports/state/redux/ui/modal';
+import { closeModal } from '/imports/ui/_state/ui/modal';
 
 const StyledModal = styled.div`
   display: ${props => props.open ? 'flex' : 'none' };

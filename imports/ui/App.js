@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Route, Redirect, Switch } from 'react-router-dom';
 
-import ContentDataStore from './ContentDataStore';
+import ContentDataStore from '/imports/ui/ContentDataStore';
 import Modal from '/imports/ui/Modal/Modal';
 import Grid from '/imports/ui/Grid';
 import '/imports/ui/_lib/global-style';
