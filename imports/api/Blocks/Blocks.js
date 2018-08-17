@@ -11,25 +11,29 @@ if (Meteor.isServer) {
         name: 'SpaceCreator',
         content: {
           category: '',
-        }
+        },
+        type: 'blockTemplate'
       })
       Blocks.insert({
         name: 'BlockManager',
         content: {
           category: 'configuration',
-        }
+        },
+        type: 'blockTemplate'
       })
       Blocks.insert({
         name: 'MenuTester',
         content: {
           category: 'test',
-        }
+        },
+        type: 'blockTemplate'
       })
       Blocks.insert({
         name: 'TaskList',
         content: {
           category: '',
-        }
+        },
+        type: 'blockTemplate'
       })
     }
   })

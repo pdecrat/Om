@@ -1,12 +1,12 @@
 import Spaces from '/imports/api/Spaces/Spaces';
 
-const LOG_IN_USER = 'om/user/log-in';
+const SET_USER = 'om/user/set-user';
 const LOG_OUT_USER = 'om/user/log-out';
-const SET_SHORTCUTS = 'om/user/set-shortcuts';
+const SET_AS_LOGGING_IN = 'om/user/set-as-logging-in';
 
-export function logInUser(user) {
+export function setUser(user) {
   return {
-    type: LOG_IN_USER,
+    type: SET_USER,
     user
   }
 }
@@ -17,18 +17,9 @@ export function logOutUser() {
   }
 }
 
-function setShortcuts(shortcuts) {
+export function setAsLoggingIn() {
   return {
-    type: SET_SHORTCUTS,
-    shortcuts
-  }
-}
-
-export function callSetShortcuts(names = []) {
-  return dispatch => {
-    const spaces = Spaces.find({ name: { $in: names } }).fetch() || [];
-
-    return dispatch(setShortcuts(spaces));
+    type: SET_AS_LOGGING_IN,
   }
 }
 
@@ -36,28 +27,28 @@ const defaultState = {
   doc: null,
   loggedIn: false,
   loggingIn: false,
-  shortcuts: []
 }
 
 function user(state = defaultState, { type, user, shortcuts }) {
   switch (type) {
-    case LOG_IN_USER:
+    case SET_USER:
       return {
-        ...state,
         doc: user,
         loggedIn: true,
+        loggingIn: false,
       };
     case LOG_OUT_USER:
       return {
-        ...state,
         doc: null,
         loggedIn: false,
+        loggingIn: false,
       };
-    case SET_SHORTCUTS:
+    case SET_AS_LOGGING_IN:
       return {
-        ...state,
-        shortcuts
-      }
+        doc: null,
+        loggedIn: false,
+        loggingIn: true,
+      };
     default:
       return state;
   }

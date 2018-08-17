@@ -21,7 +21,7 @@ if (Meteor.isServer) {
       return [
         cursor,
         Actions.find(),
-        Actions.getType('block').find(),
+        Actions.getType('blockTemplate').find(),
         Actions.getType('').find({ parentId })
       ];
     }

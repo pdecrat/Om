@@ -19,7 +19,7 @@ Actions.getType = type => {
       return Users;
     case 'space':
       return Spaces;
-    case 'block':
+    case 'blockTemplate':
       return Blocks;
     case 'action':
       return Actions;
@@ -142,6 +142,7 @@ export function callAction(name, target = null, data = {}, toDispatch = null) {
     data,
     name,
   }
+
   return dispatch => {
     Meteor.call('do', args, (err, res = {}) => {
       if (err) {
@@ -155,3 +156,8 @@ export function callAction(name, target = null, data = {}, toDispatch = null) {
 
 
 export default Actions;
+
+
+if (Meteor.isClient) {
+  window.Actions = Actions;
+}

@@ -5,28 +5,14 @@ import Actions from '/imports/api/Actions';
 import Spaces from '/imports/api/Spaces/Spaces';
 
 const removeBlock = ({ data, target }) => {
-  const { name } = data;
-  if (!target.blocks[name]) {
-    throw new Meteor.Error(
-      "effects:remove-block:block-absent",
-      "The block you're trying to remove cannot be found"
-    )
-  }
-
-  if (name === 'BlockManager') {
+  if (target.name === 'BlockManager') {
     throw new Meteor.Error(
       'effects:remove-block:cannot-remove-self',
       "Mh, better not remove this one..."
     )
   }
-
-  delete target.blocks[name];
+  target.isActive = false;
 }
-removeBlock.dataSchema = new SimpleSchema({
-  name: {
-    type: String
-  }
-})
 Actions.registerEffect('removeBlock', removeBlock)
 Actions.add({
   name: 'removeBlock',

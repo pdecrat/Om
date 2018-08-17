@@ -1,8 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
+import { withTracker } from 'meteor/react-meteor-data';
 
 import { media, rem } from '/imports/ui/_lib/helpers-css';
+import Content from '/imports/api/Content/Content';
 import Blocks from '/imports/blocks/blocks-index';
 
 const StyledGrid = styled.div`
@@ -26,7 +28,7 @@ const StyledGrid = styled.div`
   overflow: scroll;
 `
 
-const Grid = ({ blocks = [] }) =>
+const Grid = ({ blocks }) =>
   <StyledGrid>
     {blocks.map((block, index) => {
       const Component = Blocks[block.name];
@@ -34,8 +36,23 @@ const Grid = ({ blocks = [] }) =>
     })}
   </StyledGrid>
 
-const mapStateToProps = state => ({ blocks: state.space.displayedBlocks });
-const mapDispatchToProps = dispatch => ({
-});
+const TrackedGrid = withTracker(props => {
+  const {
+    space,
+  } = props;
+  const blocks = space && Content.find({
+    type: 'block',
+    parentId: space._id,
+    isActive: true,
+  }).fetch() || [];
 
-export default connect(mapStateToProps, mapDispatchToProps)(Grid);
+  return {
+    ...props,
+    blocks,
+  }
+})(Grid);
+
+const mapStateToProps = state => ({
+  space: state.space.doc
+})
+export default connect(mapStateToProps, null)(TrackedGrid);

@@ -1,7 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
+import { withTracker } from 'meteor/react-meteor-data';
 
+import Content from '/imports/api/Content/Content';
 import { callAction } from '/imports/api/Actions';
 import { setBlocks, selectBlock } from './blocks-redux';
 import Block from '/imports/ui/_components/Block';
@@ -56,9 +58,8 @@ const dispatchAfterGetBlocks = (dispatch, res) => {
 const dispatchAfterAddBlock = dispatch => {
   dispatch(closeModal());
 }
-const BlockPickerMapState = ({ blocks, space }) => ({
+const BlockPickerMapState = ({ blocks }) => ({
   blocks: blocks.blockManager,
-  target: space.doc,
 });
 const BlockPickerMapDispatch = dispatch => ({
   dispatchGetBlocks: () => dispatch(callAction('getBlockList', null, {}, dispatchAfterGetBlocks)),
@@ -76,27 +77,36 @@ const BlockManager = ({ blocks = [], dispatchOpenModal, dispatchRemoveBlock, spa
         {blocks.map((block, index) =>
           <StyledBlock key={index}>
             {block.name}
-            <button onClick={e => { dispatchRemoveBlock(block.name, space) }}>X</button>
+            <button onClick={e => { dispatchRemoveBlock(block) }}>X</button>
           </StyledBlock>
         )}
       </ul>
-      <button onClick={e => { dispatchOpenModal(<ConnectedBlockPicker />) }}>Add Block</button>
+      <button onClick={e => { dispatchOpenModal(<ConnectedBlockPicker target={space} />) }}>Add Block</button>
     </StyledBlockManager>
   </Block>
 
-const mapStateToProps = ({ space }) => ({
-  blocks: Object.keys(space.doc.blocks)
-    .map(block => {
-      return {
-        ...space.doc.blocks[block],
-        name: block,
-      }
-    }),
-    space: space.doc
+
+const TrackedBlockManager = withTracker(props => {
+  const {
+    space,
+  } = props;
+  const blocks = space && Content.find({
+    type: 'block',
+    parentId: space._id,
+    isActive: true,
+  }).fetch() || [];
+
+  return {
+    ...props,
+    blocks,
+  }
+})(BlockManager);
+
+const mapStateToProps = state => ({
+  space: state.space.doc
 })
 const mapDispatchToProps = dispatch => ({
   dispatchOpenModal: content => dispatch(openModal(content)),
-  dispatchRemoveBlock: (name, target) => dispatch(callAction('removeBlock', target, { name }, null)),
+  dispatchRemoveBlock: (target) => dispatch(callAction('removeBlock', target)),
 });
-
-export default connect(mapStateToProps, mapDispatchToProps)(BlockManager);
+export default connect(mapStateToProps, mapDispatchToProps)(TrackedBlockManager);
