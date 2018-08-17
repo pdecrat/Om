@@ -18,7 +18,7 @@ const createSpace = ({ origin, data }) => {
   })
   Actions._effects.addBlock({
     target: {
-      ...target,
+      ...space,
       _id,
     },
     data: {

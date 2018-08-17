@@ -3,41 +3,31 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withTracker } from 'meteor/react-meteor-data';
 
-import { logInUser, logOutUser } from '/imports/state/redux/user';
-import { callSetShortcuts } from '/imports/state/redux/user';
-import Navigation from '/imports/ui/Navigation/Navigation';
+import { setUser, logOutUser, setAsLoggingIn } from '/imports/state/redux/user';
+import App from '/imports/state/App';
 
 const UserDataStore = withTracker(props => {
-  const userId = Meteor.userId();
+  const user = Meteor.user();
+  const loggingIn = Meteor.loggingIn();
 
-  if (userId) {
-    Meteor.subscribe('current-user-data', () => {
-      Meteor.users.find(userId).observeChanges({
-        added(_id, fields) {
-          props.dispatchLogIn({ _id, ...fields });
-          props.dispatchSetShortcuts(fields.spaces);
-        },
-        removed(_id) {
-          props.dispatchLogOut();
-          props.dispatchSetShortcuts([]);
-        },
-        changed(_id, { spaces }) {
-          if (spaces) {
-            props.dispatchSetShortcuts(spaces);
-          }
-        }
-      });
-
-    });
+  if (!loggingIn && user) {
+    const handle = Meteor.subscribe('current-user-data', user.spaces);
+    if (handle.ready()) {
+      props.dispatchSetUser(user);
+    }
+  } else if (loggingIn) {
+    props.dispatchSetAsLoggingIn();
+  } else {
+    props.dispatchLogOut();
   }
 
   return props;
-})(Navigation);
+})(App);
 
 const mapDispatchToProps = dispatch => ({
-  dispatchLogIn: user => dispatch(logInUser(user)),
+  dispatchSetUser: user => dispatch(setUser(user)),
   dispatchLogOut: () => dispatch(logOutUser()),
-  dispatchSetShortcuts: shortcuts => dispatch(callSetShortcuts(shortcuts)),
+  dispatchSetAsLoggingIn: () => dispatch(setAsLoggingIn()),
 });
 
 export default connect(null, mapDispatchToProps)(UserDataStore);

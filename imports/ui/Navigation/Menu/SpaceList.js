@@ -1,13 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
+import { withTracker } from 'meteor/react-meteor-data';
 
+import Spaces from '/imports/api/Spaces/Spaces';
 import { rem } from '/imports/ui/_lib/helpers-css';
 import Link from '/imports/ui/_components/Link';
 import Scroller from '/imports/ui/_components/Scroller';
 
 const StyledWrapper = styled.div`
-  width: ${rem('70px')};
+  width: ${rem('300px')};
   display: flex;
   flex-direction: column;
 `
@@ -15,7 +17,7 @@ const StyledWrapper = styled.div`
 const StyledSpaceList = styled.div`
 `
 
-const SpaceList = ({ spaces = [] }) =>
+const SpaceList = ({ spaces }) =>
   <StyledWrapper>
     <Scroller bar={false}>
       <StyledSpaceList>
@@ -24,14 +26,29 @@ const SpaceList = ({ spaces = [] }) =>
             key={index}
             url={`/s/${encodeURIComponent(space.name)}`}
             object={space}
+            label={space.name}
           />
         )}
       </StyledSpaceList>
     </Scroller>
   </StyledWrapper>
 
-const mapStateToProps = state => ({ spaces: state.user.shortcuts });
-const mapDispatchToProps = dispatch => ({
+const TrackedSpaceList = withTracker(props => {
+  const {
+    user,
+    space,
+  } = props;
+  const spaces = user && Spaces.find({ name: { $in: user.spaces } }).fetch() || [];
+
+  return {
+    ...props,
+    spaces,
+  }
+})(SpaceList);
+
+const mapStateToProps = state => ({
+  user: state.user.doc,
+  space: state.space.doc
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(SpaceList);
+export default connect(mapStateToProps, null)(TrackedSpaceList);

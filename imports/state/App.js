@@ -1,74 +1,46 @@
 import React from 'react';
-import { Provider } from 'react-redux';
+import styled from 'styled-components';
 import { Route, Redirect, Switch } from 'react-router-dom';
-import { ConnectedRouter } from 'connected-react-router';
-import thunk from 'redux-thunk';
-import { createStore, applyMiddleware, compose } from 'redux';
-import { createBrowserHistory } from 'history';
-import { connectRouter, routerMiddleware } from 'connected-react-router';
 
-import UserDataStore from './UserDataStore';
 import ContentDataStore from './ContentDataStore';
-import mainReducer from './redux/main-reducer';
 import Modal from '/imports/ui/Modal/Modal';
-import NotFound from '/imports/ui/NotFound';
+import Grid from '/imports/ui/Grid';
 import '/imports/ui/_lib/global-style';
+import IconBar from '/imports/ui/Navigation/IconBar/IconBar';
+import Menu from '/imports/ui/Navigation/Menu/Menu';
+import { rem } from '/imports/ui/_lib/helpers-css';
 
+const StyledHeader = styled.header`
+  position: fixed;
+  min-height: ${rem('64px')};
+  width: 100%;
+  display: flex;
+  align-items: center;
+  z-index: 100;
+`
 
-const history = createBrowserHistory()
+const StyledHeaderContent = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  height: ${rem('64px')};
+  padding-right: ${rem('15px')};
+  padding-left: ${rem('15px')};
+  box-shadow: 0 ${rem('1px')} ${rem('2px')} rgba(0,0,0,0.06);
+  background: rgba(255,255,255,0.98);
+`
 
-const store = createStore(
-  connectRouter(history)(mainReducer), // new root reducer with router state
-  {},
-  compose(
-    applyMiddleware(
-      routerMiddleware(history), // for dispatching history actions
-      thunk,
-      // ... other middlewares ...
-    ),
-  ),
-)
 const App = () =>
-  <Provider store={store}>
-    <ConnectedRouter history={history}>
-      <div>
-        <UserDataStore />
-        <Switch>
-          <Route exact path="/s/:spaceName" component={ContentDataStore} />
-          <Route exact path="/" render={() =>
-            <Redirect to="/s/om"/>
-          }/>
-          <Route exact path='/login/:credentials' render={({ history, match }) => {
-              const credentials = match.params.credentials.split(':');
-
-              Accounts.callLoginMethod({
-                methodArguments: [{
-                  'passwordless': {
-                    encodedEmail: credentials[0],
-                    token: credentials[1]
-                  }
-                }],
-                userCallback: function(err, res) {
-                  if (err) console.log(err);
-                  else {
-                    history.push('/');
-                  };
-                }
-              });
-
-              return null;
-            }}
-          />
-
-          <Route exact path="/not-found" component={NotFound} />
-          <Route render={() =>
-            <Redirect to="/not-found"/>
-          }/>
-        </Switch>
-
-        <Modal />
-      </div>
-    </ConnectedRouter>
-  </Provider>
+  <div>
+    <StyledHeader>
+      <StyledHeaderContent>
+        <Menu />
+        <ContentDataStore />
+        <IconBar />
+      </StyledHeaderContent>
+    </StyledHeader>
+    <Grid />
+    <Modal />
+  </div>
 
 export default App

@@ -119,7 +119,6 @@ Meteor.methods({
       );
     }
     if (!!action.target) {
-      console.log(action.target)
       action.target = Actions.getType(action.target.type).findOne(action.target._id);
       if (!action.target) {
         throw new Meteor.Error(
@@ -157,3 +156,8 @@ export function callAction(name, target = null, data = {}, toDispatch = null) {
 
 
 export default Actions;
+
+
+if (Meteor.isClient) {
+  window.Actions = Actions;
+}

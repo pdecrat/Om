@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
 
 import { rem } from '/imports/ui/_lib/helpers-css';
 
@@ -15,14 +14,13 @@ const StyledBreacrumbs = styled.ul`
   flex: 0 0 auto;
 `;
 
-const Breadcrumbs = ({ space }) => space ?
+const Breadcrumbs = ({ match = {}, hash }) =>
   <StyledBreacrumbs>
-    <StyledBreacrumb>{space.name}</StyledBreacrumb>
+    <StyledBreacrumb>{
+      match.params ?
+        `${match.params.spaceName}${!!hash.length ? ` > ${hash.slice(1)}` : ''}`
+      : ''
+    }</StyledBreacrumb>
   </StyledBreacrumbs>
-  : null
 
-const mapStateToProps = state => ({ space: state.space.doc });
-const mapDispatchToProps = dispatch => ({
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Breadcrumbs);
+export default Breadcrumbs;

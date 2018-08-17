@@ -85,20 +85,28 @@ const BlockManager = ({ blocks = [], dispatchOpenModal, dispatchRemoveBlock, spa
     </StyledBlockManager>
   </Block>
 
-const mapDispatchToProps = dispatch => ({
-  dispatchOpenModal: content => dispatch(openModal(content)),
-  dispatchRemoveBlock: (target) => dispatch(callAction('removeBlock', target)),
-});
 
-export default withTracker(props => {
-  const blocks = Content.find({
-    parentId: props.space._id,
+const TrackedBlockManager = withTracker(props => {
+  const {
+    space,
+  } = props;
+  const blocks = space && Content.find({
     type: 'block',
+    parentId: space._id,
     isActive: true,
-  }).fetch();
+  }).fetch() || [];
 
   return {
     ...props,
     blocks,
   }
-})(connect(null, mapDispatchToProps)(BlockManager));
+})(BlockManager);
+
+const mapStateToProps = state => ({
+  space: state.space.doc
+})
+const mapDispatchToProps = dispatch => ({
+  dispatchOpenModal: content => dispatch(openModal(content)),
+  dispatchRemoveBlock: (target) => dispatch(callAction('removeBlock', target)),
+});
+export default connect(mapStateToProps, mapDispatchToProps)(TrackedBlockManager);

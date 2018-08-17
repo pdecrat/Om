@@ -5,6 +5,9 @@ import Blocks from '/imports/api/Blocks/Blocks';
 import Content from '/imports/api/Content/Content';
 
 Meteor.startup(() => {
+  Meteor.users.update({}, {
+    $set: { spaces: [] }
+  },{ multi: true })
   Spaces.remove({})
   Content.remove({})
   if (Spaces.find().count() === 0) {

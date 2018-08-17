@@ -50,7 +50,7 @@ const Panel = ({ menu, dispatchCloseMenu }) =>
       isOpen={menu.open}
     >
       <SpaceList />
-      <SpaceMenu />
+      {/* <SpaceMenu /> */}
     </StyledPanel>
     <StyledBackground
       isOpen={menu.open}
