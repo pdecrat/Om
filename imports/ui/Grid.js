@@ -28,7 +28,7 @@ const StyledGrid = styled.div`
   overflow: scroll;
 `
 
-const Grid = ({ blocks }) =>
+const Grid = ({ blocks = [] }) =>
   <StyledGrid>
     {blocks.map((block, index) => {
       const Component = Blocks[block.name];
@@ -39,20 +39,27 @@ const Grid = ({ blocks }) =>
 const TrackedGrid = withTracker(props => {
   const {
     space,
+    hash,
   } = props;
-  const blocks = space && Content.find({
-    type: 'block',
-    parentId: space._id,
-    isActive: true,
-  }).fetch() || [];
+  if (!!space) {
+    const query = {
+      type: 'block',
+      parentId: space._id,
+      category: hash.slice(1),
+      isActive: true,
+    };
+    const blocks = Content.find(query).fetch() || [];
 
-  return {
-    ...props,
-    blocks,
+    return {
+      ...props,
+      blocks,
+    }
   }
+  return props
 })(Grid);
 
 const mapStateToProps = state => ({
-  space: state.space.doc
+  space: state.space.doc,
+  hash: state.space.hash
 })
 export default connect(mapStateToProps, null)(TrackedGrid);

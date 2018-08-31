@@ -1,7 +1,18 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 import { media, rem } from '/imports/ui/_lib/helpers-css';
+
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+`
 
 const StyledBlock = styled.section`
   border: 1px dashed #DDDDDD;
@@ -14,6 +25,7 @@ const StyledBlock = styled.section`
   ${media.medium`grid-column-end: span ${props => props.width >= 3 ? 2 : 1};`}
   ${media.small`grid-column-end: span 1;`}
   grid-row-end: span ${props => props.height};
+  animation: ${fadeIn} 0.1s linear;
   & > * {
     width: 100%;
     height: 100%;

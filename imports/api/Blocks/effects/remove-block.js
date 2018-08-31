@@ -2,7 +2,6 @@ import { Meteor } from 'meteor/meteor';
 import SimpleSchema from 'simpl-schema';
 
 import Actions from '/imports/api/Actions';
-import Spaces from '/imports/api/Spaces/Spaces';
 
 const removeBlock = ({ data, target }) => {
   if (target.name === 'BlockManager') {

@@ -1,7 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
+import { withTracker } from 'meteor/react-meteor-data';
 
+import Content from '/imports/api/Content/Content';
 import { rem } from '/imports/ui/_lib/helpers-css';
 import { clickLink } from '/imports/ui/_state/ui/menu';
 
@@ -27,7 +29,7 @@ const isMainCategory = (path, category) => {
   return space === category;
 }
 
-const SpaceMenu = ({ categories = [], dispatchClickLink, path, location }) =>
+const SpaceMenu = ({ categories = [], dispatchClickLink, path }) =>
   <StyledSpaceMenu>
     {categories.map((category, index) =>
       <StyledCategory
@@ -42,13 +44,32 @@ const SpaceMenu = ({ categories = [], dispatchClickLink, path, location }) =>
     )}
   </StyledSpaceMenu>
 
+const TrackedMenu = withTracker(props => {
+  if (props.space) {
+    const categories = [props.space.name];
+
+    Content.find({
+      type: 'block',
+      parentId: props.space._id,
+    }).forEach(({ category }) => {
+      if (categories.indexOf(category) === -1) {
+        categories.push(category)
+      }
+    });
+    return {
+      categories,
+      ...props
+    }
+  }
+  return props;
+})(SpaceMenu)
+
 const mapStateToProps = state => ({
-  categories: state.space.availableCategories,
+  space: state.space.doc,
   path: state.router.location.pathname,
-  location: state.router.location,
 });
 const mapDispatchToProps = dispatch => ({
   dispatchClickLink: url => dispatch(clickLink(url)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(SpaceMenu);
+export default connect(mapStateToProps, mapDispatchToProps)(TrackedMenu);

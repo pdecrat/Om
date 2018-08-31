@@ -17,7 +17,7 @@ if (Meteor.isServer) {
       Blocks.insert({
         name: 'BlockManager',
         content: {
-          category: 'configuration',
+          category: 'settings',
         },
         type: 'blockTemplate'
       })
