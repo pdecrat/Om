@@ -13,9 +13,3 @@ const removeBlock = ({ data, target }) => {
   target.isActive = false;
 }
 Actions.registerEffect('removeBlock', removeBlock)
-Actions.add({
-  name: 'removeBlock',
-  effects: {
-    removeBlock: true,
-  }
-})

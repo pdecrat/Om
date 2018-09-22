@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withTracker } from 'meteor/react-meteor-data';
 
 import { media, rem } from '/imports/ui/_lib/helpers-css';
-import Content from '/imports/api/Content/Content';
+import Content from '/imports/api/Content';
 import Blocks from '/imports/blocks/blocks-index';
 
 const StyledGrid = styled.div`
@@ -44,12 +44,10 @@ const TrackedGrid = withTracker(props => {
   if (!!space) {
     const query = {
       type: 'block',
-      parentId: space._id,
       category: hash.slice(1),
       isActive: true,
     };
     const blocks = Content.find(query).fetch() || [];
-
     return {
       ...props,
       blocks,

@@ -1,28 +1,37 @@
 import { Meteor } from 'meteor/meteor';
-import { check } from 'meteor/check';
 import { Mongo } from 'meteor/mongo';
+import { check } from 'meteor/check';
 
-import Actions from '/imports/api/Actions';
+import { Collections, Collection } from '/imports/api/Collections';
 
-const Spaces = new Mongo.Collection('spaces');
+class SpaceCollection extends Collection {
+  insert(space, callback) {
+    space.reference = space.name.toLowerCase().split(' ').join('-');
+    space._id = new Mongo.ObjectID()._str;
+    Collections.add(space._id);
+
+    return super.insert(space, callback);
+  }
+};
+
+const Spaces = new SpaceCollection('spaces');
 
 export default Spaces;
 
 if (Meteor.isServer) {
-  Meteor.publish('current-space-data', function(name) {
-    check(name, String);
-    const cursor = Spaces.find({ name });
+  Meteor.publish('current-space-data', function(reference) {
+    check(reference, String);
+    const cursor = Spaces.find({ reference });
 
     if (cursor.count() === 0) {
       this.ready();
     } else {
-      const parentId = cursor.fetch()[0]._id;
+      const space = cursor.fetch()[0];
+      const contentCursor = Collections.get(space._id).find();
+      Mongo.Collection._publishCursor(contentCursor, this, 'content');
 
       return [
         cursor,
-        Actions.find(),
-        Actions.getType('blockTemplate').find(),
-        Actions.getType('').find({ parentId })
       ];
     }
   });

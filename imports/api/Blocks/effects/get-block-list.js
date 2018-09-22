@@ -5,10 +5,3 @@ const getBlockList = ({ target, response }) => {
   response.blockList = Blocks.find().fetch();
 }
 Actions.registerEffect('getBlockList', getBlockList);
-
-Actions.add({
-  name: 'getBlockList',
-  effects: {
-    getBlockList: true
-  }
-})

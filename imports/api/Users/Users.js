@@ -1,12 +1,16 @@
 import { Meteor } from 'meteor/meteor';
 import { Accounts } from 'meteor/accounts-base';
-import { check } from 'meteor/check';
 
-import Actions from '/imports/api/Actions';
+import Spaces from '/imports/api/Spaces/Spaces';
+import { Collections } from '/imports/api/Collections';
+
+import '/imports/api/Users/effects/index';
+
 const Users = Meteor.users;
 
 if (Meteor.isServer) {
   Accounts.onCreateUser((options, user) => {
+    console.log(user);
     return {
       ...user,
       name: user.username || '??',
@@ -15,24 +19,24 @@ if (Meteor.isServer) {
     }
   })
 
-  Meteor.publish('current-user-data', function(spaces = []) {
-    check(spaces, Match.Maybe([String]))
+  Meteor.publish('current-user-data', function() {
     const userId = this.userId;
-    const user = Meteor.users.findOne(userId, {
-      fields: {
-        spaces: 1
-      }
-    });
 
     if (userId) {
+      const userCursor = Meteor.users.find(userId, {
+        fields: {
+          spaces: 1
+        }
+      });
+      const user = userCursor.fetch()[0];
       return [
-        Meteor.users.find(userId),
-        Actions.getType('space').find({
+        userCursor,
+        Spaces.find({
           name: { $in: user.spaces }
         })
       ];
     } else {
-      this.ready();
+      return Spaces.find();
     }
   });
 }

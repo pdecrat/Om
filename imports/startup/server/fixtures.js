@@ -2,25 +2,25 @@ import { Meteor } from 'meteor/meteor';
 
 import Spaces from '/imports/api/Spaces/Spaces';
 import Blocks from '/imports/api/Blocks/Blocks';
-import Content from '/imports/api/Content/Content';
+import { Collections, Collection } from '/imports/api/Collections';
 
 Meteor.startup(() => {
-  Meteor.users.update({}, {
-    $set: { spaces: [] }
-  },{ multi: true })
+  Spaces.find().forEach(space => {
+    const collection = new Collection(space._id);
+
+    collection.rawCollection().drop();
+  });
   Spaces.remove({})
-  Content.remove({})
   if (Spaces.find().count() === 0) {
-    const parentId = Spaces.insert({
+    const omId = Spaces.insert({
       name: 'om',
       type: 'space',
     });
     const { content, name } = Blocks.findOne({
       name: "BlockManager"
     });
-    Content.insert({
+    Collections.get(omId).insert({
       ...content,
-      parentId,
       name,
       type: 'block',
       isActive: true,

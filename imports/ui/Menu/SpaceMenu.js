@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { withTracker } from 'meteor/react-meteor-data';
 
-import Content from '/imports/api/Content/Content';
+import Content from '/imports/api/Content';
 import { rem } from '/imports/ui/_lib/helpers-css';
 import { clickLink } from '/imports/ui/_state/ui/menu';
 
@@ -50,7 +50,6 @@ const TrackedMenu = withTracker(props => {
 
     Content.find({
       type: 'block',
-      parentId: props.space._id,
     }).forEach(({ category }) => {
       if (categories.indexOf(category) === -1) {
         categories.push(category)

@@ -2,31 +2,9 @@ import { Meteor } from 'meteor/meteor'
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
 
-import Blocks from '/imports/api/Blocks/Blocks';
-import Content from '/imports/api/Content/Content';
-import Spaces from '/imports/api/Spaces/Spaces';
-import Users from '/imports/api/Users/Users';
+import Collections from '/imports/api/Collections';
 
-const Actions = new Mongo.Collection('actions');
-if (Meteor.isServer) {
-  Actions.remove({})
-}
-Actions.add = (action) => Meteor.isServer ? Actions.insert(action) : null;
-
-Actions.getType = type => {
-  switch (type) {
-    case 'user':
-      return Users;
-    case 'space':
-      return Spaces;
-    case 'blockTemplate':
-      return Blocks;
-    case 'action':
-      return Actions;
-    default:
-      return Content;
-  }
-}
+const Actions = {};
 
 Actions._effects = {};
 Actions.registerEffect = (name, effect) => {
@@ -59,9 +37,9 @@ Actions.do = ({ action, origin, target, data }) => {
     Actions._effects[effect]({ origin, target, data, response });
   });
 
-  Actions.getType(origin.type).update(origin._id, origin);
+  Collections.get(origin.type).update(origin._id, origin);
   if (!!target) {
-    Actions.getType(target.type).update(target._id, target);
+    Collections.get(target.type).update(target._id, target);
   }
   return response;
 }
@@ -111,15 +89,8 @@ Meteor.methods({
       }
     }).validate(action);
 
-    const requestedAction = Actions.findOne({ name: action.name });
-    if (!requestedAction) {
-      throw new Meteor.Error(
-        'action-method:action-not-found',
-        `The requested action doesn't exist`
-      );
-    }
     if (!!action.target) {
-      action.target = Actions.getType(action.target.type).findOne(action.target._id);
+      action.target = Collections.get(action.target.type).findOne(action.target._id);
       if (!action.target) {
         throw new Meteor.Error(
           'action-method:target-not-found',
@@ -128,8 +99,8 @@ Meteor.methods({
       }
     }
     action.origin = Meteor.user() || {};
-    Actions.validateDataSchema({ action: requestedAction, ...action });
-    return Actions.do({ action: requestedAction, ...action });
+    Actions.validateDataSchema(action);
+    return Actions.do(action);
   }
 });
 
@@ -142,9 +113,13 @@ export function callAction(name, target = null, data = {}, toDispatch = null) {
     data,
     name,
   }
+  const options = {
+    returnStubValue: true,
+    throwStubxceptions: true
+  };
 
   return dispatch => {
-    Meteor.call('do', args, (err, res = {}) => {
+    Meteor.apply('do', [args], options, (err, res = {}) => {
       if (err) {
         // handle error
       } else if (!!toDispatch) {

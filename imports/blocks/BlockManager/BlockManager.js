@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { withTracker } from 'meteor/react-meteor-data';
 
-import Content from '/imports/api/Content/Content';
+import Content from '/imports/api/Content';
 import { callAction } from '/imports/api/Actions';
 import { setBlocks, selectBlock } from './blocks-redux';
 import Block from '/imports/ui/_components/Block';
@@ -92,7 +92,6 @@ const TrackedBlockManager = withTracker(props => {
   } = props;
   const blocks = space && Content.find({
     type: 'block',
-    parentId: space._id,
     isActive: true,
   }).fetch() || [];
 

@@ -38,7 +38,7 @@ const TrackedSpaceList = withTracker(props => {
     user,
     space,
   } = props;
-  const spaces = user && Spaces.find({ name: { $in: user.spaces } }).fetch() || [];
+  const spaces = user && Spaces.find({ name: { $in: user.spaces } }).fetch() || Spaces.find().fetch();
 
   return {
     ...props,

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { withTracker } from 'meteor/react-meteor-data';
 
-import Content from '/imports/api/Content/Content';
+import Content from '/imports/api/Content';
 import { callAction } from '/imports/api/Actions';
 import { rem } from '/imports/ui/_lib/helpers-css';
 import Block from '/imports/ui/_components/Block';

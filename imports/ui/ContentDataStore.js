@@ -39,9 +39,9 @@ const ContentDataStore = withTracker(props => {
 
   const spaceMatch = matchPath(path, spacePath);
   if (spaceMatch) {
-    const name = decodeURIComponent(spaceMatch.params.spaceName);
-    Meteor.subscribe('current-space-data', name, () => {
-      const cursor = Spaces.find({ name });
+    const reference = decodeURIComponent(spaceMatch.params.spaceName);
+    Meteor.subscribe('current-space-data', reference, () => {
+      const cursor = Spaces.find({ reference });
 
       if (cursor.count() === 0) {
         dispatchPush('/not-found');

@@ -17,10 +17,3 @@ login.dataSchema = new SimpleSchema({
   },
 })
 Actions.registerEffect('login', login)
-
-Actions.add({
-  name: 'login',
-  effects: {
-    login: true,
-  },
-})

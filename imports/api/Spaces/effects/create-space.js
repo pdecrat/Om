@@ -36,10 +36,3 @@ createSpace.dataSchema = new SimpleSchema({
   },
 })
 Actions.registerEffect('createSpace', createSpace)
-
-Actions.add({
-  name: 'createSpace',
-  effects: {
-    createSpace: true,
-  },
-})

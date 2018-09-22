@@ -1,6 +1,7 @@
 import SimpleSchema from 'simpl-schema';
 
 import Actions from '/imports/api/Actions';
+import Collections from '/imports/api/Collections';
 
 const addTask = ({ target, data }) => {
   const task = {
@@ -8,7 +9,7 @@ const addTask = ({ target, data }) => {
     type: 'task',
     parentId: target._id,
   }
-  Actions.getType('task').insert(task)
+  Collections.get('task').insert(task)
 }
 addTask.dataSchema = new SimpleSchema({
   name: {
@@ -17,20 +18,8 @@ addTask.dataSchema = new SimpleSchema({
 })
 
 Actions.registerEffect('addTask', addTask);
-Actions.add({
-  name: 'addTask',
-  effects: {
-    addTask: true
-  }
-})
 
 const removeTask = ({ target  }) => {
-  Actions.getType('task').remove(target._id);
+  Collections.get('task').remove(target._id);
 }
 Actions.registerEffect('removeTask', removeTask);
-Actions.add({
-  name: 'removeTask',
-  effects: {
-    removeTask: true
-  }
-})

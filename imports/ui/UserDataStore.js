@@ -9,9 +9,9 @@ import App from '/imports/ui/App';
 const UserDataStore = withTracker(props => {
   const user = Meteor.user();
   const loggingIn = Meteor.loggingIn();
+  const handle = Meteor.subscribe('current-user-data');
 
   if (!loggingIn && user) {
-    const handle = Meteor.subscribe('current-user-data', user.spaces);
     if (handle.ready()) {
       props.dispatchSetUser(user);
     }
