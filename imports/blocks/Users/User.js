@@ -33,7 +33,7 @@ class Login extends React.Component {
     return (
       <ModalContent>
         <input value={email} onChange={e => { this.setState({ email: e.target.value }) }}/>
-        <button onClick={e => { this.props.dispatchRegister(email) }}>Send Login Email</button>
+        <button onClick={e => { this.props.dispatchRegister(this.props.doc, email) }}>Send Login Email</button>
       </ModalContent>
     )
   }
@@ -42,15 +42,15 @@ const dispatchAfterRegister = dispatch => {
   dispatch(closeModal())
 }
 const LoginMapDispatch = dispatch => ({
-  dispatchRegister: email => dispatch(callAction('login', null, { email }, dispatchAfterRegister))
+  dispatchRegister: (target, email) => dispatch(callAction('register user', target, { email }, dispatchAfterRegister))
 })
 const ConnectedLogin = connect(null, LoginMapDispatch)(Login);
 
-const User = ({ user, dispatchOpenModal }) =>
+const User = ({ user, dispatchOpenModal, doc }) =>
   <StyledUser>
     {user ?
       <Avatar object={user} size={40} />
-      : <UserPlus size={36} onClick={e => { dispatchOpenModal(<ConnectedLogin />) }}/>
+      : <UserPlus size={36} onClick={e => { dispatchOpenModal(<ConnectedLogin doc={doc} />) }}/>
     }
   </StyledUser>
 

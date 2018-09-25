@@ -8,7 +8,7 @@ class SpaceCollection extends Collection {
   insert(space, callback) {
     space.reference = space.name.toLowerCase().split(' ').join('-');
     space._id = new Mongo.ObjectID()._str;
-    Collections.add(space._id);
+    Collections.add(space.reference);
 
     return super.insert(space, callback);
   }
@@ -27,7 +27,7 @@ if (Meteor.isServer) {
       this.ready();
     } else {
       const space = cursor.fetch()[0];
-      const contentCursor = Collections.get(space._id).find();
+      const contentCursor = Collections.get(space.reference).find();
       Mongo.Collection._publishCursor(contentCursor, this, 'content');
 
       return [

@@ -7,34 +7,34 @@ if (Meteor.isServer) {
   Meteor.startup(() => {
     Blocks.remove({})
     if (Blocks.find().count() === 0) {
-      Blocks.insert({
-        name: 'SpaceCreator',
-        content: {
-          category: '',
-        },
-        type: 'blockTemplate'
-      })
-      Blocks.insert({
-        name: 'BlockManager',
-        content: {
-          category: 'settings',
-        },
-        type: 'blockTemplate'
-      })
-      Blocks.insert({
-        name: 'MenuTester',
-        content: {
-          category: 'test',
-        },
-        type: 'blockTemplate'
-      })
-      Blocks.insert({
-        name: 'TaskList',
-        content: {
-          category: '',
-        },
-        type: 'blockTemplate'
-      })
+      // Blocks.insert({
+      //   name: 'SpaceCreator',
+      //   content: {
+      //     category: '',
+      //   },
+      //   type: 'blockTemplate'
+      // })
+      // Blocks.insert({
+      //   name: 'BlockManager',
+      //   content: {
+      //     category: 'settings',
+      //   },
+      //   type: 'blockTemplate'
+      // })
+      // Blocks.insert({
+      //   name: 'MenuTester',
+      //   content: {
+      //     category: 'test',
+      //   },
+      //   type: 'blockTemplate'
+      // })
+      // Blocks.insert({
+      //   name: 'TaskList',
+      //   content: {
+      //     category: '',
+      //   },
+      //   type: 'blockTemplate'
+      // })
     }
   })
 }

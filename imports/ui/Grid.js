@@ -32,7 +32,7 @@ const Grid = ({ blocks = [] }) =>
   <StyledGrid>
     {blocks.map((block, index) => {
       const Component = Blocks[block.name];
-      return <Component key={index} />
+      return !!Component && <Component key={index} />
     })}
   </StyledGrid>
 
@@ -43,6 +43,7 @@ const TrackedGrid = withTracker(props => {
   } = props;
   if (!!space) {
     const query = {
+      parent: space.reference,
       type: 'block',
       category: hash.slice(1),
       isActive: true,

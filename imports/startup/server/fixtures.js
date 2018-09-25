@@ -1,14 +1,12 @@
 import { Meteor } from 'meteor/meteor';
 
 import Spaces from '/imports/api/Spaces/Spaces';
-import Blocks from '/imports/api/Blocks/Blocks';
 import { Collections, Collection } from '/imports/api/Collections';
 
 Meteor.startup(() => {
+  const db = MongoInternals.defaultRemoteCollectionDriver().mongo.db;
   Spaces.find().forEach(space => {
-    const collection = new Collection(space._id);
-
-    collection.rawCollection().drop();
+    db.dropCollection(space.reference);
   });
   Spaces.remove({})
   if (Spaces.find().count() === 0) {
@@ -16,14 +14,20 @@ Meteor.startup(() => {
       name: 'om',
       type: 'space',
     });
-    const { content, name } = Blocks.findOne({
-      name: "BlockManager"
-    });
-    Collections.get(omId).insert({
-      ...content,
-      name,
-      type: 'block',
+    Collections.get("om").insert({
+      parent: "om",
+      type: "action",
+      name: "register user",
+      effects: {
+        register: true
+      }
+    })
+    Collections.get("om").insert({
+      parent: "om",
       isActive: true,
+      type: "block",
+      blockType: "user-icon",
+      block: "User",
     })
   }
 })

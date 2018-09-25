@@ -120,12 +120,4 @@ Accounts.registerLoginHandler('passwordless', (options) => {
   return Passwordless.verifyToken(options.passwordless);
 });
 
-Meteor.methods({
-  'passwordless.sendLoginEmail'(email) {
-    check(email, String);
-
-    Passwordless.sendLoginEmail(email);
-  }
-});
-
 export default Passwordless;

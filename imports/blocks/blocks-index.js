@@ -8,6 +8,7 @@ import BlockManager from './BlockManager/BlockManager';
 import blockManager from './BlockManager/blocks-redux'
 
 import TaskList from './TaskList/TaskList';
+import User from './Users/User';
 
 const Blocks = {
   MenuTester,
@@ -15,6 +16,7 @@ const Blocks = {
   SpaceCreator,
   BlockManager,
   TaskList,
+  User
 }
 export default Blocks;
 

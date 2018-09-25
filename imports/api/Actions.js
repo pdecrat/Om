@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor'
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
 
-import Collections from '/imports/api/Collections';
+import { Collections } from '/imports/api/Collections';
 
 const Actions = {};
 
@@ -84,13 +84,23 @@ Meteor.methods({
       'target._id': {
         type: String
       },
-      'target.type': {
+      'target.parent': {
         type: String
       }
     }).validate(action);
 
+    const requestedAction = Collections.get(action.target.parent).findOne({
+      type: "action",
+      name: action.name
+    });
+    if (!requestedAction) {
+      throw new Meteor.Error(
+        'action-method:action-not-found',
+        `The requested action doesn't exist`
+      );
+    }
     if (!!action.target) {
-      action.target = Collections.get(action.target.type).findOne(action.target._id);
+      action.target = Collections.get(action.target.parent).findOne(action.target._id);
       if (!action.target) {
         throw new Meteor.Error(
           'action-method:target-not-found',
@@ -99,8 +109,8 @@ Meteor.methods({
       }
     }
     action.origin = Meteor.user() || {};
-    Actions.validateDataSchema(action);
-    return Actions.do(action);
+    Actions.validateDataSchema({ action: requestedAction, ...action });
+    return Actions.do({ action: requestedAction, ...action });
   }
 });
 
@@ -108,7 +118,7 @@ export function callAction(name, target = null, data = {}, toDispatch = null) {
   const args = {
     target: target ? {
       _id: target._id,
-      type: target.type,
+      parent: target.parent,
     } : target,
     data,
     name,
