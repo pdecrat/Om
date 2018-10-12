@@ -8,7 +8,10 @@ import Actions from '/imports/api/Actions';
 
 const register = ({ data }) => {
   if (Meteor.isServer) {
-    Passwordless.sendLoginEmail(data.email);
+    const user = Meteor.users.findOne({ email: data.email });
+
+    if (!user)
+      Passwordless.sendLoginEmail(data.email);
   }
 }
 register.dataSchema = new SimpleSchema({

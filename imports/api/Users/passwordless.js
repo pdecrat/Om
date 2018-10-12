@@ -95,17 +95,20 @@ Passwordless.verifyToken = ({ encodedEmail, token }) => {
 
   const { userId } = Accounts.updateOrCreateUserFromExternalService('passwordless', serviceData);
 
-  Meteor.defer(() => {
-    const user = Meteor.users.findOne(userId);
+  // Meteor.defer(() => {
+  //   const user = Meteor.users.findOne(userId);
+  //
+  //   if (user && !user.email) {
+  //     Meteor.users.update(userId, {
+  //       $set: { email: Base64.decode(encodedEmail) }
+  //     });
+  //   }
+  // });
 
-    if (user && !user.email) {
-      Meteor.users.update(userId, {
-        $set: { email: Base64.decode(encodedEmail) }
-      });
-    }
-  });
-
-  return { userId };
+  return {
+    userId,
+    email: Base64.decode(encodedEmail)
+  };
 }
 
 Accounts.registerLoginHandler('passwordless', (options) => {

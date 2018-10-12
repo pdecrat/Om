@@ -29,10 +29,7 @@ function modal(state = defaultState, action) {
         content: action.content,
       };
     case CLOSE_MODAL:
-      return {
-        ...state,
-        open: false
-      };
+      return defaultState;
     default:
       return state;
   }

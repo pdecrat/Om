@@ -2,12 +2,11 @@ import { Meteor } from 'meteor/meteor';
 import React from 'react';
 import { connect } from 'react-redux';
 import { withTracker } from 'meteor/react-meteor-data';
-import { push } from 'connected-react-router';
+import { replace } from 'connected-react-router';
 import { matchPath } from 'react-router';
 
-import Spaces from '/imports/api/Spaces/Spaces';
-import { setSpace } from '/imports/ui/_state/space';
-import Breadcrumbs from '/imports/ui/Breadcrumbs';
+import { setTarget } from '/imports/ui/_state/target';
+import Menu from '/imports/ui/Menu/Menu';
 
 const spacePath = {
   path: '/s/:spaceName',
@@ -24,7 +23,7 @@ const notFoundPath = {
   exact: true
 }
 
-const ContentDataStore = withTracker(props => {
+const TargetTracker = withTracker(props => {
   const {
     path,
     hash,
@@ -40,8 +39,8 @@ const ContentDataStore = withTracker(props => {
   const spaceMatch = matchPath(path, spacePath);
   if (spaceMatch) {
     const reference = decodeURIComponent(spaceMatch.params.spaceName);
-    Meteor.subscribe('current-space-data', reference, () => {
-      const cursor = Spaces.find({ reference });
+    Meteor.subscribe('target-data', reference, () => {
+      const cursor = Data.find({ reference });
 
       if (cursor.count() === 0) {
         dispatchPush('/not-found');
@@ -89,6 +88,7 @@ const ContentDataStore = withTracker(props => {
 
   const notFoundMatch = matchPath(path, notFoundPath);
   if (notFoundMatch) {
+    dispatchSetSpace({}, '', {});
     return props;
   }
 
@@ -97,15 +97,15 @@ const ContentDataStore = withTracker(props => {
 
   return props;
 
-})(Breadcrumbs);
+})(Menu);
 
 const mapStateToProps = state => ({
   path: state.router.location.pathname,
   hash: state.router.location.hash,
 });
 const mapDispatchToProps = dispatch => ({
-  dispatchSetSpace: (space, hash, match) => dispatch(setSpace(space, hash, match)),
-  dispatchPush: url => dispatch(push(url)),
+  dispatchSetSpace: (space, hash, match) => dispatch(setTarget(space, hash, match)),
+  dispatchPush: url => dispatch(replace(url)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContentDataStore);
+export default connect(mapStateToProps, mapDispatchToProps)(TargetTracker);

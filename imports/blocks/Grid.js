@@ -4,13 +4,13 @@ import { connect } from 'react-redux';
 import { withTracker } from 'meteor/react-meteor-data';
 
 import { media, rem } from '/imports/ui/_lib/helpers-css';
-import Content from '/imports/api/Content';
+import Data from '/imports/api/Data';
 import Blocks from '/imports/blocks/blocks-index';
 
 const StyledGrid = styled.div`
   height: 100vh;
-  background-color: #ebebeb;
-  padding-top: ${rem('64px')};
+  background-color: rgb(237, 239, 241);
+  padding-top: ${rem('50px')};
   display: grid;
   justify-content: center;
   grid-template-columns: repeat(4, 1fr);
@@ -38,17 +38,17 @@ const Grid = ({ blocks = [] }) =>
 
 const TrackedGrid = withTracker(props => {
   const {
-    space,
+    target,
     hash,
   } = props;
-  if (!!space) {
+  if (!!target) {
     const query = {
-      parent: space.reference,
+      root: target._id,
       type: 'block',
-      category: hash.slice(1),
-      isActive: true,
+      blockType: "content",
+      view: { $in: [hash ? hash : target.name] },
     };
-    const blocks = Content.find(query).fetch() || [];
+    const blocks = Data.find(query).fetch() || [];
     return {
       ...props,
       blocks,
@@ -58,7 +58,7 @@ const TrackedGrid = withTracker(props => {
 })(Grid);
 
 const mapStateToProps = state => ({
-  space: state.space.doc,
-  hash: state.space.hash
+  target: state.target.doc,
+  hash: state.target.hash
 })
 export default connect(mapStateToProps, null)(TrackedGrid);

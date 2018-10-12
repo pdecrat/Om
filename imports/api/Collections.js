@@ -1,8 +1,10 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 
+import Spaces from '/imports/api/Spaces/Spaces';
+
 if (Meteor.isClient) {
-  import Content from '/imports/api/Content';
+  import Data from '/imports/api/Data';
 }
 
 export class Collection extends Mongo.Collection {
@@ -16,11 +18,12 @@ export class Collection extends Mongo.Collection {
 }
 
 export const Collections = {
-  list: {}
+  list: {
+  }
 };
 
 Collections.get = name => {
-  if (Meteor.isClient) return Content;
+  if (Meteor.isClient) return Data;
   return Collections.list[name]
 }
 
@@ -28,4 +31,9 @@ Collections.add = (name) => {
   if (Meteor.isServer) {
     Collections.list[name] = new Collection(name);
   }
+}
+
+Collections.register = (name, cursor) => {
+  if (Meteor.isServer)
+    Collections.list[name] = cursor;
 }

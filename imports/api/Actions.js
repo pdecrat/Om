@@ -14,47 +14,25 @@ Actions.registerEffect = (name, effect) => {
 
 Actions.do = ({ action, origin, target, data }) => {
   const response = {};
-  let effects = action.effects;
-  const targetEffects = !!target && !!target.actions && !!target.actions[action.name] && target.actions[action.name].effects || {};
-  const originEffects = !!origin.actions && !!origin.actions[action.name] && origin.actions[action.name].effects || {};
 
   if (!!action.data)
     data = { ...data, ...action.data };
-  if (!!targetEffects)
-    effects = { ...effects, ...targetEffects };
-    Object.keys(targetEffects).forEach(effect => {
-      if (typeof(targetEffects[effect]) !== 'boolean')
-        data = { ...data, ...targetEffects[effect] }
-    })
-  if (!!originEffects)
-    effects = { ...effects, ...originEffects };
-    Object.keys(originEffects).forEach(effect => {
-      if (typeof(originEffects[effect]) !== 'boolean')
-        data = { ...data, ...originEffects[effect] }
-    })
 
-  Object.keys(effects).forEach(effect => {
+  Object.keys(action.effects).forEach(effect => {
     Actions._effects[effect]({ origin, target, data, response });
   });
 
-  Collections.get(origin.type).update(origin._id, origin);
+  if (!!origin) {
+    Collections.get(origin.root).update(origin._id, origin);
+  }
   if (!!target) {
-    Collections.get(target.type).update(target._id, target);
+    Collections.get(target.root).update(target._id, target);
   }
   return response;
 }
 
-Actions.validateDataSchema = ({ action, origin, target, data }) => {
-  let effects = action.effects;
-  const targetAction = !!target && target.actions && target.actions[action.name];
-  const originAction = origin.actions && origin.actions[action.name];
-
-  if (targetAction)
-    effects = { ...effects, ...targetAction.effects };
-  if (originAction)
-    effects = { ...effects, ...originAction.effects };
-
-  const keys = Object.keys(effects);
+Actions.validateDataSchema = ({ action, data }) => {
+  const keys = Object.keys(action.effects);
   const validationSchema = new SimpleSchema({});
   if (keys.length > 0) {
     keys.forEach(effect => {
@@ -84,12 +62,12 @@ Meteor.methods({
       'target._id': {
         type: String
       },
-      'target.parent': {
+      'target.root': {
         type: String
       }
     }).validate(action);
 
-    const requestedAction = Collections.get(action.target.parent).findOne({
+    const requestedAction = Collections.get(action.target.root).findOne({
       type: "action",
       name: action.name
     });
@@ -100,7 +78,7 @@ Meteor.methods({
       );
     }
     if (!!action.target) {
-      action.target = Collections.get(action.target.parent).findOne(action.target._id);
+      action.target = Collections.get(action.target.root).findOne(action.target._id);
       if (!action.target) {
         throw new Meteor.Error(
           'action-method:target-not-found',
@@ -108,7 +86,12 @@ Meteor.methods({
         )
       }
     }
-    action.origin = Meteor.user() || {};
+    action.origin = Meteor.isServer ?
+      Meteor.user()
+      : Data.findOne({
+          type: "header",
+          root: Meteor.userId()
+        })
     Actions.validateDataSchema({ action: requestedAction, ...action });
     return Actions.do({ action: requestedAction, ...action });
   }
@@ -118,7 +101,7 @@ export function callAction(name, target = null, data = {}, toDispatch = null) {
   const args = {
     target: target ? {
       _id: target._id,
-      parent: target.parent,
+      root: target.root,
     } : target,
     data,
     name,
@@ -131,6 +114,7 @@ export function callAction(name, target = null, data = {}, toDispatch = null) {
   return dispatch => {
     Meteor.apply('do', [args], options, (err, res = {}) => {
       if (err) {
+        console.log(err)
         // handle error
       } else if (!!toDispatch) {
         toDispatch(dispatch, res, data);

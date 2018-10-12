@@ -29,7 +29,7 @@ class SpaceCreator extends React.Component {
             })
           }}/>
           <button onClick={e => {
-            this.props.dispatchCreateSpace({ name: this.state.name })
+            this.props.dispatchCreateSpace(this.props.target, { name: this.state.name })
           }}>
             Create {this.state.name}
           </button>
@@ -43,7 +43,8 @@ const toDispatch = (dispatch, res, { space }) => {
 }
 
 const mapDispatchToProps = dispatch => ({
-  dispatchCreateSpace: space => dispatch(callAction('createSpace', null, { space }, toDispatch))
+  dispatchCreateSpace: (target, space) => dispatch(callAction('createSpace', target, { space }, toDispatch))
 });
+const mapStateToProps = state => ({ target: state.target.doc });
 
-export default connect(null, mapDispatchToProps)(SpaceCreator);
+export default connect(mapStateToProps, mapDispatchToProps)(SpaceCreator);

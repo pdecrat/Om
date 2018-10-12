@@ -14,10 +14,10 @@ const StyledName = styled.div`
   text-align: center;
 `
 
-const Avatar = ({ object, size }) => object.avatar ?
+const Avatar = ({ object = {}, size }) => object && object.avatar ?
   <Image url={object.avatar} size={size} />
   : <StyledName size={size}>
-    {!!object.name ?
+    {object && !!object.name ?
       `${object.name[0].toUpperCase()}${object.name[1] ?
         object.name[1]
         : ''

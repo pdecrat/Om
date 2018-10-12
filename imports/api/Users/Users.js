@@ -10,16 +10,25 @@ const Users = Meteor.users;
 
 if (Meteor.isServer) {
   Accounts.onCreateUser((options, user) => {
-    console.log(user);
-    return {
+    const returnedUser = {
       ...user,
+      root: user._id,
       name: user.username || '??',
       spaces: options.spaces || [],
-      type: 'user'
-    }
+    };
+
+    Collections.add(user._id);
+    Collections.get(user._id).insert({
+      ...returnedUser,
+      isActive: true,
+      isPublic: true,
+      type: 'header',
+      root: user._id,
+    });
+    return returnedUser
   })
 
-  Meteor.publish('current-user-data', function() {
+  Meteor.publish('user-data', function() {
     const userId = this.userId;
 
     if (userId) {
@@ -29,14 +38,19 @@ if (Meteor.isServer) {
         }
       });
       const user = userCursor.fetch()[0];
-      return [
-        userCursor,
-        Spaces.find({
-          name: { $in: user.spaces }
-        })
-      ];
+      const contentCursor = Collections.get(user._id).find();
+      Mongo.Collection._publishCursor(contentCursor, this, 'data');
+
+      this.ready();
     } else {
-      return Spaces.find();
+      const omId = Spaces.findOne({ name: "om" })._id;
+      const contentCursor = Collections.get(omId).find({
+        isPublic: true,
+        type: 'block',
+        name: 'User',
+      });
+      Mongo.Collection._publishCursor(contentCursor, this, 'data');
+      this.ready();
     }
   });
 }

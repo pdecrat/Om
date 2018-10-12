@@ -3,20 +3,25 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { withTracker } from 'meteor/react-meteor-data';
 
-import Content from '/imports/api/Content';
+import Data from '/imports/api/Data';
 import { rem } from '/imports/ui/_lib/helpers-css';
 import { clickLink } from '/imports/ui/_state/ui/menu';
 
 const StyledSpaceMenu = styled.div`
-  flex-grow: 1;
-  background-color: #2f3136;
-  width: ${rem('230px')};
+  border-radius: 3px 0 0 0;
+  margin-top: ${rem('50px')};
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: ${rem('214px')};
+  background-color: rgb(246, 246, 246);
+  height: 100%;
+  z-index: 10;
 `
 
 const StyledCategory = styled.div`
   width: 100%;
-  color: white;
-  font-size: 140%;
+  font-size: 1.1rem;
   margin: ${rem('15px')};
   cursor: pointer;
   text-transform: capitalize;
@@ -29,34 +34,29 @@ const isMainCategory = (path, category) => {
   return space === category;
 }
 
-const SpaceMenu = ({ categories = [], dispatchClickLink, path }) =>
+const SpaceMenu = ({ views = [], dispatchClickLink, path }) =>
   <StyledSpaceMenu>
-    {categories.map((category, index) =>
+    {views.map((view, index) =>
       <StyledCategory
         key={index}
         onClick={e => {
-          dispatchClickLink(isMainCategory(path, category) ?
-          path : `${path}#${category}`)
+          dispatchClickLink(view.url.length ?
+            `${path}#${view.url}` : path )
         }}
       >
-        {category}
+        {view.name}
       </StyledCategory>
     )}
   </StyledSpaceMenu>
 
 const TrackedMenu = withTracker(props => {
-  if (props.space) {
-    const categories = [props.space.name];
+  if (props.target) {
+    const views = Data.find({
+      type: "view",
+    }).fetch();
 
-    Content.find({
-      type: 'block',
-    }).forEach(({ category }) => {
-      if (categories.indexOf(category) === -1) {
-        categories.push(category)
-      }
-    });
     return {
-      categories,
+      views,
       ...props
     }
   }
@@ -64,7 +64,7 @@ const TrackedMenu = withTracker(props => {
 })(SpaceMenu)
 
 const mapStateToProps = state => ({
-  space: state.space.doc,
+  target: state.target.doc,
   path: state.router.location.pathname,
 });
 const mapDispatchToProps = dispatch => ({

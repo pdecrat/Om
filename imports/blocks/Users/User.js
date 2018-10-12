@@ -49,8 +49,8 @@ const ConnectedLogin = connect(null, LoginMapDispatch)(Login);
 const User = ({ user, dispatchOpenModal, doc }) =>
   <StyledUser>
     {user ?
-      <Avatar object={user} size={40} />
-      : <UserPlus size={36} onClick={e => { dispatchOpenModal(<ConnectedLogin doc={doc} />) }}/>
+      <Avatar object={user} size={36} />
+      : <UserPlus size={32} onClick={e => { dispatchOpenModal(<ConnectedLogin doc={doc} />) }}/>
     }
   </StyledUser>
 

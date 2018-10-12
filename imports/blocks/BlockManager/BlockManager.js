@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { withTracker } from 'meteor/react-meteor-data';
 
-import Content from '/imports/api/Content';
+import Data from '/imports/api/Data';
 import { callAction } from '/imports/api/Actions';
 import { setBlocks, selectBlock } from './blocks-redux';
 import Block from '/imports/ui/_components/Block';
@@ -69,11 +69,11 @@ const BlockPickerMapDispatch = dispatch => ({
 const ConnectedBlockPicker = connect(BlockPickerMapState, BlockPickerMapDispatch)(BlockPicker);
 
 
-const BlockManager = ({ blocks = [], dispatchOpenModal, dispatchRemoveBlock, space }) =>
+const BlockManager = ({ blocks = [], dispatchOpenModal, dispatchRemoveBlock, target }) =>
   <Block width={1} height={4}>
     <StyledBlockManager>
       <h2>Current Blocks</h2>
-      <ul>
+      <ul style={{'flexGrow':'1'}}>
         {blocks.map((block, index) =>
           <StyledBlock key={index}>
             {block.name}
@@ -81,16 +81,16 @@ const BlockManager = ({ blocks = [], dispatchOpenModal, dispatchRemoveBlock, spa
           </StyledBlock>
         )}
       </ul>
-      <button onClick={e => { dispatchOpenModal(<ConnectedBlockPicker target={space} />) }}>Add Block</button>
+      <button onClick={e => { dispatchOpenModal(<ConnectedBlockPicker target={target} />) }}>Add Block</button>
     </StyledBlockManager>
   </Block>
 
 
 const TrackedBlockManager = withTracker(props => {
   const {
-    space,
+    target,
   } = props;
-  const blocks = space && Content.find({
+  const blocks = target && Data.find({
     type: 'block',
     isActive: true,
   }).fetch() || [];
@@ -102,7 +102,7 @@ const TrackedBlockManager = withTracker(props => {
 })(BlockManager);
 
 const mapStateToProps = state => ({
-  space: state.space.doc
+  target: state.target.doc
 })
 const mapDispatchToProps = dispatch => ({
   dispatchOpenModal: content => dispatch(openModal(content)),

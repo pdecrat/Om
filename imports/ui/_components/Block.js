@@ -15,7 +15,6 @@ const fadeIn = keyframes`
 `
 
 const StyledBlock = styled.section`
-  border: 1px dashed #DDDDDD;
   background-color: white;
   min-width: ${rem('320px')};
   min-height: ${rem('64px')};

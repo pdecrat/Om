@@ -10,7 +10,7 @@ const StyledLink = styled.div`
   margin-top: ${rem('10px')};
   display: flex;
   align-items: center;
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   cursor: pointer;
   & > * {
     margin-left: ${rem('10px')}
@@ -20,7 +20,7 @@ const StyledLink = styled.div`
 const Link = ({ url, label = null, dispatchClickLink, object }) =>
   <StyledLink onClick={e => { dispatchClickLink(url) }}>
     <Avatar
-      size={50}
+      size={36}
       object={object}
     />
     {

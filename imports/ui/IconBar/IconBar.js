@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { withTracker } from 'meteor/react-meteor-data';
 
 import { rem } from '/imports/ui/_lib/helpers-css';
-import Content from '/imports/api/Content';
+import Data from '/imports/api/Data';
 import Blocks from '/imports/blocks/blocks-index';
 
 const StyledIconBar = styled.ul`
@@ -16,13 +16,13 @@ const StyledIconBar = styled.ul`
 const IconBar = ({ icons }) =>
   <StyledIconBar>
     {icons.map((icon, index) => {
-      const Component = Blocks[icon.block];
+      const Component = Blocks[icon.name];
       return !!Component && <Component key={index} doc={icon}/>
     })}
   </StyledIconBar>
 
 export default withTracker(props => {
-  const icons = Content.find({
+  const icons = Data.find({
     type: "block",
     blockType: "user-icon",
   }).fetch()

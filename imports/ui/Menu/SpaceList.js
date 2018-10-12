@@ -9,9 +9,15 @@ import Link from '/imports/ui/_components/Link';
 import Scroller from '/imports/ui/_components/Scroller';
 
 const StyledWrapper = styled.div`
+  margin-top: ${rem('50px')};
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
   width: ${rem('300px')};
   display: flex;
   flex-direction: column;
+  z-index: 9
 `
 
 const StyledSpaceList = styled.div`
@@ -36,9 +42,16 @@ const SpaceList = ({ spaces }) =>
 const TrackedSpaceList = withTracker(props => {
   const {
     user,
-    space,
+    target,
   } = props;
-  const spaces = user && Spaces.find({ name: { $in: user.spaces } }).fetch() || Spaces.find().fetch();
+  const spaces = user && Data.find({
+    type: "shortcut"
+  }).fetch()
+  || [
+    { name: 'lala' },
+    { name: 'lala' },
+    { name: 'lala' },
+  ];
 
   return {
     ...props,
@@ -48,7 +61,7 @@ const TrackedSpaceList = withTracker(props => {
 
 const mapStateToProps = state => ({
   user: state.user.doc,
-  space: state.space.doc
+  target: state.target.doc
 });
 
 export default connect(mapStateToProps, null)(TrackedSpaceList);

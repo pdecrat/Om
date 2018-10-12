@@ -1,86 +1,98 @@
 import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
+import { MoreVertical } from 'react-feather';
 
 import { rem } from '/imports/ui/_lib/helpers-css';
-import { toggleMenu } from '/imports/ui/_state/ui/menu';
+import Background from '/imports/ui/_components/Background';
+import Avatar from '/imports/ui/_components/Avatar';
+import { toggleMenu, closeMenu } from '/imports/ui/_state/ui/menu';
+import Breadcrumbs from '/imports/ui/Menu/Breadcrumbs';
+import IconBar from '/imports/ui/IconBar/IconBar';
+import Panel from '/imports/ui/Menu/Panel';
 
-import Panel from './Panel';
+const StyledHeader = styled.header`
+  position: fixed;
+  height: ${rem('50px')};
+  width: 100%;
+  display: flex;
+  align-items: center;
+  z-index: 100;
+  background: white;
+  border-bottom: solid 1px rgb(237, 239, 241);
+`
 
 const StyledMenu = styled.div`
-  display: block;
-  position: relative;
-  width: ${rem('44px')};
-  height: ${rem('44px')};
-  user-select: none;
+  height: ${rem('46px')};
   padding: ${rem('5px')};
-  padding-top: ${rem('12px')};
-  & input {
-    z-index: 1;
-    display: block;
-    width: ${rem('44px')};
-    height: ${rem('44px')};
-    margin: 0;
-    left: 0;
-    top: 0;
-    position: absolute;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  position: relative;
+  user-select: none;
+  cursor: pointer;
+  &:hover div span:first-child {
+    transform: translateY(22px);
     opacity: 0;
   }
-  & input:checked ~ ul {
-    transform: none;
+  &:hover div span:nth-child(2) {
+    transform: translateY(11px);
+    opacity: 0;
   }
-  & span {
-    display: block;
-    width: ${rem('33px')};
-    height: ${rem('4px')};
-    margin-bottom: ${rem('5px')};
-    position: relative;
-
-    background: black;
-    border-radius: ${rem('3px')};
-
-    transform-origin: ${rem('4px')} ${rem('1px')};
-    transition: transform 0.5s cubic-bezier(0.77,0.2,0.05,1.0),
-                background 0.5s cubic-bezier(0.77,0.2,0.05,1.0),
-                opacity 0.55s ease;
-  }
-  & span:first-child {
-   transform-origin: 0% 0%;
-  }
-  & span:nth-last-child(2) {
-   transform-origin: 0% 100%;
-  }
-  & input:checked ~ span {
-   opacity: 1;
-   transform: rotate(45deg) translate(0, ${rem('-1px')});
-  }
-  & input:checked ~ span:nth-last-child(2) {
-   opacity: 0;
-   transform: rotate(0deg) scale(0.2, 0.2);
-  }
-  & input:checked ~ span:nth-last-child(1) {
-   transform: rotate(-45deg) translate(0, ${rem('-1px')});
+  &:hover div span:last-child {
+    transform: scale(1.2, 1.2);
   }
 `
 
-const Menu = ({ menu, dispatchToggleMenu }) =>
-  <StyledMenu>
-    <Panel />
-    <input
-      type="checkbox"
+const StyledDots = styled.div`
+  margin: 0 10px;
+  display: flex;
+  height: 34px;
+  flex-direction: column;
+  justify-content: space-evenly;
+`
+
+const StyledDot = styled.span`
+  width: 6px;
+  height: 6px;
+  background-color: #3a3a3a;
+  border-radius: 50%;
+  transition: transform 0.15s ease-out, opacity 0.20s ease-out;
+`
+
+const Menu = ({
+  menu,
+  dispatchToggleMenu,
+  dispatchCloseMenu,
+  target,
+}) =>
+  <StyledHeader>
+    <StyledMenu
       onClick={e => { dispatchToggleMenu() }}
-      checked={menu.open}
+    >
+      <StyledDots>
+        <StyledDot></StyledDot>
+        <StyledDot></StyledDot>
+        <StyledDot></StyledDot>
+      </StyledDots>
+      <Avatar object={target.doc} size={36} />
+      <Breadcrumbs match={target.match} hash={target.hash} />
+    </StyledMenu>
+    <Panel />
+    <Background
+      isOpen={menu.open}
+      func={e => { dispatchCloseMenu() }}
+      zIndex={-2}
     />
+    <IconBar />
+  </StyledHeader>
 
-    <span></span>
-    <span></span>
-    <span></span>
-  </StyledMenu>
-
-const mapStateToProps = state => ({ menu: state.ui.menu });
+const mapStateToProps = state => ({
+  menu: state.ui.menu,
+  target: state.target,
+});
 const mapDispatchToProps = dispatch => ({
   dispatchToggleMenu: () => dispatch(toggleMenu()),
+  dispatchCloseMenu: () => dispatch(closeMenu()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Menu);

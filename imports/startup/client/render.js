@@ -1,26 +1,24 @@
-import React from 'react';
-import { Provider } from 'react-redux';
-import { ConnectedRouter } from 'connected-react-router';
-import { createBrowserHistory } from 'history';
-import { createStore, applyMiddleware, compose } from 'redux';
 import { Meteor } from 'meteor/meteor';
+import React from 'react';
 import { render } from 'react-dom';
-import { connectRouter, routerMiddleware } from 'connected-react-router';
+import { createStore, applyMiddleware, compose } from 'redux';
+import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
+import { ConnectedRouter, connectRouter, routerMiddleware } from 'connected-react-router';
+import { createBrowserHistory } from 'history';
 
-import App from '/imports/ui/UserDataStore';
+import App from '/imports/ui/UserTracker';
 import mainReducer from '/imports/ui/_state/main-reducer';
 
 const history = createBrowserHistory()
 
 const store = createStore(
-  connectRouter(history)(mainReducer), // new root reducer with router state
+  connectRouter(history)(mainReducer),
   {},
   compose(
     applyMiddleware(
-      routerMiddleware(history), // for dispatching history actions
+      routerMiddleware(history),
       thunk,
-      // ... other middlewares ...
     ),
   ),
 )

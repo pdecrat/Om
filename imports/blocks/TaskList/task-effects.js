@@ -7,7 +7,7 @@ const addTask = ({ target, data }) => {
   const task = {
     name: data.name,
     type: 'task',
-    parentId: target._id,
+    rootId: target._id,
   }
   Collections.get('task').insert(task)
 }
