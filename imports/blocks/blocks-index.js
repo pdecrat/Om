@@ -3,6 +3,8 @@ import { combineReducers } from 'redux';
 import MenuTester from './MenuTester';
 import ModalTester from './ModalTester';
 import SpaceCreator from './SpaceCreator';
+import ActionDispatcher from './ActionDispatcher';
+import DataList from './DataList';
 import Grid from './Grid';
 import FullScreen from './FullScreen';
 
@@ -17,6 +19,8 @@ const Blocks = {
   ModalTester,
   SpaceCreator,
   BlockManager,
+  ActionDispatcher,
+  DataList,
   TaskList,
   User,
   Grid,

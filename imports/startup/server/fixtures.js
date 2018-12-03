@@ -16,13 +16,13 @@ Meteor.startup(() => {
       Collections.add(name)
   })
 
-  // Spaces.find().forEach(space => {
-  // });
+  Spaces.find().forEach(space => {
+    db.dropCollection(space._id);
+  });
   // Meteor.users.find().forEach(user => {
-  //   db.dropCollection(user._id);
   // });
   // Meteor.users.remove({});
-  // Spaces.remove({})
+  Spaces.remove({})
   if (Spaces.find().count() === 0) {
     const omId = Spaces.insert({
       name: 'om',
@@ -89,8 +89,18 @@ Meteor.startup(() => {
       // restrictedTo: [ omId + '#admin' ],
       type: "block",
       blockType: "content",
-      name: "SpaceCreator",
+      name: "ActionDispatcher",
       view: [ "om", "settings" ]
+    })
+    Collections.get(omId).insert({
+      root: omId,
+      isActive: true,
+      isPublic: true,
+      // restrictedTo: [ omId + '#admin' ],
+      type: "block",
+      blockType: "content",
+      name: "DataList",
+      view: [ "settings" ]
     })
   }
 })
