@@ -13,7 +13,7 @@ const StyledSpaceMenu = styled.div`
   position: absolute;
   top: 0;
   right: 0;
-  width: ${rem('214px')};
+  width: ${rem('250px')};
   background-color: rgb(246, 246, 246);
   height: 100%;
   z-index: 10;

@@ -3,9 +3,12 @@ import { push } from 'connected-react-router';
 const TOGGLE_MENU = "om/ui/menu/toggle";
 const OPEN_MENU = "om/ui/menu/open";
 const CLOSE_MENU = "om/ui/menu/close";
+const HIDE_MENU = "om/ui/menu/hide";
+const SHOW_MENU = "om/ui/menu/show";
 
 const defaultState = {
-  open: false
+  open: false,
+  hidden: false,
 }
 
 export function toggleMenu() {
@@ -17,6 +20,18 @@ export function toggleMenu() {
 export function openMenu() {
   return {
     type: OPEN_MENU,
+  }
+}
+
+export function hideMenu() {
+  return {
+    type: HIDE_MENU,
+  }
+}
+
+export function showMenu() {
+  return {
+    type: SHOW_MENU,
   }
 }
 
@@ -49,6 +64,16 @@ function menu(state = defaultState, action) {
       return {
         ...state,
         open: false
+      };
+    case HIDE_MENU:
+      return {
+        ...state,
+        hidden: true,
+      };
+    case SHOW_MENU:
+      return {
+        ...state,
+        hidden: false,
       };
     default:
       return state;

@@ -70,7 +70,7 @@ Meteor.startup(() => {
       type: "view",
       name: "om",
       url: "",
-      layout: 'FullScreen',
+      layout: 'Feed',
     })
     Collections.get(omId).insert({
       root: omId,
@@ -89,8 +89,34 @@ Meteor.startup(() => {
       // restrictedTo: [ omId + '#admin' ],
       type: "block",
       blockType: "content",
+      name: "Paragraph",
+      width: 3,
+      height: 8,
+      view: ["om"]
+    })
+    Collections.get(omId).insert({
+      root: omId,
+      isActive: true,
+      isPublic: true,
+      // restrictedTo: [ omId + '#admin' ],
+      type: "block",
+      blockType: "content",
+      name: "Paragraph",
+      width: 1,
+      height: 8,
+      view: ["om"]
+    })
+    Collections.get(omId).insert({
+      root: omId,
+      isActive: true,
+      isPublic: true,
+      // restrictedTo: [ omId + '#admin' ],
+      type: "block",
+      blockType: "content",
       name: "ActionDispatcher",
-      view: [ "om", "settings" ]
+      width: 1,
+      height: 2,
+      view: [ "settings" ]
     })
     Collections.get(omId).insert({
       root: omId,
@@ -100,6 +126,8 @@ Meteor.startup(() => {
       type: "block",
       blockType: "content",
       name: "DataList",
+      width: 3,
+      height: 4,
       view: [ "settings" ]
     })
   }

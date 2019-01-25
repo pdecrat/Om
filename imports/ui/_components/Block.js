@@ -25,17 +25,13 @@ const StyledBlock = styled.section`
   ${media.small`grid-column-end: span 1;`}
   grid-row-end: span ${props => props.height};
   animation: ${fadeIn} 0.1s linear;
-  transition: box-shadow 0.1s linear;
   & > * {
     width: 100%;
     height: 100%;
   }
-  &:hover {
-    box-shadow: inset 0 0 1px grey;
-  }
 `
 
-const Block = ({ width = 1, height = 1, children }) =>
+const Block = ({ width = 2, height = 4, children }) =>
   <StyledBlock width={width} height={height}>
     {children}
   </StyledBlock>

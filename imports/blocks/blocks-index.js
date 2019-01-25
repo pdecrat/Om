@@ -1,18 +1,22 @@
 import { combineReducers } from 'redux';
 
-import MenuTester from './MenuTester';
-import ModalTester from './ModalTester';
-import SpaceCreator from './SpaceCreator';
-import ActionDispatcher from './ActionDispatcher';
-import DataList from './DataList';
-import Grid from './Grid';
-import FullScreen from './FullScreen';
+import MenuTester from './content/MenuTester';
+import ModalTester from './content/ModalTester';
+import SpaceCreator from './content/SpaceCreator';
+import ActionDispatcher from './content/ActionDispatcher';
+import DataList from './content/DataList';
+import Paragraph from './content/Paragraph';
 
-import BlockManager from './BlockManager/BlockManager';
-import blockManager from './BlockManager/blocks-redux'
+import TaskList from './content/TaskList/TaskList';
 
-import TaskList from './TaskList/TaskList';
-import User from './Users/User';
+import BlockManager from './content/BlockManager/BlockManager';
+import blockManager from './content/BlockManager/blocks-redux'
+
+import Grid from './layout/Grid';
+import Feed from './layout/Feed';
+import FullScreen from './layout/FullScreen';
+
+import User from './icons/User';
 
 const Blocks = {
   MenuTester,
@@ -21,9 +25,11 @@ const Blocks = {
   BlockManager,
   ActionDispatcher,
   DataList,
+  Paragraph,
   TaskList,
   User,
   Grid,
+  Feed,
   FullScreen,
 }
 export default Blocks;

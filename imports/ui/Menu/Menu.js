@@ -19,7 +19,8 @@ const StyledHeader = styled.header`
   align-items: center;
   z-index: 100;
   background: white;
-  border-bottom: solid 1px rgb(237, 239, 241);
+  transition: transform 0.35s;
+  transform: ${({ isHidden }) => isHidden ? 'translateY(-50px)' : 'unset'}
 `
 
 const StyledMenu = styled.div`
@@ -65,7 +66,7 @@ const Menu = ({
   dispatchCloseMenu,
   target,
 }) =>
-  <StyledHeader>
+  <StyledHeader isHidden={menu.hidden}>
     <StyledMenu
       onClick={e => { dispatchToggleMenu() }}
     >

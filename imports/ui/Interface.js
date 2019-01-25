@@ -1,5 +1,4 @@
 import React from 'react';
-import { Route, Redirect, Switch } from 'react-router-dom';
 
 import TargetTracker from '/imports/ui/TargetTracker';
 import Modal from '/imports/ui/Modal/Modal';

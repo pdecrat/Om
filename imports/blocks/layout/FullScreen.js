@@ -8,10 +8,6 @@ import Data from '/imports/api/Data';
 import Blocks from '/imports/blocks/blocks-index';
 
 const StyledFullScreen = styled.div`
-  height: 100vh;
-  background-color: rgb(237, 239, 241);
-  padding-top: ${rem('50px')};
-  overflow: scroll;
   & section {
     height: 100%;
   }

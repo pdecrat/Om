@@ -12,7 +12,7 @@ const StyledPanel = styled.div`
   position: fixed;
   left: 0;
   top: 0;
-  width: ${rem('268px')};
+  width: ${rem('300px')};
   height: 100%;
   z-index: -1;
   background-color: white;
