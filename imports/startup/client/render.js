@@ -10,17 +10,20 @@ import { createBrowserHistory } from 'history';
 import App from '/imports/ui/UserTracker';
 import mainReducer from '/imports/ui/_state/main-reducer';
 
-const history = createBrowserHistory()
+const defaultState = window.__PRELOADED_STATE__;
+delete window.__PRELOADED_STATE__;
+
+const history = createBrowserHistory();
 const store = createStore(
   connectRouter(history)(mainReducer),
-  {},
+  defaultState,
   compose(
     applyMiddleware(
       routerMiddleware(history),
       thunk,
     ),
   ),
-)
+);
 
 Meteor.startup(() => {
   hydrate(

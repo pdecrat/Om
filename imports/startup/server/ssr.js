@@ -37,16 +37,16 @@ onPageLoad((sink) => {
     </Provider>
   );
 
-  const preloadedState = store.getState();
 
   const sheet = new ServerStyleSheet();
   sink.renderIntoElementById('react-root', renderToString(sheet.collectStyles(<App location={sink.request.url} />)));
   sink.appendToHead(sheet.getStyleTags());
-  
+
   const helmet = Helmet.renderStatic();
   sink.appendToHead(helmet.meta.toString());
   sink.appendToHead(helmet.title.toString());
 
+  const preloadedState = store.getState();
   sink.appendToBody(`
     <script>
       window.__PRELOADED_STATE__ = ${JSON.stringify(preloadedState).replace(/</g, '\\u003c')}
