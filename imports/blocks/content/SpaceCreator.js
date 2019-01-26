@@ -45,6 +45,6 @@ const toDispatch = (dispatch, res, { space }) => {
 const mapDispatchToProps = dispatch => ({
   dispatchCreateSpace: (target, space) => dispatch(callAction('createSpace', target, { space }, toDispatch))
 });
-const mapStateToProps = state => ({ target: state.target.doc });
+const mapStateToProps = state => ({ context: state.context.doc });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SpaceCreator);

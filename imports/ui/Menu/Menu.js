@@ -64,7 +64,7 @@ const Menu = ({
   menu,
   dispatchToggleMenu,
   dispatchCloseMenu,
-  target,
+  context,
 }) =>
   <StyledHeader isHidden={menu.hidden}>
     <StyledMenu
@@ -75,8 +75,8 @@ const Menu = ({
         <StyledDot></StyledDot>
         <StyledDot></StyledDot>
       </StyledDots>
-      <Avatar object={target.doc} size={36} />
-      <Breadcrumbs match={target.match} hash={target.hash} />
+      <Avatar object={context.doc} size={36} />
+      <Breadcrumbs match={context.match} hash={context.hash} />
     </StyledMenu>
     <Panel />
     <Background
@@ -89,7 +89,7 @@ const Menu = ({
 
 const mapStateToProps = state => ({
   menu: state.ui.menu,
-  target: state.target,
+  context: state.context,
 });
 const mapDispatchToProps = dispatch => ({
   dispatchToggleMenu: () => dispatch(toggleMenu()),

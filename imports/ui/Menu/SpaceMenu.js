@@ -20,7 +20,7 @@ const StyledSpaceMenu = styled.div`
 `
 
 const StyledCategory = styled.div`
-  width: 100%;
+  width: ${rem('220px')};
   font-size: 1.1rem;
   margin: ${rem('15px')};
   cursor: pointer;
@@ -50,8 +50,9 @@ const SpaceMenu = ({ views = [], dispatchClickLink, path }) =>
   </StyledSpaceMenu>
 
 const TrackedMenu = withTracker(props => {
-  if (props.target) {
+  if (props.context) {
     const views = Data.find({
+      root: props.context._id,
       type: "view",
     }).fetch();
 
@@ -64,7 +65,7 @@ const TrackedMenu = withTracker(props => {
 })(SpaceMenu)
 
 const mapStateToProps = state => ({
-  target: state.target.doc,
+  context: state.context.doc,
   path: state.router.location.pathname,
 });
 const mapDispatchToProps = dispatch => ({

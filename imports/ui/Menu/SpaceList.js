@@ -61,7 +61,7 @@ const TrackedSpaceList = withTracker(props => {
 
 const mapStateToProps = state => ({
   user: state.user.doc,
-  target: state.target.doc
+  context: state.context.doc
 });
 
 export default connect(mapStateToProps, null)(TrackedSpaceList);

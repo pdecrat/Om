@@ -9,7 +9,7 @@ import Interface from '/imports/ui/Interface';
 const UserDataStore = withTracker(props => {
   const user = Meteor.user();
   const loggingIn = Meteor.loggingIn();
-  const handle = Meteor.subscribe('user-data');
+  const handle = Data.subscribe('user-data');
 
   if (!loggingIn && user) {
     if (handle.ready()) {

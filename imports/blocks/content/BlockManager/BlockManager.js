@@ -102,7 +102,7 @@ const TrackedBlockManager = withTracker(props => {
 })(BlockManager);
 
 const mapStateToProps = state => ({
-  target: state.target.doc
+  context: state.context.doc
 })
 const mapDispatchToProps = dispatch => ({
   dispatchOpenModal: content => dispatch(openModal(content)),

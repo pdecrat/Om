@@ -1,11 +1,12 @@
-import { Meteor } from 'meteor/meteor';
 import React from 'react';
 import { connect } from 'react-redux';
 import { withTracker } from 'meteor/react-meteor-data';
 import { replace } from 'connected-react-router';
 import { matchPath } from 'react-router';
 
-import { setTarget } from '/imports/ui/_state/target';
+import Data from '/imports/api/Data';
+import Spaces from '/imports/api/Spaces/Spaces';
+import { setContext } from '/imports/ui/_state/context';
 import Menu from '/imports/ui/Menu/Menu';
 
 const spacePath = {
@@ -39,7 +40,12 @@ const TargetTracker = withTracker(props => {
   const spaceMatch = matchPath(path, spacePath);
   if (spaceMatch) {
     const reference = decodeURIComponent(spaceMatch.params.spaceName);
-    Meteor.subscribe('target-data', reference, () => {
+
+    if (Meteor.isServer) {
+      const doc = Spaces.findOne({ reference });
+      dispatchSetSpace(doc, "", spaceMatch);
+    }
+    Data.subscribe('target-data', reference, () => {
       const cursor = Data.find({ reference });
 
       if (cursor.count() === 0) {
@@ -54,7 +60,6 @@ const TargetTracker = withTracker(props => {
           }
         });
       }
-
     });
 
     return {
@@ -104,7 +109,7 @@ const mapStateToProps = state => ({
   hash: state.router.location.hash,
 });
 const mapDispatchToProps = dispatch => ({
-  dispatchSetSpace: (space, hash, match) => dispatch(setTarget(space, hash, match)),
+  dispatchSetSpace: (space, hash, match) => dispatch(setContext(space, hash, match)),
   dispatchPush: url => dispatch(replace(url)),
 });
 

@@ -48,6 +48,6 @@ class ActionDispatcher extends React.Component {
 const mapDispatchToProps = dispatch => ({
   dispatchCallAction: (target, args) => dispatch(callAction(args.name, target, JSON.parse(args.data)))
 });
-const mapStateToProps = state => ({ target: state.target.doc });
+const mapStateToProps = state => ({ context: state.context.doc });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ActionDispatcher);

@@ -95,14 +95,15 @@ class Content extends React.Component {
 
 const TrackedContent = withTracker(props => {
   const {
-    target,
+    context,
     hash,
   } = props;
 
-  if (!target) return props;
+  if (!context) return props;
   const view = Data.findOne({
+    root: context._id,
     type: 'view',
-    name: hash.length ? hash : target.name,
+    name: hash.length ? hash : context.name,
   });
 
   return {
@@ -114,8 +115,8 @@ const TrackedContent = withTracker(props => {
 const mapStateToProps = state => ({
   preventScroll: state.ui.menu.open || state.ui.modal.open,
   isMenuHidden: state.ui.menu.hidden,
-  target: state.target.doc,
-  hash: state.target.hash
+  context: state.context.doc,
+  hash: state.context.hash
 })
 const mapDispatchToProps = dispatch => ({
   dispatchHide: () => dispatch(hideMenu()),

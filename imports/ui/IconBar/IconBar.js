@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { withTracker } from 'meteor/react-meteor-data';
 
 import { rem } from '/imports/ui/_lib/helpers-css';
+import withContext from '/imports/ui/_components/hoc/withContext';
 import Data from '/imports/api/Data';
 import Blocks from '/imports/blocks/blocks-index';
 
@@ -21,8 +22,9 @@ const IconBar = ({ icons }) =>
     })}
   </StyledIconBar>
 
-export default withTracker(props => {
+export default withContext(withTracker(props => {
   const icons = Data.find({
+    root: props.context._id,
     type: "block",
     blockType: "user-icon",
   }).fetch()
@@ -31,4 +33,4 @@ export default withTracker(props => {
     ...props,
     icons,
   }
-})(IconBar);
+})(IconBar));

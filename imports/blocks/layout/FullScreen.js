@@ -43,7 +43,7 @@ const TrackedFullScreen = withTracker(props => {
 })(FullScreen);
 
 const mapStateToProps = state => ({
-  target: state.target.doc,
+  context: state.context.doc,
   hash: state.target.hash
 })
 export default connect(mapStateToProps, null)(TrackedFullScreen);

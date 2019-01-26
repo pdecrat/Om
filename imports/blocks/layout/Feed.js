@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { media, rem } from '/imports/ui/_lib/helpers-css';
 import Data from '/imports/api/Data';
 import Blocks from '/imports/blocks/blocks-index';
-import withBlocks from '../withBlocks';
+import withBlocks from '/imports/ui/_components/hoc/withBlocks';
 
 const StyledFeed = styled.div`
   display: flex;

@@ -1,17 +1,19 @@
 import { withTracker } from 'meteor/react-meteor-data';
 import { connect } from 'react-redux';
 
-const TrackedGrid = withTracker(props => {
+import Data from '/imports/api/Data';
+
+const blockTracker = withTracker(props => {
   const {
-    target,
+    context,
     hash,
   } = props;
-  if (!!target) {
+  if (!!context) {
     const query = {
-      root: target._id,
+      root: context._id,
       type: 'block',
       blockType: "content",
-      view: { $in: [hash ? hash : target.name] },
+      view: { $in: [hash ? hash : context.name] },
     };
     const blocks = Data.find(query).fetch() || [];
     return {
@@ -23,9 +25,9 @@ const TrackedGrid = withTracker(props => {
 });
 
 const mapStateToProps = state => ({
-  target: state.target.doc,
-  hash: state.target.hash
+  context: state.context.doc,
+  hash: state.context.hash
 })
 const withBlocks = (component) =>
-  connect(mapStateToProps, null)(TrackedGrid(component))
+  connect(mapStateToProps, null)(blockTracker(component))
 export default withBlocks;

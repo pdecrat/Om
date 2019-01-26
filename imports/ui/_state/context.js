@@ -1,31 +1,31 @@
-const SET_TARGET = 'om/target/set';
+const SET_CONTEXT = 'om/context/set';
 
-export function setTarget(target, hash, match) {
+export function setContext(context, hash, match) {
   return {
-    type: SET_TARGET,
-    target,
+    type: SET_CONTEXT,
+    context,
     hash,
     match,
   }
 }
 
 const defaultState = {
-  doc: null,
+  doc: {},
   hash: '',
   match: null,
 }
 
-function target(state = defaultState,
+function context(state = defaultState,
   {
     type,
-    target,
+    context,
     hash,
     match,
   }) {
   switch (type) {
-    case SET_TARGET:
+    case SET_CONTEXT:
       return {
-        doc: target,
+        doc: context,
         hash: hash.slice(1),
         match,
       };
@@ -35,4 +35,4 @@ function target(state = defaultState,
   }
 }
 
-export default target;
+export default context;
