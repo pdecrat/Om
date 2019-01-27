@@ -75,8 +75,9 @@ const ContextTracker = withTracker(props => {
 
   const loginMatch = matchPath(path, loginPath);
   if (loginMatch) {
+    if (Meteor.isServer) return props;
     const credentials = loginMatch.params.credentials.split(':');
-
+    console.log('hey')
     Accounts.callLoginMethod({
       methodArguments: [{
         'passwordless': {

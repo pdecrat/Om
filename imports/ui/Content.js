@@ -72,7 +72,7 @@ class Content extends React.Component {
         lastScrollTop: scrollTop
       });
     }
-  }, 250)
+  }, 150)
 
   render() {
     const {

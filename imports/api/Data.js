@@ -6,7 +6,7 @@ const Data = Meteor.isClient ? new Mongo.Collection('data') : {};
 
 Data.subscribe = (name, params, callback) => {
   if (Meteor.isClient) {
-    Meteor.subscribe(name, params,callback);
+    return Meteor.subscribe(name, params,callback);
   }
 }
 

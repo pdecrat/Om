@@ -17,7 +17,7 @@ export function toggleMenu() {
   }
 }
 
-function open () {
+function open() {
   return {
     type: OPEN_MENU,
   }
