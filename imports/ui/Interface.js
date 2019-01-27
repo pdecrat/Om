@@ -1,15 +1,15 @@
 import React from 'react';
 
-import TargetTracker from '/imports/ui/TargetTracker';
+import ContextTracker from '/imports/ui/ContextTracker';
 import Modal from '/imports/ui/Modal/Modal';
 import Content from '/imports/ui/Content';
 import '/imports/ui/_lib/global-style';
 
 const Interface = () =>
-  <div>
-    <TargetTracker />
+  <React.Fragment>
+    <ContextTracker />
     <Content />
     <Modal />
-  </div>
+  </React.Fragment>
 
 export default Interface

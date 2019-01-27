@@ -13,10 +13,10 @@ Data.subscribe = (name, params, callback) => {
 if (Meteor.isServer) {
   import { Collections } from '/imports/api/Collections';
   Data.find = (query) => {
-    return Collections.get(query.root).find(query)
+    return !!Collections.get(query.root) && Collections.get(query.root).find(query)
   };
   Data.findOne = (query) => {
-    return Collections.get(query.root).findOne(query)
+    return !!Collections.get(query.root) && Collections.get(query.root).findOne(query)
   };
 }
 

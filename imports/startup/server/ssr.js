@@ -14,8 +14,6 @@ import Interface from '/imports/ui/Interface';
 
 onPageLoad((sink) => {
   const context = {};
-
-  // console.log(sink.request)
   const history = createMemoryHistory({
     initialEntries: [sink.request.url],
   })
@@ -31,12 +29,17 @@ onPageLoad((sink) => {
   )
   const App = props => (
     <Provider store={store}>
-      <ConnectedRouter history={history}>
+      <ConnectedRouter history={history} context={context}>
         <Interface />
       </ConnectedRouter>
     </Provider>
   );
 
+  history.listen((match, type) => {
+    if (type === 'REPLACE') {
+      sink.redirect(match.pathname)
+    }
+  })
 
   const sheet = new ServerStyleSheet();
   sink.renderIntoElementById('react-root', renderToString(sheet.collectStyles(<App location={sink.request.url} />)));
@@ -45,7 +48,6 @@ onPageLoad((sink) => {
   const helmet = Helmet.renderStatic();
   sink.appendToHead(helmet.meta.toString());
   sink.appendToHead(helmet.title.toString());
-
   const preloadedState = store.getState();
   sink.appendToBody(`
     <script>

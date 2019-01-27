@@ -50,7 +50,7 @@ const SpaceMenu = ({ views = [], dispatchClickLink, path }) =>
   </StyledSpaceMenu>
 
 const TrackedMenu = withTracker(props => {
-  if (props.context) {
+  if (props.context && props.context._id) {
     const views = Data.find({
       root: props.context._id,
       type: "view",

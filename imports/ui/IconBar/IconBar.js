@@ -14,7 +14,7 @@ const StyledIconBar = styled.ul`
   align-items: center;
 `
 
-const IconBar = ({ icons }) =>
+const IconBar = ({ icons = [] }) =>
   <StyledIconBar>
     {icons.map((icon, index) => {
       const Component = Blocks[icon.name];
@@ -23,14 +23,17 @@ const IconBar = ({ icons }) =>
   </StyledIconBar>
 
 export default withContext(withTracker(props => {
-  const icons = Data.find({
-    root: props.context._id,
-    type: "block",
-    blockType: "user-icon",
-  }).fetch()
+  if (props.context && props.context._id) {
+    const icons = Data.find({
+      root: props.context._id,
+      type: "block",
+      blockType: "user-icon",
+    }).fetch()
 
-  return {
-    ...props,
-    icons,
+    return {
+      ...props,
+      icons,
+    }
   }
+  return props;
 })(IconBar));

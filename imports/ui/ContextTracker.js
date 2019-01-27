@@ -24,7 +24,7 @@ const notFoundPath = {
   exact: true
 }
 
-const TargetTracker = withTracker(props => {
+const ContextTracker = withTracker(props => {
   const {
     path,
     hash,
@@ -43,7 +43,11 @@ const TargetTracker = withTracker(props => {
 
     if (Meteor.isServer) {
       const doc = Spaces.findOne({ reference });
-      dispatchSetSpace(doc, "", spaceMatch);
+      if (!doc) {
+        dispatchPush('/not-found');
+      } else {
+        dispatchSetSpace(doc, "", spaceMatch);
+      }
     }
     Data.subscribe('target-data', reference, () => {
       const cursor = Data.find({ reference });
@@ -113,4 +117,4 @@ const mapDispatchToProps = dispatch => ({
   dispatchPush: url => dispatch(replace(url)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TargetTracker);
+export default connect(mapStateToProps, mapDispatchToProps)(ContextTracker);
