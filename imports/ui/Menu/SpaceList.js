@@ -6,7 +6,6 @@ import { withTracker } from 'meteor/react-meteor-data';
 import Spaces from '/imports/api/Spaces/Spaces';
 import { rem } from '/imports/ui/_lib/helpers-css';
 import Link from '/imports/ui/_components/Link';
-import Scroller from '/imports/ui/_components/Scroller';
 
 const StyledWrapper = styled.div`
   margin-top: ${rem('50px')};
@@ -25,18 +24,16 @@ const StyledSpaceList = styled.div`
 
 const SpaceList = ({ spaces }) =>
   <StyledWrapper>
-    <Scroller bar={false}>
-      <StyledSpaceList>
-        {spaces.map((space, index) =>
-          <Link
-            key={index}
-            url={`/s/${encodeURIComponent(space.name)}`}
-            object={space}
-            label={space.name}
-          />
-        )}
-      </StyledSpaceList>
-    </Scroller>
+    <StyledSpaceList>
+      {spaces.map((space, index) =>
+        <Link
+          key={index}
+          url={`/s/${encodeURIComponent(space.name)}`}
+          object={space}
+          label={space.name}
+        />
+      )}
+    </StyledSpaceList>
   </StyledWrapper>
 
 const TrackedSpaceList = withTracker(props => {

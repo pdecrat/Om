@@ -102,8 +102,28 @@ Meteor.startup(() => {
       type: "block",
       blockType: "content",
       name: "Paragraph",
-      width: 1,
+      width: 3,
       height: 8,
+      view: ["om"]
+    })
+    Collections.get(omId).insert({
+      root: omId,
+      isActive: true,
+      isPublic: true,
+      // restrictedTo: [ omId + '#admin' ],
+      type: "block",
+      blockType: "content",
+      name: "ModalTester",
+      view: ["om"]
+    })
+    Collections.get(omId).insert({
+      root: omId,
+      isActive: true,
+      isPublic: true,
+      // restrictedTo: [ omId + '#admin' ],
+      type: "block",
+      blockType: "content",
+      name: "MenuTester",
       view: ["om"]
     })
     Collections.get(omId).insert({

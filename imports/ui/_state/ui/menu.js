@@ -17,9 +17,16 @@ export function toggleMenu() {
   }
 }
 
-export function openMenu() {
+function open () {
   return {
     type: OPEN_MENU,
+  }
+}
+export function openMenu() {
+  return dispatch => {
+    dispatch(showMenu())
+    setTimeout(() => dispatch(open()), 250)
+
   }
 }
 

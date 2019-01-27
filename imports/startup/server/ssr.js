@@ -10,7 +10,7 @@ import { ConnectedRouter, connectRouter, routerMiddleware } from 'connected-reac
 import { ServerStyleSheet } from 'styled-components'
 
 import mainReducer from '/imports/ui/_state/main-reducer';
-import Interface from '/imports/ui/Interface';
+import Interface from '/imports/ui/UserTracker';
 
 onPageLoad((sink) => {
   const context = {};
@@ -35,7 +35,7 @@ onPageLoad((sink) => {
     </Provider>
   );
 
-  history.listen((match, type) => {
+  const stop = history.listen((match, type) => {
     if (type === 'REPLACE') {
       sink.setStatusCode('302');
       sink.redirect(match.pathname);
@@ -50,6 +50,7 @@ onPageLoad((sink) => {
   sink.appendToHead(helmet.meta.toString());
   sink.appendToHead(helmet.title.toString());
   const preloadedState = store.getState();
+  stop();
   sink.appendToBody(`
     <script>
       window.__PRELOADED_STATE__ = ${JSON.stringify(preloadedState).replace(/</g, '\\u003c')}

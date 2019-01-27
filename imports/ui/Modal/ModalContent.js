@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 
 import { rem } from '/imports/ui/_lib/helpers-css';
-import Scroller from '/imports/ui/_components/Scroller';
 
 const StyledContent = styled.div`
   position: relative;
@@ -15,11 +14,9 @@ const StyledContent = styled.div`
 `
 
 const ModalContent = ({ children }) =>
-  <Scroller>
-    <StyledContent onClick={e => { e.stopPropagation() }}>
-      {children}
-    </StyledContent>
-  </Scroller>
+  <StyledContent onClick={e => { e.stopPropagation() }}>
+    {children}
+  </StyledContent>
 
 const mapStateToProps = state => ({ modal: state.ui.modal });
 const mapDispatchToProps = dispatch => ({

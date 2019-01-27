@@ -7,9 +7,9 @@ import '/imports/ui/_lib/global-style';
 
 const Interface = () =>
   <React.Fragment>
+    <Modal />
     <ContextTracker />
     <Content />
-    <Modal />
   </React.Fragment>
 
 export default Interface

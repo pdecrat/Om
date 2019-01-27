@@ -7,6 +7,8 @@ import { setUser, logOutUser, setAsLoggingIn } from '/imports/ui/_state/user';
 import Interface from '/imports/ui/Interface';
 
 const UserDataStore = withTracker(props => {
+  if (Meteor.isServer) return props;
+  
   const user = Meteor.user();
   const loggingIn = Meteor.loggingIn();
   const handle = Data.subscribe('user-data');
