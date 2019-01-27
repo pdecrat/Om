@@ -37,7 +37,8 @@ onPageLoad((sink) => {
 
   history.listen((match, type) => {
     if (type === 'REPLACE') {
-      sink.redirect(match.pathname)
+      sink.setStatusCode('302');
+      sink.redirect(match.pathname);
     }
   })
 
