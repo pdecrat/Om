@@ -13,7 +13,6 @@ import mainReducer from '/imports/ui/_state/main-reducer';
 import Interface from '/imports/ui/UserTracker';
 
 onPageLoad((sink) => {
-  const context = {};
   const history = createMemoryHistory({
     initialEntries: [sink.request.url],
   })
@@ -29,7 +28,7 @@ onPageLoad((sink) => {
   )
   const App = props => (
     <Provider store={store}>
-      <ConnectedRouter history={history} context={context}>
+      <ConnectedRouter history={history}>
         <Interface />
       </ConnectedRouter>
     </Provider>

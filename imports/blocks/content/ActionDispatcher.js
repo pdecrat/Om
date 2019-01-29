@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { push } from 'connected-react-router'
 
 import { callAction } from '/imports/api/Actions';
+import withContext from '/imports/ui/_components/hoc/withContext';
 
 const StyledActionDispatcher = styled.div`
   display: flex;
@@ -19,6 +20,15 @@ class ActionDispatcher extends React.Component {
     data: null,
   }
   render() {
+    const {
+      name,
+      data
+    } = this.state;
+    const {
+      context,
+      dispatchAction
+    } = this.props;
+
     return (
       <StyledActionDispatcher>
         <h2>Dispatch action</h2>
@@ -33,10 +43,7 @@ class ActionDispatcher extends React.Component {
           })
         }}/>
         <button onClick={e => {
-          this.props.dispatchCallAction(this.props.target, {
-            name: this.state.name,
-            data: this.state.data,
-          })
+          dispatchAction(name, context, JSON.parse(data))
         }}>
           Dispatch {this.state.name}
         </button>
@@ -45,9 +52,4 @@ class ActionDispatcher extends React.Component {
   }
 }
 
-const mapDispatchToProps = dispatch => ({
-  dispatchCallAction: (target, args) => dispatch(callAction(args.name, target, JSON.parse(args.data)))
-});
-const mapStateToProps = state => ({ context: state.context.doc });
-
-export default connect(mapStateToProps, mapDispatchToProps)(ActionDispatcher);
+export default withContext(ActionDispatcher);
