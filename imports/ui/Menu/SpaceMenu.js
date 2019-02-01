@@ -17,6 +17,7 @@ const StyledSpaceMenu = styled.div`
   background-color: rgb(246, 246, 246);
   height: 100%;
   z-index: 10;
+  overflow-y: scroll;
 `
 
 const StyledCategory = styled.div`

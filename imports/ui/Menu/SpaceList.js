@@ -20,6 +20,7 @@ const StyledWrapper = styled.div`
 `
 
 const StyledSpaceList = styled.div`
+  overflow-y: scroll;
 `
 
 const SpaceList = ({ spaces }) =>
@@ -45,9 +46,6 @@ const TrackedSpaceList = withTracker(props => {
     type: "shortcut"
   }).fetch()
   || [
-    { name: 'lala' },
-    { name: 'lala' },
-    { name: 'lala' },
   ];
 
   return {
