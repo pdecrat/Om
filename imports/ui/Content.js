@@ -96,14 +96,14 @@ class Content extends React.Component {
 const TrackedContent = withTracker(props => {
   const {
     context,
-    hash,
+    queryParams,
   } = props;
 
   if (!context) return props;
   const view = Data.findOne({
     root: context._id,
     type: 'view',
-    name: hash.length ? hash : context.name,
+    name: queryParams.view ? queryParams.view : context.name,
   });
 
   return {
@@ -116,7 +116,7 @@ const mapStateToProps = state => ({
   preventScroll: state.ui.menu.open || state.ui.modal.open,
   isMenuHidden: state.ui.menu.hidden,
   context: state.context.doc,
-  hash: state.context.hash
+  queryParams: state.context.queryParams
 })
 const mapDispatchToProps = dispatch => ({
   dispatchHide: () => dispatch(hideMenu()),

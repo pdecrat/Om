@@ -76,7 +76,7 @@ const Menu = ({
         <StyledDot></StyledDot>
       </StyledDots>
       <Avatar object={context.doc} size={36} />
-      <Breadcrumbs match={context.match} hash={context.hash} />
+      <Breadcrumbs match={context.match} queryParams={context.queryParams} />
     </StyledMenu>
     <Panel />
     <Background

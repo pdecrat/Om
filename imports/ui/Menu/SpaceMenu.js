@@ -41,7 +41,7 @@ const SpaceMenu = ({ views = [], dispatchClickLink, path }) =>
         key={index}
         onClick={e => {
           dispatchClickLink(view.url.length ?
-            `${path}#${view.url}` : path )
+            `${path}?view=${view.url}` : path )
         }}
       >
         {view.name}

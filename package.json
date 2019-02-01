@@ -13,6 +13,7 @@
     "meteor-node-stubs": "^0.3.3",
     "normalize.css": "^8.0.0",
     "polished": "^1.9.3",
+    "query-string": "^6.2.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-feather": "^1.1.1",
@@ -30,6 +31,8 @@
     "babel-plugin-styled-components": "^1.10.0"
   },
   "babel": {
-    "plugins": ["babel-plugin-styled-components"]
+    "plugins": [
+      "babel-plugin-styled-components"
+    ]
   }
 }

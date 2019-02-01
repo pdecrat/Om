@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withTracker } from 'meteor/react-meteor-data';
 import { replace } from 'connected-react-router';
 import { matchPath } from 'react-router';
+import qs from 'query-string';
 
 import Data from '/imports/api/Data';
 import Spaces from '/imports/api/Spaces/Spaces';
@@ -28,9 +29,11 @@ const ContextTracker = withTracker(props => {
   const {
     path,
     hash,
+    search,
     dispatchPush,
     dispatchSetSpace,
   } = props;
+  const queryParams = qs.parse(search) || "";
 
   if (path === '/') {
     dispatchPush('/s/om');
@@ -46,7 +49,7 @@ const ContextTracker = withTracker(props => {
       if (!doc) {
         dispatchPush('/not-found');
       } else {
-        dispatchSetSpace(doc, "", spaceMatch);
+        dispatchSetSpace(doc, queryParams, spaceMatch);
       }
     }
     Data.subscribe('target-data', reference, () => {
@@ -57,10 +60,10 @@ const ContextTracker = withTracker(props => {
       } else {
         cursor.observe({
           added(doc) {
-            dispatchSetSpace(doc, hash, spaceMatch);
+            dispatchSetSpace(doc, queryParams, spaceMatch);
           },
           changed(doc) {
-            dispatchSetSpace(doc, hash, spaceMatch);
+            dispatchSetSpace(doc, queryParams, spaceMatch);
           }
         });
       }
@@ -69,7 +72,7 @@ const ContextTracker = withTracker(props => {
     return {
       ...props,
       match: spaceMatch,
-      hash,
+      queryParams,
     };
   }
 
@@ -110,6 +113,7 @@ const ContextTracker = withTracker(props => {
 })(Menu);
 
 const mapStateToProps = state => ({
+  search: state.router.location.search,
   path: state.router.location.pathname,
   hash: state.router.location.hash,
 });

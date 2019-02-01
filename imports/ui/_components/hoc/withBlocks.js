@@ -6,14 +6,14 @@ import Data from '/imports/api/Data';
 const blockTracker = withTracker(props => {
   const {
     context,
-    hash,
+    queryParams,
   } = props;
   if (!!context) {
     const query = {
       root: context._id,
       type: 'block',
       blockType: "content",
-      view: { $in: [hash ? hash : context.name] },
+      view: { $in: [queryParams.view ? queryParams.view : context.name] },
     };
     const blocks = Data.find(query).fetch() || [];
     return {
@@ -26,7 +26,7 @@ const blockTracker = withTracker(props => {
 
 const mapStateToProps = state => ({
   context: state.context.doc,
-  hash: state.context.hash
+  queryParams: state.context.queryParams
 })
 const withBlocks = (component) =>
   connect(mapStateToProps, null)(blockTracker(component))

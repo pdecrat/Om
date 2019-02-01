@@ -4,6 +4,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 
 import Data from '/imports/api/Data';
 import { rem } from '/imports/ui/_lib/helpers-css';
+import withContext from '/imports/ui/_components/hoc/withContext';
 
 const StyledDataList = styled.div`
   display: flex;
@@ -26,11 +27,12 @@ const DataList = ({ data }) =>
     </ul>
   </StyledDataList>
 
-export default withTracker(props => {
+export default withContext(withTracker(props => {
   const data = Data.find({
+    root: props.context._id
   }).fetch();
   return {
     ...props,
     data,
   }
-})(DataList);
+})(DataList));
