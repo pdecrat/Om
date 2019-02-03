@@ -12,7 +12,7 @@ import Data from '/imports/api/Data';
 
 const StyledContent = styled.div`
   padding-top: ${rem('50px')};
-  background-color: white;
+  /* background-color: ${props => props.theme.color.light}; */
   height: 100vh;
   overflow-y: ${props => props.preventScroll ? "scroll" : "auto" }
 `
@@ -22,7 +22,7 @@ class Content extends React.Component {
   state = {
     lastScrollTop: 0,
     didScroll: false,
-    delta: 5,
+    delta: 20,
     navHeight: 50,
   }
 
@@ -57,12 +57,12 @@ class Content extends React.Component {
       if (!isMenuHidden
         && scrollTop > lastScrollTop
         && scrollTop > navHeight
-        && scrollTop - lastScrollTop > navHeight)
+        && scrollTop - lastScrollTop > delta)
       {
         dispatchHide();
       } else if (isMenuHidden
         && (scrollTop < lastScrollTop
-          && lastScrollTop - scrollTop > navHeight
+          && lastScrollTop - scrollTop > delta
         || scrollTop < navHeight)
       ) {
         dispatchShow();
@@ -96,14 +96,14 @@ class Content extends React.Component {
 const TrackedContent = withTracker(props => {
   const {
     context,
-    queryParams,
+    query,
   } = props;
 
   if (!context) return props;
   const view = Data.findOne({
     root: context._id,
     type: 'view',
-    name: queryParams.view ? queryParams.view : context.name,
+    name: query.view ? query.view : context.name,
   });
 
   return {
@@ -116,7 +116,7 @@ const mapStateToProps = state => ({
   preventScroll: state.ui.menu.open || state.ui.modal.open,
   isMenuHidden: state.ui.menu.hidden,
   context: state.context.doc,
-  queryParams: state.context.queryParams
+  query: state.context.query
 })
 const mapDispatchToProps = dispatch => ({
   dispatchHide: () => dispatch(hideMenu()),
