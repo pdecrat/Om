@@ -4,11 +4,11 @@ import { connect } from 'react-redux';
 import { withTracker } from 'meteor/react-meteor-data';
 
 import { setUser, logOutUser, setAsLoggingIn } from '/imports/ui/_state/user';
-import Interface from '/imports/ui/Interface';
+import ContextTracker from '/imports/ui/ContextTracker';
 
 const UserDataStore = withTracker(props => {
   if (Meteor.isServer) return props;
-  
+
   const user = Meteor.user();
   const loggingIn = Meteor.loggingIn();
   const handle = Data.subscribe('user-data');
@@ -24,7 +24,7 @@ const UserDataStore = withTracker(props => {
   }
 
   return props;
-})(Interface);
+})(ContextTracker);
 
 const mapDispatchToProps = dispatch => ({
   dispatchSetUser: user => dispatch(setUser(user)),

@@ -8,10 +8,10 @@ import qs from 'query-string';
 import Data from '/imports/api/Data';
 import Spaces from '/imports/api/Spaces/Spaces';
 import { setContext } from '/imports/ui/_state/context';
-import Menu from '/imports/ui/Menu/Menu';
+import Interface from '/imports/ui/Interface';
 
 const spacePath = {
-  path: '/s/:spaceName',
+  path: '/:type([s, u])/:spaceName',
   exact: true
 }
 
@@ -28,12 +28,11 @@ const notFoundPath = {
 const ContextTracker = withTracker(props => {
   const {
     path,
-    hash,
     search,
     dispatchPush,
     dispatchSetSpace,
   } = props;
-  const queryParams = qs.parse(search) || "";
+  const query = qs.parse(search) || "";
 
   if (path === '/') {
     dispatchPush('/s/om');
@@ -43,13 +42,12 @@ const ContextTracker = withTracker(props => {
   const spaceMatch = matchPath(path, spacePath);
   if (spaceMatch) {
     const reference = decodeURIComponent(spaceMatch.params.spaceName);
-
     if (Meteor.isServer) {
       const doc = Spaces.findOne({ reference });
       if (!doc) {
         dispatchPush('/not-found');
       } else {
-        dispatchSetSpace(doc, queryParams, spaceMatch);
+        dispatchSetSpace(doc, query, spaceMatch);
       }
     }
     Data.subscribe('target-data', reference, () => {
@@ -60,10 +58,10 @@ const ContextTracker = withTracker(props => {
       } else {
         cursor.observe({
           added(doc) {
-            dispatchSetSpace(doc, queryParams, spaceMatch);
+            dispatchSetSpace(doc, query, spaceMatch);
           },
           changed(doc) {
-            dispatchSetSpace(doc, queryParams, spaceMatch);
+            dispatchSetSpace(doc, query, spaceMatch);
           }
         });
       }
@@ -72,7 +70,7 @@ const ContextTracker = withTracker(props => {
     return {
       ...props,
       match: spaceMatch,
-      queryParams,
+      query,
     };
   }
 
@@ -80,7 +78,6 @@ const ContextTracker = withTracker(props => {
   if (loginMatch) {
     if (Meteor.isServer) return props;
     const credentials = loginMatch.params.credentials.split(':');
-    console.log('hey')
     Accounts.callLoginMethod({
       methodArguments: [{
         'passwordless': {
@@ -110,15 +107,14 @@ const ContextTracker = withTracker(props => {
 
   return props;
 
-})(Menu);
+})(Interface);
 
 const mapStateToProps = state => ({
   search: state.router.location.search,
   path: state.router.location.pathname,
-  hash: state.router.location.hash,
 });
 const mapDispatchToProps = dispatch => ({
-  dispatchSetSpace: (space, hash, match) => dispatch(setContext(space, hash, match)),
+  dispatchSetSpace: (space, query, match) => dispatch(setContext(space, query, match)),
   dispatchPush: url => dispatch(replace(url)),
 });
 

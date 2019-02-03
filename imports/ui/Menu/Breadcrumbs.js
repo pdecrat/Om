@@ -10,12 +10,12 @@ const StyledBreacrumbs = styled.div`
   text-transform: capitalize;
 `;
 
-const Breadcrumbs = ({ match, queryParams }) => {
+const Breadcrumbs = ({ match, query }) => {
   return (
     <StyledBreacrumbs>
       { match && match.params ?
-          !!queryParams.view ?
-            queryParams.view
+          !!query.view ?
+            query.view
             : match.params.spaceName
           : ''
       }

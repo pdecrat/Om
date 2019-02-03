@@ -26,7 +26,7 @@ const blockTracker = withTracker(props => {
 
 const mapStateToProps = state => ({
   context: state.context.doc,
-  queryParams: state.context.queryParams
+  queryParams: state.context.query
 })
 const withBlocks = (component) =>
   connect(mapStateToProps, null)(blockTracker(component))
