@@ -10,7 +10,7 @@ import { ConnectedRouter, connectRouter, routerMiddleware } from 'connected-reac
 import { ServerStyleSheet } from 'styled-components'
 
 import mainReducer from '/imports/ui/_state/main-reducer';
-import Interface from '/imports/ui/UserTracker';
+import App from '/imports/ui/App';
 
 onPageLoad((sink) => {
   const history = createMemoryHistory({
@@ -26,10 +26,10 @@ onPageLoad((sink) => {
       ),
     ),
   )
-  const App = props => (
+  const Prerender = props => (
     <Provider store={store}>
       <ConnectedRouter history={history}>
-        <Interface />
+        <App />
       </ConnectedRouter>
     </Provider>
   );
@@ -42,7 +42,7 @@ onPageLoad((sink) => {
   })
 
   const sheet = new ServerStyleSheet();
-  sink.renderIntoElementById('react-root', renderToString(sheet.collectStyles(<App location={sink.request.url} />)));
+  sink.renderIntoElementById('react-root', renderToString(sheet.collectStyles(<Prerender location={sink.request.url} />)));
   sink.appendToHead(sheet.getStyleTags());
 
   const helmet = Helmet.renderStatic();

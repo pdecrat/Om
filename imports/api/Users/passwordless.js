@@ -28,10 +28,9 @@ Thank you !`;
   }
 };
 
-Passwordless.sendLoginEmail = (email) => {
+Passwordless.sendLoginEmail = (email, url) => {
   const token = Random.secret();
-  const encodedEmail = Base64.encode(email);
-  const loginUrl = Meteor.absoluteUrl(`login/${encodedEmail}:${token}`);
+  const loginUrl = Meteor.absoluteUrl(`${url}?token=${token}`);
   const pendingCredential = pendingCredentials.findOne({ email });
   const now = Date.now();
 
@@ -56,7 +55,6 @@ Passwordless.sendLoginEmail = (email) => {
   } else {
     pendingCredentials.insert({
       email,
-      encodedEmail,
       token,
       when: now
     });
@@ -71,8 +69,8 @@ Passwordless.sendLoginEmail = (email) => {
 
 };
 
-Passwordless.verifyToken = ({ encodedEmail, token }) => {
-  const pendingCredential = pendingCredentials.findOne({ encodedEmail, token });
+Passwordless.verifyToken = ({ token }) => {
+  const pendingCredential = pendingCredentials.findOne({ token });
   const now = Date.now();
 
   if (!pendingCredential) {
@@ -82,32 +80,22 @@ Passwordless.verifyToken = ({ encodedEmail, token }) => {
   }
 
   if (pendingCredential.when < (now - 3600000)) {
-    pendingCredentials.remove({ encodedEmail, token });
+    pendingCredentials.remove({ token });
     throw new Meteor.Error('token-expired',
       "You waited too long before using this token"
     );
   }
   const serviceData = {
-    id: encodedEmail
+    id: pendingCredential.email
   };
 
-  pendingCredentials.remove({ encodedEmail, token });
+  pendingCredentials.remove({ token });
 
   const { userId } = Accounts.updateOrCreateUserFromExternalService('passwordless', serviceData);
 
-  // Meteor.defer(() => {
-  //   const user = Meteor.users.findOne(userId);
-  //
-  //   if (user && !user.email) {
-  //     Meteor.users.update(userId, {
-  //       $set: { email: Base64.decode(encodedEmail) }
-  //     });
-  //   }
-  // });
-
   return {
     userId,
-    email: Base64.decode(encodedEmail)
+    email: pendingCredential.email
   };
 }
 
@@ -116,8 +104,7 @@ Accounts.registerLoginHandler('passwordless', (options) => {
     return undefined;
 
   check(options.passwordless, {
-    encodedEmail: String,
-    token: String
+    token: String,
   });
 
   return Passwordless.verifyToken(options.passwordless);

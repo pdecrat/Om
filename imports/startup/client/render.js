@@ -7,7 +7,7 @@ import thunk from 'redux-thunk';
 import { ConnectedRouter, connectRouter, routerMiddleware } from 'connected-react-router';
 import { createBrowserHistory } from 'history';
 
-import App from '/imports/ui/UserTracker';
+import App from '/imports/ui/App';
 import mainReducer from '/imports/ui/_state/main-reducer';
 
 const defaultState = window.__PRELOADED_STATE__;

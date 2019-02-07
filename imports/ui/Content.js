@@ -12,7 +12,7 @@ import Data from '/imports/api/Data';
 
 const StyledContent = styled.div`
   padding-top: ${rem('50px')};
-  /* background-color: ${props => props.theme.color.light}; */
+  background-color: ${props => props.theme.color.light};
   height: 100vh;
   overflow-y: ${props => props.preventScroll ? "scroll" : "auto" }
 `

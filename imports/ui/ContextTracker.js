@@ -10,102 +10,31 @@ import Spaces from '/imports/api/Spaces/Spaces';
 import { setContext } from '/imports/ui/_state/context';
 import Interface from '/imports/ui/Interface';
 
-const spacePath = {
-  path: '/:type([s, u])/:spaceName',
-  exact: true
-}
-
-const loginPath = {
-  path: '/login/:credentials',
-  exact: true
-}
-
-const notFoundPath = {
-  path: '/not-found',
-  exact: true
-}
-
 const ContextTracker = withTracker(props => {
   const {
     path,
     search,
     dispatchPush,
     dispatchSetSpace,
+    match,
   } = props;
-  const query = qs.parse(search) || "";
+  const reference = decodeURIComponent(match.params.reference);
+  const type = match.params.type === 's' ? 'space' : 'user';
+  const sub = Data.subscribe('context-data', reference);
+  const query = { reference }
+  if (Meteor.isServer) query.root = type;
+  const doc = Data.findOne(query);
 
-  if (path === '/') {
-    dispatchPush('/s/om');
-    return props;
+  if (!doc && (Meteor.isServer || sub.ready())) {
+    dispatchPush('/not-found');
+  } else if (Meteor.isServer || sub.ready()) {
+    dispatchSetSpace(doc, qs.parse(search), match);
   }
 
-  const spaceMatch = matchPath(path, spacePath);
-  if (spaceMatch) {
-    const reference = decodeURIComponent(spaceMatch.params.spaceName);
-    if (Meteor.isServer) {
-      const doc = Spaces.findOne({ reference });
-      if (!doc) {
-        dispatchPush('/not-found');
-      } else {
-        dispatchSetSpace(doc, query, spaceMatch);
-      }
-    }
-    Data.subscribe('target-data', reference, () => {
-      const cursor = Data.find({ reference });
-
-      if (cursor.count() === 0) {
-        dispatchPush('/not-found');
-      } else {
-        cursor.observe({
-          added(doc) {
-            dispatchSetSpace(doc, query, spaceMatch);
-          },
-          changed(doc) {
-            dispatchSetSpace(doc, query, spaceMatch);
-          }
-        });
-      }
-    });
-
-    return {
-      ...props,
-      match: spaceMatch,
-      query,
-    };
-  }
-
-  const loginMatch = matchPath(path, loginPath);
-  if (loginMatch) {
-    if (Meteor.isServer) return props;
-    const credentials = loginMatch.params.credentials.split(':');
-    Accounts.callLoginMethod({
-      methodArguments: [{
-        'passwordless': {
-          encodedEmail: credentials[0],
-          token: credentials[1]
-        }
-      }],
-      userCallback: function(err, res) {
-        if (err) console.log(err);
-        else {
-          dispatchPush('/s/om');
-        };
-      }
-    });
-
-    return props;
-  }
-
-  const notFoundMatch = matchPath(path, notFoundPath);
-  if (notFoundMatch) {
-    dispatchSetSpace({}, '', {});
-    return props;
-  }
-
-  dispatchPush('/not-found');
-
-
-  return props;
+  return {
+    ...props,
+    query,
+  };
 
 })(Interface);
 

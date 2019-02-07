@@ -1,5 +1,6 @@
 import React from 'react';
 import { ThemeProvider } from 'styled-components';
+import { connect } from 'react-redux';
 
 import Modal from '/imports/ui/Modal/Modal';
 import Content from '/imports/ui/Content';
@@ -14,8 +15,8 @@ const defaultTheme = {
   }
 }
 
-const Interface = () =>
-  <ThemeProvider theme={defaultTheme}>
+const Interface = ({ theme = defaultTheme }) =>
+  <ThemeProvider theme={theme}>
     <React.Fragment>
       <Modal />
       <Menu />
@@ -23,4 +24,8 @@ const Interface = () =>
     </React.Fragment>
   </ThemeProvider>
 
-export default Interface
+const mapStateToProps = state => ({
+  theme: state.context.doc.theme
+});
+
+export default connect(mapStateToProps, null)(Interface);

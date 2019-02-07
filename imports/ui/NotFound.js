@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 
 import { rem } from '/imports/ui/_lib/helpers-css';
-import { setSpace } from '/imports/ui/_state/space';
+import { setContext } from '/imports/ui/_state/context';
 
 const notFoundSpace = {
   name: "???",
@@ -29,7 +29,7 @@ class NotFound extends React.Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-  dispatchSpaceReset: () => dispatch(setSpace(notFoundSpace, notFoundSpace.name))
+  dispatchSpaceReset: () => dispatch(setContext(notFoundSpace, notFoundSpace.name))
 });
 
 export default connect(null, mapDispatchToProps)(NotFound);

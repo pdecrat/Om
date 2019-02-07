@@ -11,12 +11,15 @@ const register = ({ data }) => {
     const user = Meteor.users.findOne({ email: data.email });
 
     if (!user)
-      Passwordless.sendLoginEmail(data.email);
+      Passwordless.sendLoginEmail(data.email, data.url);
   }
 }
 register.dataSchema = new SimpleSchema({
   email: {
     type: String
   },
+  url: {
+    type: String
+  }
 })
 Actions.registerEffect('register', register)

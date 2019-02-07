@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Route, Switch } from 'react-router-dom';
 import { UserPlus } from 'react-feather';
 import { connect } from 'react-redux';
 
@@ -33,7 +32,7 @@ class Login extends React.Component {
     return (
       <ModalContent>
         <input value={email} onChange={e => { this.setState({ email: e.target.value }) }}/>
-        <button onClick={e => { this.props.dispatchRegister(this.props.doc, email) }}>Send Login Email</button>
+        <button onClick={e => { this.props.dispatchRegister(this.props.doc, { email, url: this.props.path }) }}>Send Login Email</button>
       </ModalContent>
     )
   }
@@ -41,10 +40,13 @@ class Login extends React.Component {
 const dispatchAfterRegister = dispatch => {
   dispatch(closeModal())
 }
+const LoginMapState = state => ({
+  path: state.router.location.pathname
+});
 const LoginMapDispatch = dispatch => ({
-  dispatchRegister: (target, email) => dispatch(callAction('register user', target, { email }, dispatchAfterRegister))
+  dispatchRegister: (target, data) => dispatch(callAction('register user', target, data, dispatchAfterRegister))
 })
-const ConnectedLogin = connect(null, LoginMapDispatch)(Login);
+const ConnectedLogin = connect(LoginMapState, LoginMapDispatch)(Login);
 
 const User = ({ user, dispatchOpenModal, doc }) =>
   <StyledUser>

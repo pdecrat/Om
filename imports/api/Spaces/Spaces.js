@@ -8,7 +8,7 @@ class SpaceCollection extends Collection {
   insert(space, callback) {
     space.reference = space.name.toLowerCase().split(' ').join('-');
     space._id = new Mongo.ObjectID()._str;
-    space.root = space._id;
+    space.root = "space";
     Collections.add(space._id);
     Collections.get(space._id).insert({
       ...space,
@@ -23,11 +23,12 @@ class SpaceCollection extends Collection {
 };
 
 const Spaces = new SpaceCollection('spaces');
+Collections.register("space", Spaces);
 
 export default Spaces;
 
 if (Meteor.isServer) {
-  Meteor.publish('target-data', function(reference) {
+  Meteor.publish('context-data', function(reference) {
     check(reference, String);
     const cursor = Spaces.find({ reference });
 

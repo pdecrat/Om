@@ -7,12 +7,13 @@ import { Collections } from '/imports/api/Collections';
 import '/imports/api/Users/effects/index';
 
 const Users = Meteor.users;
+Collections.register("user", Users);
 
 if (Meteor.isServer) {
   Accounts.onCreateUser((options, user) => {
     const returnedUser = {
       ...user,
-      root: user._id,
+      root: 'user',
       name: user.username || '??',
       spaces: options.spaces || [],
     };

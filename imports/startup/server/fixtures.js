@@ -26,6 +26,12 @@ Meteor.startup(() => {
   if (Spaces.find().count() === 0) {
     const omId = Spaces.insert({
       name: 'om',
+      theme: {
+        color: {
+          light: 'rgb(153, 254, 253)',
+          dark: 'rgb(45, 46, 43)'
+        }
+      }
     });
     Collections.get(omId).insert({
       root: omId,
