@@ -28,7 +28,7 @@ Meteor.startup(() => {
       name: 'om',
       theme: {
         color: {
-          light: 'rgb(153, 254, 253)',
+          light: 'rgb(253, 254, 253)',
           dark: 'rgb(45, 46, 43)'
         }
       }
