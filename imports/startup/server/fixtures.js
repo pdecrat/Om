@@ -30,37 +30,41 @@ Meteor.startup(() => {
         color: {
           light: 'rgb(253, 254, 253)',
           dark: 'rgb(45, 46, 43)'
+        },
+        size: {
+          nav: '50px',
         }
       }
     });
+    // Collections.get(omId).insert({
+    //   root: omId,
+    //   isActive: true,
+    //   isPublic: true,
+    //   type: "action",
+    //   name: "register user",
+    //   effects: {
+    //     register: true
+    //   }
+    // })
     Collections.get(omId).insert({
       root: omId,
       isActive: true,
-      isPublic: true,
+      isPublic: false,
       type: "action",
-      name: "register user",
-      effects: {
-        register: true
-      }
-    })
-    Collections.get(omId).insert({
-      root: omId,
-      isActive: true,
-      isPublic: true,
-      type: "action",
+      restrictedTo: [ omId + '#admin' ],
       name: "createSpace",
       effects: {
         createSpace: true
       }
     })
-    Collections.get(omId).insert({
-      root: omId,
-      isActive: true,
-      isPublic: true,
-      type: "block",
-      blockType: "user-icon",
-      name: "User",
-    })
+    // Collections.get(omId).insert({
+    //   root: omId,
+    //   isActive: true,
+    //   isPublic: true,
+    //   type: "block",
+    //   blockType: "user-icon",
+    //   name: "User",
+    // })
     Collections.get(omId).insert({
       root: omId,
       isActive: true,
@@ -81,8 +85,8 @@ Meteor.startup(() => {
     Collections.get(omId).insert({
       root: omId,
       isActive: true,
-      isPublic: true,
-      // restrictedTo: [ omId + '#admin' ],
+      isPublic: false,
+      restrictedTo: [ omId + '#admin' ],
       type: "view",
       layout: 'Grid',
       name: "settings",
@@ -92,8 +96,8 @@ Meteor.startup(() => {
       root: omId,
       isActive: true,
       isPublic: true,
-      // restrictedTo: [ omId + '#admin' ],
       type: "block",
+      text: "Bonjour, et bienvenue sur la plateforme Om. Vous pourrez bientôt y créer vos propres espaces numériques, et ainsi profiter pleinement de nombreuses fonctionnalités faites avec soin pour vous faciliter la vie.",
       blockType: "content",
       name: "Paragraph",
       width: 3,
@@ -104,7 +108,6 @@ Meteor.startup(() => {
       root: omId,
       isActive: true,
       isPublic: true,
-      // restrictedTo: [ omId + '#admin' ],
       type: "block",
       blockType: "content",
       name: "Paragraph",
@@ -115,8 +118,8 @@ Meteor.startup(() => {
     Collections.get(omId).insert({
       root: omId,
       isActive: true,
-      isPublic: true,
-      // restrictedTo: [ omId + '#admin' ],
+      isPublic: false,
+      restrictedTo: [ omId + '#admin' ],
       type: "block",
       blockType: "content",
       name: "ModalTester",
@@ -125,8 +128,8 @@ Meteor.startup(() => {
     Collections.get(omId).insert({
       root: omId,
       isActive: true,
-      isPublic: true,
-      // restrictedTo: [ omId + '#admin' ],
+      isPublic: false,
+      restrictedTo: [ omId + '#admin' ],
       type: "block",
       blockType: "content",
       name: "MenuTester",
@@ -135,8 +138,8 @@ Meteor.startup(() => {
     Collections.get(omId).insert({
       root: omId,
       isActive: true,
-      isPublic: true,
-      // restrictedTo: [ omId + '#admin' ],
+      isPublic: false,
+      restrictedTo: [ omId + '#admin' ],
       type: "block",
       blockType: "content",
       name: "ActionDispatcher",
@@ -147,8 +150,8 @@ Meteor.startup(() => {
     Collections.get(omId).insert({
       root: omId,
       isActive: true,
-      isPublic: true,
-      // restrictedTo: [ omId + '#admin' ],
+      isPublic: false,
+      restrictedTo: [ omId + '#admin' ],
       type: "block",
       blockType: "content",
       name: "DataList",

@@ -9,6 +9,8 @@ class SpaceCollection extends Collection {
     space.reference = space.name.toLowerCase().split(' ').join('-');
     space._id = new Mongo.ObjectID()._str;
     space.root = "space";
+    space.isActive = true;
+    space.isPublic = true;
     Collections.add(space._id);
     Collections.get(space._id).insert({
       ...space,

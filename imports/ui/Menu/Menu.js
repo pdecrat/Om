@@ -13,7 +13,7 @@ import Panel from '/imports/ui/Menu/Panel';
 
 const StyledHeader = styled.header`
   position: fixed;
-  height: ${rem('50px')};
+  height: ${props => rem(props.theme.size.nav)};
   width: 100%;
   display: flex;
   align-items: center;

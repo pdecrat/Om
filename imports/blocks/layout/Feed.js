@@ -16,7 +16,7 @@ const Feed = ({ blocks = [] }) =>
   <StyledFeed>
     {blocks.map((block, index) => {
       const Component = Blocks[block.name];
-      return !!Component && <Component key={index} />
+      return !!Component && <Component key={index} data={block} />
     })}
   </StyledFeed>
 

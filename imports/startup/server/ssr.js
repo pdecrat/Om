@@ -1,6 +1,7 @@
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { onPageLoad } from 'meteor/server-render';
+import { FastRender } from 'meteor/staringatlights:fast-render';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
@@ -12,7 +13,7 @@ import { ServerStyleSheet } from 'styled-components'
 import mainReducer from '/imports/ui/_state/main-reducer';
 import App from '/imports/ui/App';
 
-onPageLoad((sink) => {
+FastRender.onPageLoad((sink) => {
   const history = createMemoryHistory({
     initialEntries: [sink.request.url],
   })

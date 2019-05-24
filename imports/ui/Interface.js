@@ -2,6 +2,7 @@ import React from 'react';
 import { ThemeProvider } from 'styled-components';
 import { connect } from 'react-redux';
 
+import { rem } from '/imports/ui/_lib/helpers-css';
 import Modal from '/imports/ui/Modal/Modal';
 import Content from '/imports/ui/Content';
 import Menu from '/imports/ui/Menu/Menu';
@@ -12,6 +13,9 @@ const defaultTheme = {
   color: {
     light: 'rgb(253, 254, 253)',
     dark: 'rgb(45, 46, 43)'
+  },
+  size: {
+    nav: '50px'
   }
 }
 

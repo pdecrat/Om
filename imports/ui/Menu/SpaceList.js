@@ -13,7 +13,7 @@ const StyledWrapper = styled.div`
   position: absolute;
   top: 0;
   left: 0;
-  width: ${rem('300px')};
+  min-width: ${rem('50px')};
   display: flex;
   flex-direction: column;
   z-index: 9
@@ -23,7 +23,7 @@ const StyledSpaceList = styled.div`
   overflow-y: scroll;
 `
 
-const SpaceList = ({ spaces }) =>
+const SpaceList = ({ spaces }) => spaces.length ?
   <StyledWrapper>
     <StyledSpaceList>
       {spaces.map((space, index) =>
@@ -36,6 +36,7 @@ const SpaceList = ({ spaces }) =>
       )}
     </StyledSpaceList>
   </StyledWrapper>
+  : null
 
 const TrackedSpaceList = withTracker(props => {
   const {
@@ -44,9 +45,7 @@ const TrackedSpaceList = withTracker(props => {
   } = props;
   const spaces = user && Data.find({
     type: "shortcut"
-  }).fetch()
-  || [
-  ];
+  }).fetch() || [];
 
   return {
     ...props,

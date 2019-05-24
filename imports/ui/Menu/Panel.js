@@ -9,6 +9,7 @@ import SpaceMenu from './SpaceMenu';
 
 const StyledPanel = styled.div`
 {
+  display: flex;
   position: fixed;
   left: 0;
   top: 0;

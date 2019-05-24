@@ -14,7 +14,7 @@ const UserDataStore = withTracker(props => {
   const query = qs.parse(props.search) || {};
   const user = Meteor.user();
   const loggingIn = Meteor.loggingIn();
-  const handle = Data.subscribe('user-data');
+  const handle = Meteor.subscribe('user-data');
 
   if (!!query.token && !loggingIn) {
     Accounts.callLoginMethod({

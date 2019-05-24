@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
+import { replace } from 'connected-react-router';
 import { withTracker } from 'meteor/react-meteor-data';
 import styled from 'styled-components';
 import { throttle } from 'lodash';
@@ -11,7 +12,7 @@ import Blocks from '/imports/blocks/blocks-index';
 import Data from '/imports/api/Data';
 
 const StyledContent = styled.div`
-  padding-top: ${rem('50px')};
+  padding-top: ${props => rem(props.theme.size.nav)};
   background-color: ${props => props.theme.color.light};
   height: 100vh;
   overflow-y: ${props => props.preventScroll ? "scroll" : "auto" }
@@ -97,6 +98,7 @@ const TrackedContent = withTracker(props => {
   const {
     context,
     query,
+    dispatchPush,
   } = props;
 
   if (!context) return props;
@@ -105,6 +107,9 @@ const TrackedContent = withTracker(props => {
     type: 'view',
     name: query.view ? query.view : context.name,
   });
+  if (!view) {
+    dispatchPush('/not-found')
+  }
 
   return {
     ...props,
@@ -121,5 +126,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   dispatchHide: () => dispatch(hideMenu()),
   dispatchShow: () => dispatch(showMenu()),
+  dispatchPush: url => dispatch(replace(url)),
 })
 export default connect(mapStateToProps, mapDispatchToProps)(TrackedContent);

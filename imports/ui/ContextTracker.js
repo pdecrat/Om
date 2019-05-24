@@ -20,7 +20,7 @@ const ContextTracker = withTracker(props => {
   } = props;
   const reference = decodeURIComponent(match.params.reference);
   const type = match.params.type === 's' ? 'space' : 'user';
-  const sub = Data.subscribe('context-data', reference);
+  const sub = Meteor.subscribe('context-data', reference);
   const query = { reference }
   if (Meteor.isServer) query.root = type;
   const doc = Data.findOne(query);

@@ -11,13 +11,9 @@ const StyledParagraph = styled.div`
   margin: auto;
 `
 
-const Paragraph = ({  }) =>
+const Paragraph = ({ data }) =>
   <StyledParagraph>
-    <Text />
+    <Text text={data.text} />
   </StyledParagraph>
 
-export default withTracker(props => {
-  return {
-    ...props,
-  }
-})(Paragraph);
+export default Paragraph
