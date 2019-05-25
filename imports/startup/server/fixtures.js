@@ -36,16 +36,16 @@ Meteor.startup(() => {
         }
       }
     });
-    // Collections.get(omId).insert({
-    //   root: omId,
-    //   isActive: true,
-    //   isPublic: true,
-    //   type: "action",
-    //   name: "register user",
-    //   effects: {
-    //     register: true
-    //   }
-    // })
+    Collections.get(omId).insert({
+      root: omId,
+      isActive: true,
+      isPublic: true,
+      type: "action",
+      name: "register user",
+      effects: {
+        register: true
+      }
+    })
     Collections.get(omId).insert({
       root: omId,
       isActive: true,
@@ -57,14 +57,14 @@ Meteor.startup(() => {
         createSpace: true
       }
     })
-    // Collections.get(omId).insert({
-    //   root: omId,
-    //   isActive: true,
-    //   isPublic: true,
-    //   type: "block",
-    //   blockType: "user-icon",
-    //   name: "User",
-    // })
+    Collections.get(omId).insert({
+      root: omId,
+      isActive: true,
+      isPublic: true,
+      type: "block",
+      blockType: "user-icon",
+      name: "User",
+    })
     Collections.get(omId).insert({
       root: omId,
       isActive: true,
