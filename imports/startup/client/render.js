@@ -30,7 +30,7 @@ FastRender.onPageLoad(() => {
   hydrate(
     <Provider store={store}>
       <ConnectedRouter history={history}>
-        <App />
+        <App router={history} />
       </ConnectedRouter>
     </Provider>
     , document.getElementById('react-root'));

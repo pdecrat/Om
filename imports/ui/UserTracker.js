@@ -6,7 +6,7 @@ import { replace } from 'connected-react-router';
 import qs from 'query-string';
 
 import { setUser, logOutUser, setAsLoggingIn } from '/imports/ui/_state/user';
-import ContextTracker from '/imports/ui/ContextTracker';
+import { ContextTracker } from '/imports/ui/ContextTracker';
 
 const UserDataStore = withTracker(props => {
   if (Meteor.isServer) return props;

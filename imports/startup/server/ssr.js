@@ -30,7 +30,7 @@ FastRender.onPageLoad((sink) => {
   const Prerender = props => (
     <Provider store={store}>
       <ConnectedRouter history={history}>
-        <App />
+        <App router={history} />
       </ConnectedRouter>
     </Provider>
   );

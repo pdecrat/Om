@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import ReactDOM from 'react-dom';
+import { Context } from '/imports/ui/ContextTracker'
 import { connect } from 'react-redux';
 import { replace } from 'connected-react-router';
 import { withTracker } from 'meteor/react-meteor-data';
@@ -78,7 +79,9 @@ class Content extends React.Component {
   render() {
     const {
       layout,
-      preventScroll
+      preventScroll,
+      context,
+      query,
     } = this.props;
     const Component = Blocks[layout];
 
@@ -88,7 +91,7 @@ class Content extends React.Component {
         onScroll={e => {e.persist(); this.handleScroll(e); }}
         preventScroll={preventScroll}
       >
-        <Component />
+        <Component query={query} context={context} />
       </StyledContent>
       : null;
   }
@@ -114,18 +117,23 @@ const TrackedContent = withTracker(props => {
   return {
     ...props,
     layout: view && view.layout,
+    context,
+    query,
   }
 })(Content);
+
+const TestContent = props => {
+  const { context, query } = useContext(Context);
+  return <TrackedContent {...props} query={query} context={context} />
+}
 
 const mapStateToProps = state => ({
   preventScroll: state.ui.menu.open || state.ui.modal.open,
   isMenuHidden: state.ui.menu.hidden,
-  context: state.context.doc,
-  query: state.context.query
 })
 const mapDispatchToProps = dispatch => ({
   dispatchHide: () => dispatch(hideMenu()),
   dispatchShow: () => dispatch(showMenu()),
   dispatchPush: url => dispatch(replace(url)),
 })
-export default connect(mapStateToProps, mapDispatchToProps)(TrackedContent);
+export default connect(mapStateToProps, mapDispatchToProps)(TestContent);

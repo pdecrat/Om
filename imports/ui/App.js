@@ -6,8 +6,8 @@ import { replace } from 'connected-react-router';
 import UserTracker from '/imports/ui/UserTracker';
 import NotFound from '/imports/ui/NotFound';
 
-const App = ({ dispatchPush }) =>
-  <Switch>
+const App = ({ dispatchPush, router }) =>
+  <Switch router={router} >
     <Route exact path="/" render={props => { dispatchPush('/s/om'); return null; }} />
     <Route path='/:type([s, u])/:reference' component={UserTracker} />
     <Route component={NotFound} />

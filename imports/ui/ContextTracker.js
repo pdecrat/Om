@@ -1,21 +1,21 @@
 import React from 'react';
-import { connect } from 'react-redux';
+
+import { withRouter} from 'react-router-dom';
 import { withTracker } from 'meteor/react-meteor-data';
-import { replace } from 'connected-react-router';
 import { matchPath } from 'react-router';
 import qs from 'query-string';
 
 import Data from '/imports/api/Data';
 import Spaces from '/imports/api/Spaces/Spaces';
-import { setContext } from '/imports/ui/_state/context';
 import Interface from '/imports/ui/Interface';
 
-const ContextTracker = withTracker(props => {
+export const Context = React.createContext('context')
+
+const Tracker = withTracker(props => {
   const {
     path,
     search,
-    dispatchPush,
-    dispatchSetSpace,
+    history,
     match,
   } = props;
   const reference = decodeURIComponent(match.params.reference);
@@ -23,28 +23,23 @@ const ContextTracker = withTracker(props => {
   const sub = Meteor.subscribe('context-data', reference);
   const query = { reference }
   if (Meteor.isServer) query.root = type;
-  const doc = Data.findOne(query);
+  const context = Data.findOne(query);
 
-  if (!doc && (Meteor.isServer || sub.ready())) {
-    dispatchPush('/not-found');
+  if (!context && (Meteor.isServer || sub.ready())) {
+    history.push('/not-found');
   } else if (Meteor.isServer || sub.ready()) {
-    dispatchSetSpace(doc, qs.parse(search), match);
+    return {
+      ...props,
+      context,
+      query,
+    };
   }
 
-  return {
-    ...props,
-    query,
-  };
-
-})(Interface);
-
-const mapStateToProps = state => ({
-  search: state.router.location.search,
-  path: state.router.location.pathname,
-});
-const mapDispatchToProps = dispatch => ({
-  dispatchSetSpace: (space, query, match) => dispatch(setContext(space, query, match)),
-  dispatchPush: url => dispatch(replace(url)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContextTracker);
+const Provider = ({ context, query }) =>
+  <Context.Provider value={{ context, query }}>
+    <Interface />
+  </Context.Provider>
+
+export const ContextTracker = withRouter(Tracker(Provider));

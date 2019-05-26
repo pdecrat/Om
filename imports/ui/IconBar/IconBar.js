@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
+import { Context } from '/imports/ui/ContextTracker'
 import { withTracker } from 'meteor/react-meteor-data';
 
 import { rem } from '/imports/ui/_lib/helpers-css';
-import withContext from '/imports/ui/_components/hoc/withContext';
 import Data from '/imports/api/Data';
 import Blocks from '/imports/blocks/blocks-index';
 
@@ -22,7 +22,7 @@ const IconBar = ({ icons = [] }) =>
     })}
   </StyledIconBar>
 
-export default withContext(withTracker(props => {
+const TrackedIcons = withTracker(props => {
   if (props.context && props.context._id) {
     const icons = Data.find({
       root: props.context._id,
@@ -36,4 +36,11 @@ export default withContext(withTracker(props => {
     }
   }
   return props;
-})(IconBar));
+})(IconBar);
+
+const Icons = props => {
+  const { context, query } = useContext(Context);
+  return <TrackedIcons {...props} query={query} context={context} />
+}
+
+export default Icons
