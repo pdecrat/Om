@@ -1,16 +1,15 @@
 import React, { useContext } from 'react';
 import ReactDOM from 'react-dom';
-import { Context } from '/imports/ui/ContextTracker'
-import { connect } from 'react-redux';
-import { replace } from 'connected-react-router';
+import { withRouter } from 'react-router-dom';
 import { withTracker } from 'meteor/react-meteor-data';
 import styled from 'styled-components';
 import { throttle } from 'lodash';
 
 import { rem } from '/imports/ui/_lib/helpers-css';
-import { hideMenu, showMenu } from '/imports/ui/_state/ui/menu';
 import Blocks from '/imports/blocks/blocks-index';
 import Data from '/imports/api/Data';
+import { Context } from '/imports/ui/ContextTracker';
+import { InterfaceContext } from '/imports/ui/Interface';
 
 const StyledContent = styled.div`
   padding-top: ${props => rem(props.theme.size.nav)};
@@ -47,9 +46,7 @@ class Content extends React.Component {
         navHeight
       } = this.state;
       const {
-        dispatchShow,
-        dispatchHide,
-        isMenuHidden,
+        setNav
       } = this.props;
       const scrollTop = content.scrollTop;
 
@@ -61,13 +58,13 @@ class Content extends React.Component {
         && scrollTop > navHeight
         && scrollTop - lastScrollTop > delta)
       {
-        dispatchHide();
+        setNav(true);
       } else if (isMenuHidden
         && (scrollTop < lastScrollTop
           && lastScrollTop - scrollTop > delta
         || scrollTop < navHeight)
       ) {
-        dispatchShow();
+        setNav(false);
       }
 
       this.setState({
@@ -79,7 +76,7 @@ class Content extends React.Component {
   render() {
     const {
       layout,
-      preventScroll,
+      isMenuOpen,
       context,
       query,
     } = this.props;
@@ -89,51 +86,53 @@ class Content extends React.Component {
       <StyledContent
         ref="content"
         onScroll={e => {e.persist(); this.handleScroll(e); }}
-        preventScroll={preventScroll}
+        preventScroll={isMenuOpen}
       >
-        <Component query={query} context={context} />
+        <Component context={context} query={query} />
       </StyledContent>
       : null;
   }
 }
 
-const TrackedContent = withTracker(props => {
+const TrackedContent = withRouter(withTracker(props => {
   const {
     context,
     query,
-    dispatchPush,
+    history,
+    isReady,
   } = props;
 
   if (!context) return props;
+
   const view = Data.findOne({
     root: context._id,
     type: 'view',
     name: query.view ? query.view : context.name,
   });
-  if (!view) {
-    dispatchPush('/not-found')
+  if (!view && (Meteor.isServer || isReady)) {
+    history.push('/not-found')
   }
 
   return {
     ...props,
     layout: view && view.layout,
-    context,
-    query,
   }
-})(Content);
+})(Content));
 
-const TestContent = props => {
-  const { context, query } = useContext(Context);
-  return <TrackedContent {...props} query={query} context={context} />
+const ConnectedContent = () => {
+  const { context, query, isReady } = useContext(Context);
+  const { isNavHidden, setNav, isMenuOpen } = useContext(InterfaceContext);
+
+  return (
+    <TrackedContent
+      isReady
+      isMenuOpen
+      query={query}
+      context={context}
+      isNavHidden={isNavHidden}
+      setNav={setNav}
+    />
+  );
 }
 
-const mapStateToProps = state => ({
-  preventScroll: state.ui.menu.open || state.ui.modal.open,
-  isMenuHidden: state.ui.menu.hidden,
-})
-const mapDispatchToProps = dispatch => ({
-  dispatchHide: () => dispatch(hideMenu()),
-  dispatchShow: () => dispatch(showMenu()),
-  dispatchPush: url => dispatch(replace(url)),
-})
-export default connect(mapStateToProps, mapDispatchToProps)(TestContent);
+export default ConnectedContent;

@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { ThemeProvider } from 'styled-components';
-import { connect } from 'react-redux';
 
 import { rem } from '/imports/ui/_lib/helpers-css';
-import Modal from '/imports/ui/Modal/Modal';
+import Modal, { useModal } from '/imports/ui/Modal/Modal';
 import Content from '/imports/ui/Content';
-import Menu from '/imports/ui/Menu/Menu';
+import Menu, { useMenu } from '/imports/ui/Menu/Menu';
+import { Context } from '/imports/ui/ContextTracker'
 
 import '/imports/ui/_lib/global-style';
 
@@ -19,17 +19,25 @@ const defaultTheme = {
   }
 }
 
-const Interface = ({ theme = defaultTheme }) =>
-  <ThemeProvider theme={theme}>
-    <React.Fragment>
-      <Modal />
-      <Menu />
-      <Content />
-    </React.Fragment>
-  </ThemeProvider>
+export const InterfaceContext = React.createContext({});
+const Interface = () => {
+  const { context } = useContext(Context);
+  const modal = useModal();
+  const menu = useMenu();
+  return context ?
+    (
+      <ThemeProvider theme={context.theme}>
+        <InterfaceContext.Provider value={{
+          ...modal,
+          ...menu
+        }}>
+          <Modal />
+          <Menu />
+          <Content />
+        </InterfaceContext.Provider>
+      </ThemeProvider>
+    )
+    : null;
+}
 
-const mapStateToProps = state => ({
-  theme: state.context.doc.theme
-});
-
-export default connect(mapStateToProps, null)(Interface);
+export default Interface;

@@ -1,22 +1,22 @@
 import { Meteor } from 'meteor/meteor';
 import React from 'react';
-import { connect } from 'react-redux';
+import { withRouter} from 'react-router-dom';
 import { withTracker } from 'meteor/react-meteor-data';
-import { replace } from 'connected-react-router';
 import qs from 'query-string';
 
-import { setUser, logOutUser, setAsLoggingIn } from '/imports/ui/_state/user';
 import { ContextTracker } from '/imports/ui/ContextTracker';
+
+export const UserContext = React.createContext({})
 
 const UserDataStore = withTracker(props => {
   if (Meteor.isServer) return props;
 
   const query = qs.parse(props.search) || {};
   const user = Meteor.user();
-  const loggingIn = Meteor.loggingIn();
+  const isLoggingIn = Meteor.loggingIn();
   const handle = Meteor.subscribe('user-data');
 
-  if (!!query.token && !loggingIn) {
+  if (!!query.token && !isLoggingIn) {
     Accounts.callLoginMethod({
       methodArguments: [{
         'passwordless': {
@@ -25,32 +25,20 @@ const UserDataStore = withTracker(props => {
       }],
       userCallback: function(err, res) {
         if (err) console.log(err);
-        props.dispatchPush(props.path);
+        props.history.push(props.path);
       }
     });
 
   }
-  if (!loggingIn && user && handle.ready()) {
-    props.dispatchSetUser(user);
-  } else if (loggingIn) {
-    props.dispatchSetAsLoggingIn();
-  } else {
-    props.dispatchLogOut();
+  return {
+    user,
+    isLoggingIn
   }
-
-  return props;
-})(ContextTracker);
-
-const mapStateToProps = state => ({
-  search: state.router.location.search,
-  path: state.router.location.pathname,
 });
 
-const mapDispatchToProps = dispatch => ({
-  dispatchSetUser: user => dispatch(setUser(user)),
-  dispatchLogOut: () => dispatch(logOutUser()),
-  dispatchSetAsLoggingIn: () => dispatch(setAsLoggingIn()),
-  dispatchPush: url => dispatch(replace(url)),
-});
+const Provider = ({ user, isLoggingIn }) =>
+  <UserContext.Provider value={{ user, isLoggingIn }}>
+    <ContextTracker />
+  </UserContext.Provider>
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserDataStore);
+export const UserTracker = withRouter(UserDataStore(Provider));

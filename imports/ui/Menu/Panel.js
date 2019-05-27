@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
 
 import { rem } from '/imports/ui/_lib/helpers-css';
 
 import SpaceList from './SpaceList';
 import SpaceMenu from './SpaceMenu';
+import { InterfaceContext } from '/imports/ui/Interface';
 
 const StyledPanel = styled.div`
 {
@@ -28,18 +28,17 @@ const StyledPanel = styled.div`
   }
 }`
 
-const Panel = ({ menu, dispatchCloseMenu, width }) =>
-  <StyledPanel
-      isOpen={menu.open}
-      width={width}
-    >
-      <SpaceList />
-      <SpaceMenu />
-  </StyledPanel>
+const Panel = () => {
+  const { isMenuOpen } = useContext(InterfaceContext);
 
-const mapStateToProps = state => ({ menu: state.ui.menu });
-const mapDispatchToProps = dispatch => ({
-  dispatchCloseMenu: () => dispatch(closeMenu()),
-});
+  return (
+    <StyledPanel
+        isOpen={isMenuOpen}
+      >
+        <SpaceList />
+        <SpaceMenu />
+    </StyledPanel>
+  )
+}
 
-export default connect(mapStateToProps, mapDispatchToProps)(Panel);
+export default Panel;

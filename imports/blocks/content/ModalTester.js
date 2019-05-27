@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
 
 import Block from '/imports/ui/_components/Block';
-import { openModal } from '/imports/ui/_state/ui/modal';
 import ModalContent from '/imports/ui/Modal/ModalContent';
+import { InterfaceContext } from '/imports/ui/Interface';
 
 const Content = () =>
   <ModalContent>
@@ -20,15 +19,17 @@ Post quorum necem nihilo lenius ferociens Gallus ut leo cadaveribus pastus multa
 Cum autem commodis intervallata temporibus convivia longa et noxia coeperint apparari vel distributio sollemnium sportularum, anxia deliberatione tractatur an exceptis his quibus vicissitudo debetur, peregrinum invitari conveniet, et si digesto plene consilio id placuerit fieri, is adhibetur qui pro domibus excubat aurigarum aut artem tesserariam profitetur aut secretiora quaedam se nosse confingit.
   </ModalContent>
 
-const ModalTester = ({ dispatchOpenModal }) =>
-  <Block width={1} height={1} >
-    <button onClick={e => { dispatchOpenModal(<Content />) }}>
-      Open Modal
-    </button>
-  </Block>
+const ModalTester = () => {
+  const {
+    openWithContent
+  } = useContext(InterfaceContext);
+  return (
+    <Block width={1} height={1} >
+      <button onClick={e => { openWithContent(<Content />) }}>
+        Open Modal
+      </button>
+    </Block>
+  )
+}
 
-const mapDispatchToProps = dispatch => ({
-  dispatchOpenModal: content => dispatch(openModal(content)),
-});
-
-export default connect(null, mapDispatchToProps)(ModalTester);
+export default ModalTester;

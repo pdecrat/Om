@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
 
 import { rem } from '/imports/ui/_lib/helpers-css';
 
@@ -18,8 +17,4 @@ const ModalContent = ({ children }) =>
     {children}
   </StyledContent>
 
-const mapStateToProps = state => ({ modal: state.ui.modal });
-const mapDispatchToProps = dispatch => ({
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(ModalContent);
+export default ModalContent;

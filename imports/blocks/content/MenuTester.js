@@ -1,21 +1,19 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
 
-import { openMenu } from '/imports/ui/_state/ui/menu';
 import Block from '/imports/ui/_components/Block';
+import { InterfaceContext } from '/imports/ui/Interface';
 
-const MenuTester = ({ dispatchOpenMenu }) =>
-  <Block width={1} height={1}>
-    <button onClick={e => { dispatchOpenMenu() }}>
-      Open Menu
-    </button>
-  </Block>
+const MenuTester = ({ dispatchOpenMenu }) => {
+  const { setMenu } = useContext(InterfaceContext);
 
+  return (
+    <Block width={1} height={1}>
+      <button onClick={e => { setMenu(true) }}>
+        Open Menu
+      </button>
+    </Block>
+  )
+}
 
-const mapStateToProps = state => ({ menu: state.ui.menu });
-const mapDispatchToProps = dispatch => ({
-  dispatchOpenMenu: () => dispatch(openMenu()),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(MenuTester);
+export default MenuTester;

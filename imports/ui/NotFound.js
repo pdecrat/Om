@@ -1,9 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
 
 import { rem } from '/imports/ui/_lib/helpers-css';
-import { setContext } from '/imports/ui/_state/context';
 
 const notFoundSpace = {
   name: "???",
@@ -17,19 +15,7 @@ const StyledNotFound = styled.div`
   vertical-align: middle;
 `
 
-class NotFound extends React.Component {
+const NotFound = () =>
+  <StyledNotFound>Space not found (black hole ?)</StyledNotFound>
 
-  componentWillMount() {
-    this.props.dispatchSpaceReset();
-  }
-
-  render() {
-    return <StyledNotFound>Space not found (black hole ?)</StyledNotFound>
-  }
-}
-
-const mapDispatchToProps = dispatch => ({
-  dispatchSpaceReset: () => dispatch(setContext(notFoundSpace, notFoundSpace.name))
-});
-
-export default connect(null, mapDispatchToProps)(NotFound);
+export default NotFound;

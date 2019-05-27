@@ -118,8 +118,8 @@ Meteor.startup(() => {
     Collections.get(omId).insert({
       root: omId,
       isActive: true,
-      isPublic: false,
-      restrictedTo: [ omId + '#admin' ],
+      isPublic: true,
+      // restrictedTo: [ omId + '#admin' ],
       type: "block",
       blockType: "content",
       name: "ModalTester",
@@ -128,8 +128,8 @@ Meteor.startup(() => {
     Collections.get(omId).insert({
       root: omId,
       isActive: true,
-      isPublic: false,
-      restrictedTo: [ omId + '#admin' ],
+      isPublic: true,
+      // restrictedTo: [ omId + '#admin' ],
       type: "block",
       blockType: "content",
       name: "MenuTester",

@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
 
 import { media, rem } from '/imports/ui/_lib/helpers-css';
-import { closeModal } from '/imports/ui/_state/ui/modal';
+import { InterfaceContext } from '/imports/ui/Interface';
 
 const StyledModal = styled.div`
   pointer-events: ${props => props.isOpen ? 'auto' : 'none'};
@@ -20,18 +19,39 @@ const StyledModal = styled.div`
   background-color: ${props => props.isOpen ? `rgba(0,0,0,0.2)` : `rgba(0,0,0,0)`};
   transition: background-color 0.4s;
 `
+export function useModal() {
+  const [isModalOpen, setModal] = useState(false);
+  const [modalContent, setModalContent] = useState(null);
+  function openWithContent(component) {
+    setModalContent(component);
+    setModal(true);
+  }
+  function closeModal() {
+    setModalContent(null);
+    setModal(false);
+  }
+  return {
+    isModalOpen,
+    modalContent,
+    openWithContent,
+    closeModal
+  }
+}
 
-const Modal = ({ modal, dispatchCloseModal }) =>
-  <StyledModal
-    isOpen={modal.open}
-    onClick={e => { dispatchCloseModal() }}
-  >
-    {modal.content}
-  </StyledModal>
+const Modal = () => {
+  const {
+    modalContent,
+    isModalOpen,
+    closeModal
+  } = useContext(InterfaceContext);
+  return (
+    <StyledModal
+      isOpen={isModalOpen}
+      onClick={e => { closeModal() }}
+    >
+        {modalContent}
+    </StyledModal>
+  )
+}
 
-const mapStateToProps = state => ({ modal: state.ui.modal });
-const mapDispatchToProps = dispatch => ({
-  dispatchCloseModal: () => dispatch(closeModal()),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Modal);
+export default Modal;

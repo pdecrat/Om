@@ -1,15 +1,15 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
 import { MoreVertical } from 'react-feather';
 
 import { rem } from '/imports/ui/_lib/helpers-css';
 import Background from '/imports/ui/_components/Background';
 import Avatar from '/imports/ui/_components/Avatar';
-import { toggleMenu, closeMenu } from '/imports/ui/_state/ui/menu';
 import Breadcrumbs from '/imports/ui/Menu/Breadcrumbs';
 import IconBar from '/imports/ui/IconBar/IconBar';
 import Panel from '/imports/ui/Menu/Panel';
+import { InterfaceContext } from '/imports/ui/Interface';
+import { Context } from '/imports/ui/ContextTracker';
 
 const StyledHeader = styled.header`
   position: fixed;
@@ -59,41 +59,49 @@ const StyledDot = styled.span`
   border-radius: 50%;
   transition: transform 0.15s ease-out, opacity 0.20s ease-out;
 `
+export function useMenu() {
+  const [isMenuOpen, setMenu] = useState(false);
+  const [isNavHidden, setNav] = useState(false);
+  return {
+    isMenuOpen,
+    setMenu,
+    isNavHidden,
+    setNav,
+  };
+}
 
-const Menu = ({
-  menu,
-  dispatchToggleMenu,
-  dispatchCloseMenu,
-  context,
-}) =>
-  <StyledHeader isHidden={menu.hidden}>
-    <StyledMenu
-      onClick={e => { dispatchToggleMenu() }}
-    >
-      <StyledDots>
-        <StyledDot></StyledDot>
-        <StyledDot></StyledDot>
-        <StyledDot></StyledDot>
-      </StyledDots>
-      <Avatar object={context.doc} size={36} />
-      <Breadcrumbs match={context.match} query={context.query} />
-    </StyledMenu>
-    <Panel />
-    <Background
-      isOpen={menu.open}
-      func={e => { dispatchCloseMenu() }}
-      zIndex={-2}
-    />
-    <IconBar />
-  </StyledHeader>
+const Menu = () => {
+  const {
+    isMenuOpen,
+    isNavHidden,
+    setMenu,
+  } = useContext(InterfaceContext);
+  const {
+    context,
+    query
+  } = useContext(Context)
+  return (
+    <StyledHeader isHidden={isNavHidden}>
+      <StyledMenu
+        onClick={e => { setMenu(!isMenuOpen) }}
+      >
+        <StyledDots>
+          <StyledDot></StyledDot>
+          <StyledDot></StyledDot>
+          <StyledDot></StyledDot>
+        </StyledDots>
+        <Avatar object={context} size={36} />
+        <Breadcrumbs match={context.match} query={query} />
+      </StyledMenu>
+      <Panel />
+      <Background
+        isOpen={isMenuOpen}
+        func={e => { setMenu(false) }}
+        zIndex={-2}
+      />
+      <IconBar />
+    </StyledHeader>
+  )
+}
 
-const mapStateToProps = state => ({
-  menu: state.ui.menu,
-  context: state.context,
-});
-const mapDispatchToProps = dispatch => ({
-  dispatchToggleMenu: () => dispatch(toggleMenu()),
-  dispatchCloseMenu: () => dispatch(closeMenu()),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Menu);
+export default Menu;

@@ -1,5 +1,6 @@
 import React from 'react';
 import { renderToString } from 'react-dom/server';
+import { StaticRouter} from 'react-router-dom';
 import { onPageLoad } from 'meteor/server-render';
 import { FastRender } from 'meteor/staringatlights:fast-render';
 import { Provider } from 'react-redux';
@@ -10,29 +11,16 @@ import { createMemoryHistory } from 'history';
 import { ConnectedRouter, connectRouter, routerMiddleware } from 'connected-react-router';
 import { ServerStyleSheet } from 'styled-components'
 
-import mainReducer from '/imports/ui/_state/main-reducer';
 import App from '/imports/ui/App';
 
 FastRender.onPageLoad((sink) => {
   const history = createMemoryHistory({
     initialEntries: [sink.request.url],
   })
-  const store = createStore(
-    connectRouter(history)(mainReducer),
-    {},
-    compose(
-      applyMiddleware(
-        routerMiddleware(history),
-        thunk,
-      ),
-    ),
-  )
   const Prerender = props => (
-    <Provider store={store}>
-      <ConnectedRouter history={history}>
-        <App router={history} />
-      </ConnectedRouter>
-    </Provider>
+    <StaticRouter context={history}>
+      <App />
+    </StaticRouter>
   );
 
   const stop = history.listen((match, type) => {
@@ -49,11 +37,5 @@ FastRender.onPageLoad((sink) => {
   const helmet = Helmet.renderStatic();
   sink.appendToHead(helmet.meta.toString());
   sink.appendToHead(helmet.title.toString());
-  const preloadedState = store.getState();
   stop();
-  sink.appendToBody(`
-    <script>
-      window.__PRELOADED_STATE__ = ${JSON.stringify(preloadedState).replace(/</g, '\\u003c')}
-    </script>
-  `);
 });

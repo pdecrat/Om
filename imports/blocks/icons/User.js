@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { UserPlus } from 'react-feather';
 import { connect } from 'react-redux';
 
 import { callAction } from '/imports/api/Actions';
-import { openModal, closeModal } from '/imports/ui/_state/ui/modal';
 import ModalContent from '/imports/ui/Modal/ModalContent';
+import { InterfaceContext } from '/imports/ui/Interface';
 import Avatar from '/imports/ui/_components/Avatar';
 import { rem } from '/imports/ui/_lib/helpers-css';
+import { UserContext } from '/imports/ui/UserTracker';
 
 const StyledUser = styled.li`
   margin-right: 5px;
@@ -48,17 +49,17 @@ const LoginMapDispatch = dispatch => ({
 })
 const ConnectedLogin = connect(LoginMapState, LoginMapDispatch)(Login);
 
-const User = ({ user, dispatchOpenModal, doc }) =>
-  <StyledUser>
-    {user ?
-      <Avatar object={user} size={36} />
-      : <UserPlus size={32} onClick={e => { dispatchOpenModal(<ConnectedLogin doc={doc} />) }}/>
-    }
-  </StyledUser>
+const User = ({ dispatchOpenModal, doc }) => {
+    const { user } = useContext(UserContext);
+    const { openWithContent } = useContext(InterfaceContext);
+    return (
+      <StyledUser>
+        {user ?
+          <Avatar object={user} size={36} />
+          : <UserPlus size={32} onClick={e => { openWithContent(<ConnectedLogin doc={doc} />) }}/>
+        }
+      </StyledUser>
+    )
+  }
 
-const mapStateToProps = state => ({ user: state.user.doc });
-const mapDispatchToProps = dispatch => ({
-  dispatchOpenModal: content => dispatch(openModal(content)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(User);
+export default User;

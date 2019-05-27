@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { withTracker } from 'meteor/react-meteor-data';
+import { withRouter } from 'react-router-dom';
 
 import Data from '/imports/api/Data';
 import { rem } from '/imports/ui/_lib/helpers-css';
-import { clickLink } from '/imports/ui/_state/ui/menu';
+import { Context } from '/imports/ui/ContextTracker';
 
 const StyledSpaceMenu = styled.div`
   border-radius: 3px 0 0 0;
@@ -35,14 +36,14 @@ const isMainCategory = (path, category) => {
   return space === category;
 }
 
-const SpaceMenu = ({ views = [], dispatchClickLink, path }) =>
+const SpaceMenu = ({ views = [], history }) =>
   <StyledSpaceMenu>
     {views.map((view, index) =>
       <StyledCategory
         key={index}
         onClick={e => {
-          dispatchClickLink(view.url.length ?
-            `${path}?view=${view.url}` : path )
+          history.push(view.url.length ?
+            `${path}?view=${view.url}` : history.location.pathname )
         }}
       >
         {view.name}
@@ -50,7 +51,7 @@ const SpaceMenu = ({ views = [], dispatchClickLink, path }) =>
     )}
   </StyledSpaceMenu>
 
-const TrackedMenu = withTracker(props => {
+const TrackedMenu = withRouter(withTracker(props => {
   if (props.context && props.context._id) {
     const views = Data.find({
       root: props.context._id,
@@ -63,14 +64,12 @@ const TrackedMenu = withTracker(props => {
     }
   }
   return props;
-})(SpaceMenu)
+})(SpaceMenu))
 
-const mapStateToProps = state => ({
-  context: state.context.doc,
-  path: state.router.location.pathname,
-});
-const mapDispatchToProps = dispatch => ({
-  dispatchClickLink: url => dispatch(clickLink(url)),
-});
+const ConnectedMenu = () => {
+  const { context } = useContext(Context);
 
-export default connect(mapStateToProps, mapDispatchToProps)(TrackedMenu);
+  return <TrackedMenu context />
+}
+
+export default ConnectedMenu;

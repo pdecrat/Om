@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
 import { withTracker } from 'meteor/react-meteor-data';
 
 import Spaces from '/imports/api/Spaces/Spaces';
 import { rem } from '/imports/ui/_lib/helpers-css';
 import Link from '/imports/ui/_components/Link';
+import { UserContext } from '/imports/ui/UserTracker';
 
 const StyledWrapper = styled.div`
   margin-top: ${rem('50px')};
@@ -41,7 +41,6 @@ const SpaceList = ({ spaces }) => spaces.length ?
 const TrackedSpaceList = withTracker(props => {
   const {
     user,
-    target,
   } = props;
   const spaces = user && Data.find({
     type: "shortcut"
@@ -53,9 +52,8 @@ const TrackedSpaceList = withTracker(props => {
   }
 })(SpaceList);
 
-const mapStateToProps = state => ({
-  user: state.user.doc,
-  context: state.context.doc
-});
-
-export default connect(mapStateToProps, null)(TrackedSpaceList);
+const ConnectedSpaceList = () => {
+  const { user } = useContext(UserContext);
+  return <TrackedSpaceList user />;
+}
+export default ConnectedSpaceList;

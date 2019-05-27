@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
+import { withRouter} from 'react-router-dom';
 
-import { clickLink } from '/imports/ui/_state/ui/menu';
 import { rem } from '/imports/ui/_lib/helpers-css';
 import Avatar from '/imports/ui/_components/Avatar';
 
@@ -17,8 +16,8 @@ const StyledLink = styled.div`
   }
 `
 
-const Link = ({ url, label = null, dispatchClickLink, object }) =>
-  <StyledLink onClick={e => { dispatchClickLink(url) }}>
+const Link = ({ url, label = null, history, object }) =>
+  <StyledLink onClick={e => { history.push(url) }}>
     <Avatar
       size={36}
       object={object}
@@ -30,8 +29,4 @@ const Link = ({ url, label = null, dispatchClickLink, object }) =>
     }
   </StyledLink>
 
-const mapDispatchToProps = dispatch => ({
-  dispatchClickLink: link => dispatch(clickLink(link))
-});
-
-export default connect(null, mapDispatchToProps)(Link);
+export default withRouter(Link);
