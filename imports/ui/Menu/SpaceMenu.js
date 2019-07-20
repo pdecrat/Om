@@ -1,10 +1,9 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
 import { withTracker } from 'meteor/react-meteor-data';
 import { withRouter } from 'react-router-dom';
 
-import Data from '/imports/api/Data';
+import Data from '/imports/core/Data';
 import { rem } from '/imports/ui/_lib/helpers-css';
 import { Context } from '/imports/ui/ContextTracker';
 

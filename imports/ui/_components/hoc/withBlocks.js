@@ -1,7 +1,7 @@
 import { withTracker } from 'meteor/react-meteor-data';
 
 import { Context } from '/imports/ui/ContextTracker'
-import Data from '/imports/api/Data';
+import Data from '/imports/core/Data';
 
 const withBlocks = withTracker(props => {
   const {

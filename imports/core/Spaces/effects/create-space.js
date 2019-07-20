@@ -1,7 +1,7 @@
 import SimpleSchema from 'simpl-schema';
 
-import Actions from '/imports/api/Actions';
-import Spaces from '/imports/api/Spaces/Spaces';
+import Actions from '/imports/core/Actions';
+import Spaces from '/imports/core/Spaces/Spaces';
 
 const createSpace = ({ origin, data }) => {
   const { space } = data;

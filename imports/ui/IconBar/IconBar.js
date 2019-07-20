@@ -4,8 +4,8 @@ import { Context } from '/imports/ui/ContextTracker'
 import { withTracker } from 'meteor/react-meteor-data';
 
 import { rem } from '/imports/ui/_lib/helpers-css';
-import Data from '/imports/api/Data';
-import Blocks from '/imports/blocks/blocks-index';
+import Data from '/imports/core/Data';
+import Blocks from '/imports/modules/blocks-index';
 
 const StyledIconBar = styled.ul`
   display: flex;

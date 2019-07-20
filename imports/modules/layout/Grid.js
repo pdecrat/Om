@@ -2,9 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { media, rem } from '/imports/ui/_lib/helpers-css';
-import Data from '/imports/api/Data';
+import Data from '/imports/core/Data';
 import Block from '/imports/ui/_components/Block';
-import Blocks from '/imports/blocks/blocks-index';
+import Blocks from '/imports/modules/blocks-index';
 import withBlocks from '/imports/ui/_components/hoc/withBlocks';
 
 const StyledGrid = styled.div`

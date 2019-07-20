@@ -11,7 +11,7 @@ export const UserContext = React.createContext({})
 const UserDataStore = withTracker(props => {
   if (Meteor.isServer) return props;
 
-  const query = qs.parse(props.search) || {};
+  const query = qs.parse(props.history.location.search) || {};
   const user = Meteor.user();
   const isLoggingIn = Meteor.loggingIn();
   const handle = Meteor.subscribe('user-data');

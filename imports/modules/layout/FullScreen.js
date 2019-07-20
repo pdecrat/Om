@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { media, rem } from '/imports/ui/_lib/helpers-css';
 import withBlocks from '/imports/ui/_components/hoc/withBlocks';
-import Blocks from '/imports/blocks/blocks-index';
+import Blocks from '/imports/modules/blocks-index';
 
 const StyledFullScreen = styled.div`
   & section {

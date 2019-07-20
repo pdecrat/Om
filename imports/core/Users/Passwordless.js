@@ -4,6 +4,8 @@ import { Base64 } from 'meteor/ostrio:base64';
 import { Email } from 'meteor/email';
 import { check } from 'meteor/check';
 
+import { Collections } from '/imports/core/Collections';
+
 const {
   login,
   key,
@@ -91,11 +93,12 @@ Passwordless.verifyToken = ({ token }) => {
 
   pendingCredentials.remove({ token });
 
-  const { userId } = Accounts.updateOrCreateUserFromExternalService('passwordless', serviceData);
+  const { userId } = Accounts.updateOrCreateUserFromExternalService('passwordless', serviceData, {
+    email: pendingCredential.email
+  });
 
   return {
     userId,
-    email: pendingCredential.email
   };
 }
 

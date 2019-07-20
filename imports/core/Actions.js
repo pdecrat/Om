@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor'
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
 
-import { Collections } from '/imports/api/Collections';
+import Data from '/imports/core/Data';
 
 const Actions = {};
 
@@ -23,10 +23,10 @@ Actions.do = ({ action, origin, target, data }) => {
   });
 
   if (!!origin) {
-    Collections.get(origin.root).update(origin._id, origin);
+    Data.update(origin, origin);
   }
   if (!!target) {
-    Collections.get(target.root).update(target._id, target);
+    Data.update(target, target);
   }
   return response;
 }
@@ -67,7 +67,9 @@ Meteor.methods({
       }
     }).validate(action);
 
-    const requestedAction = Collections.get(action.target.root).findOne({
+    console.log(Data)
+    const requestedAction = Data.findOne({
+      root: action.target.root,
       type: "action",
       name: action.name
     });
@@ -78,7 +80,7 @@ Meteor.methods({
       );
     }
     if (!!action.target) {
-      action.target = Collections.get(action.target.root).findOne(action.target._id);
+      action.target = Data.findOne(action.target);
       if (!action.target) {
         throw new Meteor.Error(
           'action-method:target-not-found',
@@ -97,35 +99,7 @@ Meteor.methods({
   }
 });
 
-export function callAction(name, target = null, data = {}, toDispatch = null) {
-  const args = {
-    target: target ? {
-      _id: target._id,
-      root: target.root,
-    } : target,
-    data,
-    name,
-  }
-  const options = {
-    returnStubValue: true,
-    throwStubxceptions: true
-  };
-
-  return dispatch => {
-    Meteor.apply('do', [args], options, (err, res = {}) => {
-      if (err) {
-        console.log(err)
-        // handle error
-      } else if (!!toDispatch) {
-        toDispatch(dispatch, res, data);
-      }
-    })
-  }
-}
-
-
 export default Actions;
-
 
 if (Meteor.isClient) {
   window.Actions = Actions;

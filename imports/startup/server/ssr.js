@@ -3,12 +3,8 @@ import { renderToString } from 'react-dom/server';
 import { StaticRouter} from 'react-router-dom';
 import { onPageLoad } from 'meteor/server-render';
 import { FastRender } from 'meteor/staringatlights:fast-render';
-import { Provider } from 'react-redux';
-import { createStore, applyMiddleware, compose } from 'redux';
-import thunk from 'redux-thunk';
 import { Helmet } from 'react-helmet';
 import { createMemoryHistory } from 'history';
-import { ConnectedRouter, connectRouter, routerMiddleware } from 'connected-react-router';
 import { ServerStyleSheet } from 'styled-components'
 
 import App from '/imports/ui/App';

@@ -5,11 +5,11 @@ import Block from '/imports/ui/_components/Block';
 import { InterfaceContext } from '/imports/ui/Interface';
 
 const MenuTester = ({ dispatchOpenMenu }) => {
-  const { setMenu } = useContext(InterfaceContext);
+  const { openMenu } = useContext(InterfaceContext);
 
   return (
     <Block width={1} height={1}>
-      <button onClick={e => { setMenu(true) }}>
+      <button onClick={e => { openMenu(true) }}>
         Open Menu
       </button>
     </Block>

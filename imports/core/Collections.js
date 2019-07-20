@@ -1,11 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 
-import Spaces from '/imports/api/Spaces/Spaces';
-
-if (Meteor.isClient) {
-  import Data from '/imports/api/Data';
-}
+import Spaces from '/imports/core/Spaces/Spaces';
 
 export class Collection extends Mongo.Collection {
   insert(doc, callback) {
@@ -23,17 +19,13 @@ export const Collections = {
 };
 
 Collections.get = name => {
-  if (Meteor.isClient) return Data;
   return Collections.list[name]
 }
 
 Collections.add = (name) => {
-  if (Meteor.isServer) {
-    Collections.list[name] = new Collection(name);
-  }
+  Collections.list[name] = new Collection(name);
 }
 
 Collections.register = (name, cursor) => {
-  if (Meteor.isServer)
-    Collections.list[name] = cursor;
+  Collections.list[name] = cursor;
 }

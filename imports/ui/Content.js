@@ -6,8 +6,8 @@ import styled from 'styled-components';
 import { throttle } from 'lodash';
 
 import { rem } from '/imports/ui/_lib/helpers-css';
-import Blocks from '/imports/blocks/blocks-index';
-import Data from '/imports/api/Data';
+import Blocks from '/imports/modules/blocks-index';
+import Data from '/imports/core/Data';
 import { Context } from '/imports/ui/ContextTracker';
 import { InterfaceContext } from '/imports/ui/Interface';
 
@@ -30,8 +30,8 @@ class Content extends React.Component {
   componentWillUpdate() {
     const content = ReactDOM.findDOMNode(this.refs.content);
 
-    if (this.props.layout && this.props.isMenuHidden && content.scrollTop === 0) {
-      this.props.dispatchShow();
+    if (this.props.layout && this.props.isNavHidden && content.scrollTop === 0) {
+      this.props.hideNav(false);
     }
   }
 
@@ -46,25 +46,26 @@ class Content extends React.Component {
         navHeight
       } = this.state;
       const {
-        setNav
+        hideNav,
+        isNavHidden,
       } = this.props;
       const scrollTop = content.scrollTop;
 
       if (Math.abs(lastScrollTop - scrollTop) <= delta)
         return;
 
-      if (!isMenuHidden
+      if (!isNavHidden
         && scrollTop > lastScrollTop
         && scrollTop > navHeight
         && scrollTop - lastScrollTop > delta)
       {
-        setNav(true);
-      } else if (isMenuHidden
+        hideNav(false);
+      } else if (isNavHidden
         && (scrollTop < lastScrollTop
           && lastScrollTop - scrollTop > delta
         || scrollTop < navHeight)
       ) {
-        setNav(false);
+        hideNav(true);
       }
 
       this.setState({
@@ -121,16 +122,16 @@ const TrackedContent = withRouter(withTracker(props => {
 
 const ConnectedContent = () => {
   const { context, query, isReady } = useContext(Context);
-  const { isNavHidden, setNav, isMenuOpen } = useContext(InterfaceContext);
+  const { isNavHidden, hideNav, isMenuOpen } = useContext(InterfaceContext);
 
   return (
     <TrackedContent
       isReady
       isMenuOpen
+      isNavHidden
       query={query}
       context={context}
-      isNavHidden={isNavHidden}
-      setNav={setNav}
+      hideNav={hideNav}
     />
   );
 }

@@ -2,16 +2,13 @@ import { Meteor } from 'meteor/meteor';
 import SimpleSchema from 'simpl-schema';
 
 if (Meteor.isServer) {
-  import Passwordless from '../passwordless';
+  import Passwordless from '../Passwordless';
 }
-import Actions from '/imports/api/Actions';
+import Actions from '/imports/core/Actions';
 
 const register = ({ data }) => {
   if (Meteor.isServer) {
-    const user = Meteor.users.findOne({ email: data.email });
-
-    if (!user)
-      Passwordless.sendLoginEmail(data.email, data.url);
+    Passwordless.sendLoginEmail(data.email.toLowerCase(), data.url);
   }
 }
 register.dataSchema = new SimpleSchema({

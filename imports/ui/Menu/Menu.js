@@ -60,13 +60,20 @@ const StyledDot = styled.span`
   transition: transform 0.15s ease-out, opacity 0.20s ease-out;
 `
 export function useMenu() {
-  const [isMenuOpen, setMenu] = useState(false);
-  const [isNavHidden, setNav] = useState(false);
+  const [isMenuOpen, open] = useState(false);
+  const [isNavHidden, hideNav] = useState(false);
+  function openMenu(status) {
+    if (status === true) {
+      hideNav(false);
+      setTimeout(() => { open(true) }, 150);
+    }
+    open(false);
+  }
   return {
     isMenuOpen,
-    setMenu,
+    openMenu,
     isNavHidden,
-    setNav,
+    hideNav,
   };
 }
 
@@ -74,7 +81,7 @@ const Menu = () => {
   const {
     isMenuOpen,
     isNavHidden,
-    setMenu,
+    openMenu,
   } = useContext(InterfaceContext);
   const {
     context,
@@ -83,7 +90,7 @@ const Menu = () => {
   return (
     <StyledHeader isHidden={isNavHidden}>
       <StyledMenu
-        onClick={e => { setMenu(!isMenuOpen) }}
+        onClick={e => { openMenu(!isMenuOpen) }}
       >
         <StyledDots>
           <StyledDot></StyledDot>
@@ -96,7 +103,7 @@ const Menu = () => {
       <Panel />
       <Background
         isOpen={isMenuOpen}
-        func={e => { setMenu(false) }}
+        func={e => { openMenu(false) }}
         zIndex={-2}
       />
       <IconBar />

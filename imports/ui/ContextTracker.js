@@ -4,8 +4,8 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { matchPath } from 'react-router';
 import qs from 'query-string';
 
-import Data from '/imports/api/Data';
-import Spaces from '/imports/api/Spaces/Spaces';
+import Data from '/imports/core/Data';
+import Spaces from '/imports/core/Spaces/Spaces';
 import Interface from '/imports/ui/Interface';
 
 export const Context = React.createContext({})
@@ -34,10 +34,26 @@ const Tracker = withTracker(props => {
   };
 });
 
-const Provider = ({ context, query, isReady = false }) =>
-  <Context.Provider value={{ context, query, isReady }}>
-    <Interface />
-  </Context.Provider>
+const Provider = ({ context, query, isReady = false }) => {
+  function call({ name, target, data }, callback) {
+    if (!target) {
+      target = {
+        _id: context._id,
+        root: context.root,
+      };
+    }
+    const options = {
+      returnStubValue: true,
+      throwStubxceptions: true
+    };
+    Meteor.apply('do', [{ name, target, data }], options, callback);
+  }
+  return (
+    <Context.Provider value={{ context, query, isReady, call }}>
+      <Interface />
+    </Context.Provider>
+  )
+}
 
 
 export const ContextTracker = withRouter(Tracker(Provider));

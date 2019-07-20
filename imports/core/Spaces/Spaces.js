@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
 
-import { Collections, Collection } from '/imports/api/Collections';
+import { Collections, Collection } from '/imports/core/Collections';
 
 class SpaceCollection extends Collection {
   insert(space, callback) {

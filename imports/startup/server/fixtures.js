@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 
-import Spaces from '/imports/api/Spaces/Spaces';
-import { Collections, Collection } from '/imports/api/Collections';
+import Spaces from '/imports/core/Spaces/Spaces';
+import { Collections, Collection } from '/imports/core/Collections';
 
 Meteor.startup(() => {
   const db = MongoInternals.defaultRemoteCollectionDriver().mongo.db;
@@ -134,30 +134,6 @@ Meteor.startup(() => {
       blockType: "content",
       name: "MenuTester",
       view: ["om"]
-    })
-    Collections.get(omId).insert({
-      root: omId,
-      isActive: true,
-      isPublic: false,
-      restrictedTo: [ omId + '#admin' ],
-      type: "block",
-      blockType: "content",
-      name: "ActionDispatcher",
-      width: 1,
-      height: 2,
-      view: [ "settings" ]
-    })
-    Collections.get(omId).insert({
-      root: omId,
-      isActive: true,
-      isPublic: false,
-      restrictedTo: [ omId + '#admin' ],
-      type: "block",
-      blockType: "content",
-      name: "DataList",
-      width: 3,
-      height: 4,
-      view: [ "settings" ]
     })
   }
 })
