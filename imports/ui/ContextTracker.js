@@ -12,21 +12,22 @@ export const Context = React.createContext({})
 
 const Tracker = withTracker(props => {
   const {
-    path,
-    search,
     history,
     match,
+    location,
   } = props;
   const reference = decodeURIComponent(match.params.reference);
   const type = match.params.type === 's' ? 'space' : 'user';
   const handle = Meteor.subscribe('context-data', reference);
-  const query = { reference }
-  if (Meteor.isServer) query.root = type;
-  const context = Data.findOne(query);
+  const mongoQuery = { reference }
+  if (Meteor.isServer) mongoQuery.root = type;
+  const context = Data.findOne(mongoQuery);
 
   if (!context && (Meteor.isServer || handle.ready())) {
     history.push('/not-found');
   }
+
+  const query = qs.parse(location.search);
   return {
     context,
     query,

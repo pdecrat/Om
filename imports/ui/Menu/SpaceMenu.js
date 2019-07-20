@@ -6,6 +6,7 @@ import { withRouter } from 'react-router-dom';
 import Data from '/imports/core/Data';
 import { rem } from '/imports/ui/_lib/helpers-css';
 import { Context } from '/imports/ui/ContextTracker';
+import { InterfaceContext } from '/imports/ui/Interface'
 
 const StyledSpaceMenu = styled.div`
   border-radius: 3px 0 0 0;
@@ -35,20 +36,26 @@ const isMainCategory = (path, category) => {
   return space === category;
 }
 
-const SpaceMenu = ({ views = [], history }) =>
-  <StyledSpaceMenu>
-    {views.map((view, index) =>
-      <StyledCategory
-        key={index}
-        onClick={e => {
-          history.push(view.url.length ?
-            `${path}?view=${view.url}` : history.location.pathname )
-        }}
-      >
-        {view.name}
-      </StyledCategory>
-    )}
-  </StyledSpaceMenu>
+const SpaceMenu = ({ views = [], history }) => {
+  const { openMenu } = useContext(InterfaceContext);
+
+  return (
+    <StyledSpaceMenu>
+      {views.map((view, index) =>
+        <StyledCategory
+          key={index}
+          onClick={e => {
+            history.push(view.url.length ?
+              `${history.location.pathname}?view=${view.url}` : history.location.pathname )
+            openMenu(false);
+          }}
+        >
+          {view.name}
+        </StyledCategory>
+      )}
+    </StyledSpaceMenu>
+  )
+}
 
 const TrackedMenu = withRouter(withTracker(props => {
   if (props.context && props.context._id) {
@@ -68,7 +75,7 @@ const TrackedMenu = withRouter(withTracker(props => {
 const ConnectedMenu = () => {
   const { context } = useContext(Context);
 
-  return <TrackedMenu context />
+  return <TrackedMenu context={context} />
 }
 
 export default ConnectedMenu;

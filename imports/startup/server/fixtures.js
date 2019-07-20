@@ -49,9 +49,9 @@ Meteor.startup(() => {
     Collections.get(omId).insert({
       root: omId,
       isActive: true,
-      isPublic: false,
+      isPublic: true,
       type: "action",
-      restrictedTo: [ omId + '#admin' ],
+      // restrictedTo: [ omId + '#admin' ],
       name: "createSpace",
       effects: {
         createSpace: true
@@ -85,8 +85,8 @@ Meteor.startup(() => {
     Collections.get(omId).insert({
       root: omId,
       isActive: true,
-      isPublic: false,
-      restrictedTo: [ omId + '#admin' ],
+      isPublic: true,
+      // restrictedTo: [ omId + '#admin' ],
       type: "view",
       layout: 'Grid',
       name: "settings",
@@ -123,7 +123,7 @@ Meteor.startup(() => {
       type: "block",
       blockType: "content",
       name: "ModalTester",
-      view: ["om"]
+      view: ["settings"]
     })
     Collections.get(omId).insert({
       root: omId,
@@ -133,7 +133,7 @@ Meteor.startup(() => {
       type: "block",
       blockType: "content",
       name: "MenuTester",
-      view: ["om"]
+      view: ["settings"]
     })
   }
 })
