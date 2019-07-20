@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { withTracker } from 'meteor/react-meteor-data';
 
 import { rem } from '/imports/ui/_lib/helpers-css';
 import Text from '/imports/ui/_components/Text';
@@ -11,9 +10,9 @@ const StyledParagraph = styled.div`
   margin: auto;
 `
 
-const Paragraph = ({ data }) =>
+const Paragraph = ({ data = {} }) =>
   <StyledParagraph>
     <Text text={data.text} />
   </StyledParagraph>
 
-export default Paragraph
+export default Paragraph;

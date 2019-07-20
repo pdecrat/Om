@@ -9,6 +9,14 @@ const withBlocks = withTracker(props => {
     query,
   } = props;
   if (!!context) {
+    if (query.focus) {
+      const block = Data.findOne(query.focus)
+
+      return {
+        ...props,
+        blocks: [block]
+      }
+    }
     const queryParams = {
       root: context._id,
       type: 'block',

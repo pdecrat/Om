@@ -80,7 +80,7 @@ Meteor.startup(() => {
       type: "view",
       name: "om",
       url: "",
-      layout: 'Feed',
+      layout: 'FullScreen',
     })
     Collections.get(omId).insert({
       root: omId,
@@ -113,7 +113,17 @@ Meteor.startup(() => {
       name: "Paragraph",
       width: 3,
       height: 8,
-      view: ["om"]
+      view: ["settings"]
+    })
+    Collections.get(omId).insert({
+      root: omId,
+      isActive: true,
+      isPublic: true,
+      // restrictedTo: [ omId + '#admin' ],
+      type: "block",
+      blockType: "content",
+      name: "ModuleList",
+      view: ["settings"]
     })
     Collections.get(omId).insert({
       root: omId,

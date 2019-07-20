@@ -11,11 +11,12 @@ const StyledFullScreen = styled.div`
   }
 `
 
-const FullScreen = ({ blocks }) => {
+const FullScreen = ({ blocks = [] }) => {
+  if (!blocks[0]) return null;
   const Component = Blocks[blocks[0].name];
   return !!Component ?
     <StyledFullScreen>
-      <Component />
+      <Component data={blocks[0]} />
     </StyledFullScreen>
     : null;
  }

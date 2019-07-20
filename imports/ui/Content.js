@@ -105,6 +105,12 @@ const TrackedContent = withRouter(withTracker(props => {
 
   if (!context) return props;
 
+  if (query.focus) {
+    return {
+      ...props,
+      layout: "FullScreen",
+    }
+  }
   const view = Data.findOne({
     root: context._id,
     type: 'view',
@@ -113,7 +119,6 @@ const TrackedContent = withRouter(withTracker(props => {
   if (!view && (Meteor.isServer || isReady)) {
     history.push('/not-found')
   }
-  console.log(view)
 
   return {
     ...props,
