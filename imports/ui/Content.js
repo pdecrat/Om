@@ -95,7 +95,7 @@ class Content extends React.Component {
   }
 }
 
-const TrackedContent = withRouter(withTracker(props => {
+const TrackedContent = withTracker(props => {
   const {
     context,
     query,
@@ -127,9 +127,9 @@ const TrackedContent = withRouter(withTracker(props => {
     ...props,
     layout: view && view.layout,
   }
-})(Content));
+})(Content);
 
-const ConnectedContent = () => {
+const ConnectedContent = withRouter(({ history }) => {
   const { context, query, isReady } = useContext(Context);
   const { isNavHidden, hideNav, isMenuOpen } = useContext(InterfaceContext);
 
@@ -141,11 +141,13 @@ const ConnectedContent = () => {
       isReady
       isMenuOpen
       isNavHidden
+      history={history}
       query={query}
       context={context}
       hideNav={hideNav}
     />
   );
 }
+)
 
 export default ConnectedContent;
