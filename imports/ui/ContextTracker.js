@@ -24,6 +24,7 @@ const Tracker = withTracker(props => {
   const context = Data.findOne(mongoQuery);
 
   if (!context && (Meteor.isServer || handle.ready())) {
+    console.log("redirect from context")
     history.push('/not-found');
   }
 
