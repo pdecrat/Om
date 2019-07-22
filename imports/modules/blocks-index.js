@@ -9,7 +9,7 @@ import Grid from './layout/Grid';
 import Feed from './layout/Feed';
 import FullScreen from './layout/FullScreen';
 
-import User from './icons/User';
+import User from './members/User';
 
 const Blocks = {
   MenuTester,

@@ -38,22 +38,24 @@ Meteor.startup(() => {
       }
     });
     const admin = Meteor.users.findOne({ email: "philippe.decrat@gmail.com" })
-    Data.insert({
-      root: omId,
-      isActive: true,
-      isPublic: false,
-      type: "membership",
-      memberOf: omId,
-      roles: ["admin"],
-    })
-    Data.insert({
-      root: admin._id,
-      isActive: true,
-      isPublic: false,
-      type: "membership",
-      memberOf: omId,
-      roles: ["admin"],
-    })
+    if (admin) {
+      Data.insert({
+        root: omId,
+        isActive: true,
+        isPublic: false,
+        type: "membership",
+        memberOf: omId,
+        roles: ["admin"],
+      })
+      Data.insert({
+        root: admin._id,
+        isActive: true,
+        isPublic: false,
+        type: "membership",
+        memberOf: omId,
+        roles: ["admin"],
+      })
+    }
     Data.insert({
       root: omId,
       isActive: true,
