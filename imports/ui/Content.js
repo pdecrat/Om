@@ -116,8 +116,10 @@ const TrackedContent = withRouter(withTracker(props => {
     type: 'view',
     name: query.view ? query.view : context.name,
   });
+
+  console.log("handle ready in TrackedContent ?")
+  console.log(isReady)
   if (!view && (Meteor.isServer || isReady)) {
-    console.log(isReady)
     history.push('/not-found')
   }
 
@@ -131,6 +133,9 @@ const ConnectedContent = () => {
   const { context, query, isReady } = useContext(Context);
   const { isNavHidden, hideNav, isMenuOpen } = useContext(InterfaceContext);
 
+
+  console.log("handle ready in ConnectedContent ?")
+  console.log(isReady)
   return (
     <TrackedContent
       isReady

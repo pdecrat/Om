@@ -27,8 +27,8 @@ const Tracker = withTracker(props => {
     console.log("redirect from context")
     history.push('/not-found');
   }
-  
-  console.log("handle ready ?")
+
+  console.log("handle ready in ContextTracker ?")
   console.log(handle.ready())
   const query = qs.parse(location.search);
   return {
@@ -52,6 +52,8 @@ const Provider = ({ context, query, isReady = false }) => {
     };
     Meteor.apply('do', [{ name, target, data }], options, callback);
   }
+  console.log("handle ready in ContextProvider ?")
+  console.log(isReady)
   return (
     <Context.Provider value={{ context, query, isReady, call }}>
       <Interface />
