@@ -27,7 +27,9 @@ const Tracker = withTracker(props => {
     console.log("redirect from context")
     history.push('/not-found');
   }
-
+  
+  console.log("handle ready ?")
+  console.log(handle.ready())
   const query = qs.parse(location.search);
   return {
     context,

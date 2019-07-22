@@ -116,13 +116,7 @@ const TrackedContent = withRouter(withTracker(props => {
     type: 'view',
     name: query.view ? query.view : context.name,
   });
-  console.log("before redirect")
-  console.log(view)
-  console.log(isReady)
   if (!view && (Meteor.isServer || isReady)) {
-    console.log("after redirect")
-    console.log(view)
-    console.log(isReady)
     history.push('/not-found')
   }
 
