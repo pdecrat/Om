@@ -117,6 +117,7 @@ const TrackedContent = withRouter(withTracker(props => {
     name: query.view ? query.view : context.name,
   });
   if (!view && (Meteor.isServer || isReady)) {
+    console.log(isReady)
     history.push('/not-found')
   }
 
