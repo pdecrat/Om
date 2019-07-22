@@ -49,10 +49,15 @@ if (Meteor.isServer) {
           type: 'membership',
           memberOf: space._id,
         });
+
         query.$or = [
-          { restrictedTo: { $in: membership.roles } },
           { isPublic: true },
         ];
+        if (membership) {
+          query.$or.push(
+            { restrictedTo: { $in: membership.roles } },
+          )
+        }
       }
       const contentCursor = Collections.get(space._id).find(query);
       Mongo.Collection._publishCursor(contentCursor, this, 'data');
