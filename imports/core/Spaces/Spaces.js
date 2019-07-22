@@ -45,12 +45,12 @@ if (Meteor.isServer) {
       if (!this.userId)
         query.isPublic = true;
       else {
-        const userKeys = this.userId && Collections.get(this.userId).find({
+        const membership = this.userId && Collections.get(this.userId).findOne({
           type: 'membership',
           memberOf: space._id,
-        }).map(doc => doc.key);
+        });
         query.$or = [
-          { restrictedTo: { $in: userKeys } },
+          { restrictedTo: { $in: membership.roles } },
           { isPublic: true },
         ];
       }

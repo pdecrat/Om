@@ -67,7 +67,6 @@ Meteor.methods({
       }
     }).validate(action);
 
-    console.log(Data)
     const requestedAction = Data.findOne({
       root: action.target.root,
       type: "action",

@@ -30,7 +30,7 @@ const Grid = ({ blocks = [] }) =>
       const Component = Blocks[block.name];
       return !!Component &&
         <Block width={block.width} height={block.height} key={index}>
-          <Component />
+          <Component data={block} />
         </Block>
     })}
   </StyledGrid>

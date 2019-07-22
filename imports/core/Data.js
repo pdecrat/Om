@@ -9,6 +9,10 @@ if (Meteor.isServer) {
     const collection = Collections.get(query.root);
     return !!collection && collection.find(query)
   };
+  Data.insert = (doc) => {
+    const collection = Collections.get(doc.root);
+    return !!collection && collection.insert(doc)
+  };
   Data.findOne = (query) => {
     const collection = Collections.get(query.root);
     return !!collection && collection.findOne(query)

@@ -1,7 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 
 import Spaces from '/imports/core/Spaces/Spaces';
-import { Collections, Collection } from '/imports/core/Collections';
+import { Collections } from '/imports/core/Collections';
+import Data from '/imports/core/Data';
 
 Meteor.startup(() => {
   const db = MongoInternals.defaultRemoteCollectionDriver().mongo.db;
@@ -36,7 +37,24 @@ Meteor.startup(() => {
         }
       }
     });
-    Collections.get(omId).insert({
+    const admin = Meteor.users.findOne({ email: "philippe.decrat@gmail.com" })
+    Data.insert({
+      root: omId,
+      isActive: true,
+      isPublic: false,
+      type: "membership",
+      memberOf: omId,
+      roles: ["admin"],
+    })
+    Data.insert({
+      root: admin._id,
+      isActive: true,
+      isPublic: false,
+      type: "membership",
+      memberOf: omId,
+      roles: ["admin"],
+    })
+    Data.insert({
       root: omId,
       isActive: true,
       isPublic: true,
@@ -46,18 +64,18 @@ Meteor.startup(() => {
         register: true
       }
     })
-    Collections.get(omId).insert({
+    Data.insert({
       root: omId,
       isActive: true,
-      isPublic: true,
+      isPublic: false,
       type: "action",
-      // restrictedTo: [ omId + '#admin' ],
+      restrictedTo: [ 'admin' ],
       name: "createSpace",
       effects: {
         createSpace: true
       }
     })
-    Collections.get(omId).insert({
+    Data.insert({
       root: omId,
       isActive: true,
       isPublic: true,
@@ -65,7 +83,7 @@ Meteor.startup(() => {
       blockType: "user-icon",
       name: "User",
     })
-    Collections.get(omId).insert({
+    Data.insert({
       root: omId,
       isActive: true,
       isPublic: true,
@@ -73,7 +91,7 @@ Meteor.startup(() => {
       blockType: "interface",
       name: "Default",
     })
-    Collections.get(omId).insert({
+    Data.insert({
       root: omId,
       isActive: true,
       isPublic: true,
@@ -82,17 +100,17 @@ Meteor.startup(() => {
       url: "",
       layout: 'FullScreen',
     })
-    Collections.get(omId).insert({
+    Data.insert({
       root: omId,
       isActive: true,
-      isPublic: true,
-      // restrictedTo: [ omId + '#admin' ],
+      isPublic: false,
+      restrictedTo: [ 'admin' ],
       type: "view",
       layout: 'Grid',
       name: "settings",
       url: "settings",
     })
-    Collections.get(omId).insert({
+    Data.insert({
       root: omId,
       isActive: true,
       isPublic: true,
@@ -104,42 +122,43 @@ Meteor.startup(() => {
       height: 8,
       view: ["om"]
     })
-    Collections.get(omId).insert({
+    Data.insert({
       root: omId,
       isActive: true,
-      isPublic: true,
+      isPublic: false,
       type: "block",
       blockType: "content",
+      restrictedTo: [ 'admin' ],
       name: "Paragraph",
       width: 3,
-      height: 8,
+      height: 4,
       view: ["settings"]
     })
-    Collections.get(omId).insert({
+    Data.insert({
       root: omId,
       isActive: true,
-      isPublic: true,
-      // restrictedTo: [ omId + '#admin' ],
+      isPublic: false,
+      restrictedTo: [ 'admin' ],
       type: "block",
       blockType: "content",
       name: "ModuleList",
       view: ["settings"]
     })
-    Collections.get(omId).insert({
+    Data.insert({
       root: omId,
       isActive: true,
-      isPublic: true,
-      // restrictedTo: [ omId + '#admin' ],
+      isPublic: false,
+      restrictedTo: [ 'admin' ],
       type: "block",
       blockType: "content",
       name: "ModalTester",
       view: ["settings"]
     })
-    Collections.get(omId).insert({
+    Data.insert({
       root: omId,
       isActive: true,
-      isPublic: true,
-      // restrictedTo: [ omId + '#admin' ],
+      isPublic: false,
+      restrictedTo: [ 'admin' ],
       type: "block",
       blockType: "content",
       name: "MenuTester",

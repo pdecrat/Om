@@ -20,7 +20,10 @@ if (Meteor.isServer) {
       root: user._id,
       email: options.email,
     });
-    return user
+    return {
+      ...user,
+      email: options.email,
+    }
   })
 
   Meteor.publish('user-data', function() {
