@@ -136,17 +136,18 @@ const ConnectedContent = withRouter(({ history }) => {
 
   console.log("handle ready in ConnectedContent ?")
   console.log(isReady)
-  return (
+  return isReady ? (
     <TrackedContent
-      isReady
       isMenuOpen
       isNavHidden
+      isReady={isReady}
       history={history}
       query={query}
       context={context}
       hideNav={hideNav}
     />
-  );
+  )
+  : null;
 }
 )
 
