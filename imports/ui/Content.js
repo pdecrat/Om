@@ -31,7 +31,7 @@ class Content extends React.Component {
     const content = ReactDOM.findDOMNode(this.refs.content);
 
     if (this.props.layout && this.props.isNavHidden && content.scrollTop === 0) {
-      this.props.hideNav(false);
+      this.props.setNav(false);
     }
   }
 
@@ -46,7 +46,7 @@ class Content extends React.Component {
         navHeight
       } = this.state;
       const {
-        hideNav,
+        setNav,
         isNavHidden,
       } = this.props;
       const scrollTop = content.scrollTop;
@@ -59,20 +59,20 @@ class Content extends React.Component {
         && scrollTop > navHeight
         && scrollTop - lastScrollTop > delta)
       {
-        hideNav(false);
+        setNav(true);
       } else if (isNavHidden
         && (scrollTop < lastScrollTop
           && lastScrollTop - scrollTop > delta
         || scrollTop < navHeight)
       ) {
-        hideNav(true);
+        setNav(false);
       }
 
       this.setState({
         lastScrollTop: scrollTop
       });
     }
-  }, 150)
+  }, 100)
 
   render() {
     const {
@@ -117,8 +117,8 @@ const TrackedContent = withTracker(props => {
     name: query.view ? query.view : context.name,
   });
 
-  console.log("handle ready in TrackedContent ?")
-  console.log(isReady)
+  // console.log("handle ready in TrackedContent ?")
+  // console.log(isReady)
   if (!view && (Meteor.isServer || isReady)) {
     history.push('/not-found')
   }
@@ -131,20 +131,20 @@ const TrackedContent = withTracker(props => {
 
 const ConnectedContent = withRouter(({ history }) => {
   const { context, query, isReady } = useContext(Context);
-  const { isNavHidden, hideNav, isMenuOpen } = useContext(InterfaceContext);
+  const { isNavHidden, setNav, isMenuOpen } = useContext(InterfaceContext);
 
 
-  console.log("handle ready in ConnectedContent ?")
-  console.log(isReady)
+  // console.log("handle ready in ConnectedContent ?")
+  // console.log(isReady)
   return isReady ? (
     <TrackedContent
-      isMenuOpen
-      isNavHidden
+      isMenuOpen={isMenuOpen}
+      isNavHidden={isNavHidden}
       isReady={isReady}
       history={history}
       query={query}
       context={context}
-      hideNav={hideNav}
+      setNav={setNav}
     />
   )
   : null;

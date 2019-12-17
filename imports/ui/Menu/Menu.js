@@ -61,10 +61,10 @@ const StyledDot = styled.span`
 `
 export function useMenu() {
   const [isMenuOpen, open] = useState(false);
-  const [isNavHidden, hideNav] = useState(false);
+  const [isNavHidden, setNav] = useState(false);
   function openMenu(status) {
     if (status === true) {
-      hideNav(false);
+      setNav(false);
       setTimeout(() => { open(true) }, 150);
     }
     open(false);
@@ -73,7 +73,7 @@ export function useMenu() {
     isMenuOpen,
     openMenu,
     isNavHidden,
-    hideNav,
+    setNav,
   };
 }
 
