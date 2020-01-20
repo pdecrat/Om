@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
-import { UserPlus } from 'react-feather';
+import UserPlus from 'react-feather/dist/icons/user-plus';
 import { withRouter } from 'react-router-dom';
 
 import ModalContent from '/imports/ui/Modal/ModalContent';

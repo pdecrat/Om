@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Bell } from 'react-feather';
+// import { Bell } from 'react-feather';
 
 import { rem } from '/imports/ui/_lib/helpers-css';
 

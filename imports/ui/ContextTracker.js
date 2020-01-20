@@ -23,6 +23,14 @@ const Tracker = withTracker(props => {
   if (Meteor.isServer) mongoQuery.root = type;
   const context = Data.findOne(mongoQuery);
 
+  if (Meteor.isClient) {
+    Data.find({ $or: [ { type: 'block' }, { type: 'action' } ] }).observe({
+      added: ({type, name}) => {
+        console.log(`${type} added: ${name}`);
+      }
+    })
+  }
+
   if (!context && (Meteor.isServer || handle.ready())) {
     console.log("redirect from context")
     history.push('/not-found');

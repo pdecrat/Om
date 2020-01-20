@@ -1,7 +1,7 @@
-import { injectGlobal } from 'styled-components';
+import { createGlobalStyle } from "styled-components"
 import reset from 'styled-reset';
 
-injectGlobal`
+const GlobalStyle = createGlobalStyle`
   ${reset}
   * {
     font-family: 'Roboto', sans-serif;
@@ -9,3 +9,5 @@ injectGlobal`
     color: #3a3a3a;
   }
 `
+
+export default GlobalStyle;

@@ -1,6 +1,5 @@
 import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
-import { MoreVertical } from 'react-feather';
 
 import { rem } from '/imports/ui/_lib/helpers-css';
 import Background from '/imports/ui/_components/Background';

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Search as Fsearch } from 'react-feather';
+// import { Search as Fsearch } from 'react-feather';
 
 const StyledSearch = styled.li`
   width: 100%;

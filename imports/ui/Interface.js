@@ -6,8 +6,7 @@ import Modal, { useModal } from '/imports/ui/Modal/Modal';
 import Content from '/imports/ui/Content';
 import Menu, { useMenu } from '/imports/ui/Menu/Menu';
 import { Context } from '/imports/ui/ContextTracker'
-
-import '/imports/ui/_lib/global-style';
+import GlobalStyle from '/imports/ui/_lib/global-style';
 
 const defaultTheme = {
   color: {
@@ -31,6 +30,7 @@ const Interface = () => {
           ...modal,
           ...menu
         }}>
+          <GlobalStyle />
           <Modal />
           <Menu />
           <Content />

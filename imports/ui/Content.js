@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { withRouter } from 'react-router-dom';
 import { withTracker } from 'meteor/react-meteor-data';
 import styled from 'styled-components';
-import { throttle } from 'lodash';
+import throttle from 'lodash/throttle';
 
 import { rem } from '/imports/ui/_lib/helpers-css';
 import Blocks from '/imports/modules/blocks-index';
@@ -27,7 +27,7 @@ class Content extends React.Component {
     navHeight: 50,
   }
 
-  componentWillUpdate() {
+  componentDidUpdate() {
     const content = ReactDOM.findDOMNode(this.refs.content);
 
     if (this.props.layout && this.props.isNavHidden && content.scrollTop === 0) {
