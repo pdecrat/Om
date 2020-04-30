@@ -34,15 +34,6 @@ if (Meteor.isServer) {
       Mongo.Collection._publishCursor(contentCursor, this, 'data');
 
       this.ready();
-    } else {
-      const omId = Spaces.findOne({ name: "om" })._id;
-      const contentCursor = Collections.get(omId).find({
-        isPublic: true,
-        type: 'block',
-        name: 'User',
-      });
-      Mongo.Collection._publishCursor(contentCursor, this, 'data');
-      this.ready();
     }
   });
 }

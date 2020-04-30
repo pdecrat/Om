@@ -1,23 +1,14 @@
 import React from 'react';
-import styled from 'styled-components';
+import List from '@material-ui/core/List';
 
-import { media, rem } from '/imports/ui/_lib/helpers-css';
-import Data from '/imports/core/Data';
 import Blocks from '/imports/modules/blocks-index';
-import withBlocks from '/imports/ui/_components/hoc/withBlocks';
-
-const StyledFeed = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-`
 
 const Feed = ({ blocks = [] }) =>
-  <StyledFeed>
+  <List>
     {blocks.map((block, index) => {
       const Component = Blocks[block.name];
       return !!Component && <Component key={index} data={block} />
     })}
-  </StyledFeed>
+  </List>
 
-export default withBlocks(Feed);
+export default Feed;

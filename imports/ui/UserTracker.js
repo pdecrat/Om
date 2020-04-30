@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import React from 'react';
-import { withRouter} from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 import { withTracker } from 'meteor/react-meteor-data';
 import qs from 'query-string';
 
@@ -11,7 +11,9 @@ export const UserContext = React.createContext({})
 const UserDataStore = withTracker(props => {
   if (Meteor.isServer) return props;
 
-  const query = qs.parse(props.history.location.search) || {};
+  const location = useLocation();
+  const history = useHistory();
+  const query = qs.parse(location.search) || {};
   const user = Meteor.user();
   const isLoggingIn = Meteor.loggingIn();
   const handle = Meteor.subscribe('user-data');
@@ -25,7 +27,7 @@ const UserDataStore = withTracker(props => {
       }],
       userCallback: function(err, res) {
         if (err) console.log(err);
-        props.history.push(props.path);
+        history.push(props.path);
       }
     });
 
@@ -41,4 +43,4 @@ const Provider = ({ user, isLoggingIn }) =>
     <ContextTracker />
   </UserContext.Provider>
 
-export const UserTracker = withRouter(UserDataStore(Provider));
+export const UserTracker = UserDataStore(Provider);

@@ -2,97 +2,24 @@ import React, { useContext } from 'react';
 import ReactDOM from 'react-dom';
 import { withRouter } from 'react-router-dom';
 import { withTracker } from 'meteor/react-meteor-data';
-import styled from 'styled-components';
-import throttle from 'lodash/throttle';
+import Container from '@material-ui/core/Container';
 
-import { rem } from '/imports/ui/_lib/helpers-css';
 import Blocks from '/imports/modules/blocks-index';
 import Data from '/imports/core/Data';
 import { Context } from '/imports/ui/ContextTracker';
-import { InterfaceContext } from '/imports/ui/Interface';
-
-const StyledContent = styled.div`
-  padding-top: ${props => rem(props.theme.size.nav)};
-  background-color: ${props => props.theme.color.light};
-  height: 100vh;
-  overflow-y: ${props => props.preventScroll ? "scroll" : "auto" }
-`
-
-class Content extends React.Component {
-
-  state = {
-    lastScrollTop: 0,
-    didScroll: false,
-    delta: 20,
-    navHeight: 50,
-  }
-
-  componentDidUpdate() {
-    const content = ReactDOM.findDOMNode(this.refs.content);
-
-    if (this.props.layout && this.props.isNavHidden && content.scrollTop === 0) {
-      this.props.setNav(false);
-    }
-  }
 
 
-  handleScroll = throttle((e) => {
-    const content = ReactDOM.findDOMNode(this.refs.content);
-    if (e.target === content) {
-      const {
-        lastScrollTop,
-        didScroll,
-        delta,
-        navHeight
-      } = this.state;
-      const {
-        setNav,
-        isNavHidden,
-      } = this.props;
-      const scrollTop = content.scrollTop;
+const Content = ({ layout, blocks }) => {
+  const Component = Blocks[layout];
 
-      if (Math.abs(lastScrollTop - scrollTop) <= delta)
-        return;
-
-      if (!isNavHidden
-        && scrollTop > lastScrollTop
-        && scrollTop > navHeight
-        && scrollTop - lastScrollTop > delta)
-      {
-        setNav(true);
-      } else if (isNavHidden
-        && (scrollTop < lastScrollTop
-          && lastScrollTop - scrollTop > delta
-        || scrollTop < navHeight)
-      ) {
-        setNav(false);
-      }
-
-      this.setState({
-        lastScrollTop: scrollTop
-      });
-    }
-  }, 100)
-
-  render() {
-    const {
-      layout,
-      isMenuOpen,
-      context,
-      query,
-    } = this.props;
-    const Component = Blocks[layout];
-
-    return layout ?
-      <StyledContent
-        ref="content"
-        onScroll={e => {e.persist(); this.handleScroll(e); }}
-        preventScroll={isMenuOpen}
-      >
-        <Component context={context} query={query} />
-      </StyledContent>
-      : null;
-  }
+  return layout ?
+    <Container
+      disableGutters
+      style={{ paddingTop: '48px' }}
+    >
+      <Component blocks={blocks} />
+    </Container>
+    : null;
 }
 
 const TrackedContent = withTracker(props => {
@@ -106,9 +33,12 @@ const TrackedContent = withTracker(props => {
   if (!context) return props;
 
   if (query.focus) {
+    const block = Data.findOne(query.focus);
+
     return {
       ...props,
       layout: "FullScreen",
+      blocks: [block]
     }
   }
   const view = Data.findOne({
@@ -116,6 +46,12 @@ const TrackedContent = withTracker(props => {
     type: 'view',
     name: query.view ? query.view : context.name,
   });
+  const blocks = Data.find({
+    root: context._id,
+    type: 'block',
+    blockType: "content",
+    view: { $in: [query.view ? query.view : context.name] },
+  }).fetch();
 
   // console.log("handle ready in TrackedContent ?")
   // console.log(isReady)
@@ -126,25 +62,21 @@ const TrackedContent = withTracker(props => {
   return {
     ...props,
     layout: view && view.layout,
+    blocks,
   }
 })(Content);
 
 const ConnectedContent = withRouter(({ history }) => {
   const { context, query, isReady } = useContext(Context);
-  const { isNavHidden, setNav, isMenuOpen } = useContext(InterfaceContext);
-
 
   // console.log("handle ready in ConnectedContent ?")
   // console.log(isReady)
   return isReady ? (
     <TrackedContent
-      isMenuOpen={isMenuOpen}
-      isNavHidden={isNavHidden}
       isReady={isReady}
       history={history}
       query={query}
       context={context}
-      setNav={setNav}
     />
   )
   : null;

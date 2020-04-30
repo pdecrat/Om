@@ -5,7 +5,7 @@ import { onPageLoad } from 'meteor/server-render';
 import { FastRender } from 'meteor/staringatlights:fast-render';
 import { Helmet } from 'react-helmet';
 import { createMemoryHistory } from 'history';
-import { ServerStyleSheet } from 'styled-components'
+import { ServerStyleSheets } from '@material-ui/core/styles';
 
 import App from '/imports/ui/App';
 
@@ -26,9 +26,9 @@ FastRender.onPageLoad((sink) => {
     }
   })
 
-  const sheet = new ServerStyleSheet();
-  sink.renderIntoElementById('react-root', renderToString(sheet.collectStyles(<Prerender location={sink.request.url} />)));
-  sink.appendToHead(sheet.getStyleTags());
+  const sheet = new ServerStyleSheets();
+  sink.renderIntoElementById('react-root', renderToString(sheet.collect(<Prerender location={sink.request.url} />)));
+  sink.appendToHead(sheet.toString());
 
   const helmet = Helmet.renderStatic();
   sink.appendToHead(helmet.meta.toString());

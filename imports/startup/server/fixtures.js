@@ -28,32 +28,34 @@ Meteor.startup(() => {
     const omId = Spaces.insert({
       name: 'om',
       theme: {
-        color: {
-          light: 'rgb(253, 254, 253)',
-          dark: 'rgb(45, 46, 43)'
+        palette: {
+          primary: {
+            main: '#90a4ae',
+          },
+          secondary: {
+            main: '#bbdefb',
+          },
+          contrastThreshold: 3,
+          tonalOffset: 0.2,
         },
-        size: {
-          nav: '50px',
-        }
       }
     });
     const admin = Meteor.users.findOne({ email: "philippe.decrat@gmail.com" })
     if (admin) {
-      Data.insert({
-        root: omId,
+      const membership = {
         isActive: true,
         isPublic: false,
         type: "membership",
         memberOf: omId,
         roles: ["admin"],
+      }
+      Data.insert({
+        root: omId,
+        ...membership,
       })
       Data.insert({
         root: admin._id,
-        isActive: true,
-        isPublic: false,
-        type: "membership",
-        memberOf: omId,
-        roles: ["admin"],
+        ...membership,
       })
     }
     Data.insert({
@@ -134,36 +136,6 @@ Meteor.startup(() => {
       name: "Paragraph",
       width: 3,
       height: 4,
-      view: ["settings"]
-    })
-    Data.insert({
-      root: omId,
-      isActive: true,
-      isPublic: false,
-      restrictedTo: [ 'admin' ],
-      type: "block",
-      blockType: "content",
-      name: "ModuleList",
-      view: ["settings"]
-    })
-    Data.insert({
-      root: omId,
-      isActive: true,
-      isPublic: false,
-      restrictedTo: [ 'admin' ],
-      type: "block",
-      blockType: "content",
-      name: "ModalTester",
-      view: ["settings"]
-    })
-    Data.insert({
-      root: omId,
-      isActive: true,
-      isPublic: false,
-      restrictedTo: [ 'admin' ],
-      type: "block",
-      blockType: "content",
-      name: "MenuTester",
       view: ["settings"]
     })
   }
