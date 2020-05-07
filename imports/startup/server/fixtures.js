@@ -71,9 +71,8 @@ Meteor.startup(() => {
     Data.insert({
       root: omId,
       isActive: true,
-      isPublic: false,
+      isPublic: true,
       type: "action",
-      restrictedTo: [ 'admin' ],
       name: "createSpace",
       effects: {
         createSpace: true
@@ -83,36 +82,79 @@ Meteor.startup(() => {
       root: omId,
       isActive: true,
       isPublic: true,
-      type: "block",
-      blockType: "user-icon",
-      name: "User",
+      type: "action",
+      name: "editView",
+      effects: {
+        editView: true
+      }
     })
     Data.insert({
       root: omId,
       isActive: true,
       isPublic: true,
-      type: "block",
-      blockType: "interface",
-      name: "Default",
+      type: "action",
+      name: "createView",
+      effects: {
+        addView: true
+      }
     })
     Data.insert({
+      root: omId,
+      isActive: true,
+      isPublic: true,
+      type: "action",
+      name: "removeView",
+      effects: {
+        removeView: true
+      }
+    })
+    Data.insert({
+      root: omId,
+      isActive: true,
+      isPublic: true,
+      type: "action",
+      name: "addBlock",
+      effects: {
+        addBlock: true
+      }
+    })
+    Data.insert({
+      root: omId,
+      isActive: true,
+      isPublic: true,
+      type: "action",
+      name: "removeBlock",
+      effects: {
+        removeBlock: true
+      }
+    })
+    Data.insert({
+      root: omId,
+      isActive: true,
+      isPublic: true,
+      type: "action",
+      name: "changeOrder",
+      effects: {
+        changeOrder: true
+      }
+    })
+    const homepageId = Data.insert({
       root: omId,
       isActive: true,
       isPublic: true,
       type: "view",
-      name: "om",
-      url: "",
-      layout: 'FullScreen',
+      name: "home",
+      layout: 'Feed',
+      isMainView: true,
     })
-    Data.insert({
+    const viewManagerId = Data.insert({
       root: omId,
       isActive: true,
       isPublic: false,
       restrictedTo: [ 'admin' ],
       type: "view",
-      layout: 'Grid',
-      name: "settings",
-      url: "settings",
+      layout: 'FullScreen',
+      name: "view-manager",
     })
     Data.insert({
       root: omId,
@@ -122,21 +164,29 @@ Meteor.startup(() => {
       text: "Bonjour, et bienvenue sur la plateforme Om. Vous pourrez bientôt y créer vos propres espaces numériques, et ainsi profiter pleinement de nombreuses fonctionnalités faites avec soin pour vous faciliter la vie.",
       blockType: "content",
       name: "Paragraph",
-      width: 3,
-      height: 8,
-      view: ["om"]
+      viewOrder: 1,
+      viewId: homepageId
+    })
+    Data.insert({
+      root: omId,
+      isActive: true,
+      isPublic: true,
+      type: "block",
+      blockType: "content",
+      name: "ViewsManager",
+      viewOrder: 2,
+      viewId: homepageId
     })
     Data.insert({
       root: omId,
       isActive: true,
       isPublic: false,
+      restrictedTo: ["admin"],
       type: "block",
       blockType: "content",
-      restrictedTo: [ 'admin' ],
-      name: "Paragraph",
-      width: 3,
-      height: 4,
-      view: ["settings"]
+      name: "ViewsManager",
+      viewOrder: 1,
+      viewId: viewManagerId
     })
   }
 })

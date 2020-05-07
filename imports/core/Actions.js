@@ -13,33 +13,23 @@ Actions.registerEffect = (name, effect) => {
 }
 
 Actions.do = ({ action, origin, target, data }) => {
-  const response = {};
-
   if (!!action.data)
     data = { ...data, ...action.data };
 
   Object.keys(action.effects).forEach(effect => {
-    Actions._effects[effect]({ origin, target, data, response });
+    Actions._effects[effect]({ origin, target, data });
   });
-
-  if (!!origin) {
-    Data.update(origin, origin);
-  }
-  if (!!target) {
-    Data.update(target, target);
-  }
-  return response;
 }
 
-Actions.validateDataSchema = ({ action, data }) => {
+Actions.validateDataSchema = ({ action, data = {} }) => {
   const keys = Object.keys(action.effects);
   const validationSchema = new SimpleSchema({});
   if (keys.length > 0) {
     keys.forEach(effect => {
       validationSchema.extend(Actions._effects[effect].dataSchema);
     });
+    validationSchema.validate(data);
   }
-  validationSchema.validate(data);
 }
 
 Meteor.methods({

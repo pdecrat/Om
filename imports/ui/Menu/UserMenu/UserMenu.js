@@ -1,9 +1,15 @@
 import React, { useContext } from 'react';
+import { styled } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Avatar from '@material-ui/core/Avatar';
 
 import { UserContext } from '/imports/ui/UserTracker';
 import Register from '/imports/ui/Menu/UserMenu/Register';
+
+const StyledAvatar = styled(Avatar)(({ theme }) => ({
+  width: theme.spacing(3),
+  height: theme.spacing(3),
+}));
 
 const UserMenu = () => {
   const { user } = useContext(UserContext);
@@ -14,9 +20,9 @@ const UserMenu = () => {
       color="inherit"
       aria-label="usermenu"
     >
-      <Avatar>
+      <StyledAvatar>
         {user.name}
-      </Avatar>
+      </StyledAvatar>
     </IconButton>
     : <Register />
 }

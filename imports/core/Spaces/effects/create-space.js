@@ -3,7 +3,7 @@ import SimpleSchema from 'simpl-schema';
 import Actions from '/imports/core/Actions';
 import Spaces from '/imports/core/Spaces/Spaces';
 
-const createSpace = ({ origin, data }) => {
+const createSpace = ({ data }) => {
   const { space } = data;
 
   if (space.name.length < 2) {
@@ -16,8 +16,6 @@ const createSpace = ({ origin, data }) => {
     ...space,
     type: 'space',
   })
-  if (origin)
-    origin.spaces.push(space.name);
 }
 createSpace.dataSchema = new SimpleSchema({
   space: {

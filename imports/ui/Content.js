@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import ReactDOM from 'react-dom';
-import { withRouter } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { withTracker } from 'meteor/react-meteor-data';
 import Container from '@material-ui/core/Container';
 
@@ -22,13 +22,9 @@ const Content = ({ layout, blocks }) => {
     : null;
 }
 
-const TrackedContent = withTracker(props => {
-  const {
-    context,
-    query,
-    history,
-    isReady,
-  } = props;
+export default TrackedContent = withTracker(props => {
+  const history = useHistory()
+  const { context, query, isReady } = useContext(Context);
 
   if (!context) return props;
 
@@ -41,46 +37,31 @@ const TrackedContent = withTracker(props => {
       blocks: [block]
     }
   }
+  const viewQuery = query.view ? { name: query.view } : { isMainView: true };
   const view = Data.findOne({
     root: context._id,
     type: 'view',
-    name: query.view ? query.view : context.name,
+    ...viewQuery
   });
+
+  if (!view && (Meteor.isServer || isReady)) {
+    history.push('/not-found')
+    return;
+  }
+
   const blocks = Data.find({
     root: context._id,
     type: 'block',
     blockType: "content",
-    view: { $in: [query.view ? query.view : context.name] },
-  }).fetch();
+    viewId: view._id,
+  }, { sort: { viewOrder: 1 } }).fetch();
 
   // console.log("handle ready in TrackedContent ?")
   // console.log(isReady)
-  if (!view && (Meteor.isServer || isReady)) {
-    history.push('/not-found')
-  }
 
   return {
     ...props,
     layout: view && view.layout,
     blocks,
   }
-})(Content);
-
-const ConnectedContent = withRouter(({ history }) => {
-  const { context, query, isReady } = useContext(Context);
-
-  // console.log("handle ready in ConnectedContent ?")
-  // console.log(isReady)
-  return isReady ? (
-    <TrackedContent
-      isReady={isReady}
-      history={history}
-      query={query}
-      context={context}
-    />
-  )
-  : null;
-}
-)
-
-export default ConnectedContent;
+})(Content);;

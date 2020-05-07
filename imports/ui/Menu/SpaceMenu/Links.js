@@ -26,9 +26,7 @@ const SpaceMenu = ({ views = [], close }) => {
           button
           key={index}
           onClick={e => {
-            history.push(view.url.length ?
-              `${location.pathname}?view=${view.url}`
-              : location.pathname);
+            history.push(`${location.pathname}?view=${view.name}`);
             close();
           }}
         >

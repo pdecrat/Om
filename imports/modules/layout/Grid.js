@@ -16,10 +16,7 @@ const Grid = ({ blocks = [] }) =>
     {blocks.map((block, index) => {
       const Component = Blocks[block.name];
       return !!Component &&
-        <Paper
-          width={block.width}
-          height={block.height} key={index}
-        >
+        <Paper key={index}>
           <Component data={block} />
         </Paper>
     })}

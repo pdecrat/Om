@@ -21,6 +21,10 @@ if (Meteor.isServer) {
     const collection = Collections.get(selector.root);
     return !!collection && collection.update(selector, update);
   };
+  Data.remove = (selector) => {
+    const collection = Collections.get(selector.root);
+    return !!collection && collection.remove(selector);
+  };
 }
 
 export default Data;

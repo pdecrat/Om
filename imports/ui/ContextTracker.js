@@ -15,6 +15,11 @@ const Provider = ({ context, query, isReady = false }) => {
         _id: context._id,
         root: context.root,
       };
+    } else {
+      target = {
+        _id: target._id,
+        root: target.root,
+      };
     }
     const options = {
       returnStubValue: true,
@@ -42,10 +47,13 @@ export const ContextTracker = withTracker(props => {
   if (Meteor.isServer) mongoQuery.root = type;
   const context = Data.findOne(mongoQuery);
 
-  if (Meteor.isClient) {
+  if (Meteor.isClient && handle.ready()) {
     Data.find({ $or: [ { type: 'block' }, { type: 'action' } ] }).observe({
       added: ({type, name}) => {
-        console.log(`${type} added: ${name}`);
+        // console.log(`${type} added: ${name}`);
+      },
+      removed: ({type, name}) => {
+        // console.log(`${type} removed: ${name}`);
       }
     })
   }

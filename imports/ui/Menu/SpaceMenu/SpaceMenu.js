@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { styled } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
-import Avatar from '@material-ui/core/Avatar';
+import Typography from '@material-ui/core/Typography';
 import MenuIcon from '@material-ui/icons/Menu';
 import Backdrop from '@material-ui/core/Backdrop';
 import Drawer from '@material-ui/core/Drawer';
@@ -30,9 +30,12 @@ const SpaceMenu = () => {
       >
         <MenuIcon/>
       </IconButton>
-      <Avatar>
+      <Typography variant="h6" style={{
+        textTransform: 'capitalize',
+        userSelect: 'none'
+      }}>
         {context.name}
-      </Avatar>
+      </Typography>
       <Drawer
         anchor="left"
         open={isMenuOpen}
@@ -45,7 +48,6 @@ const SpaceMenu = () => {
         onClick={e => { open(false) }}
       />
       <Grower />
-
     </React.Fragment>
   )
 }

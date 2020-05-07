@@ -30,8 +30,8 @@ const UserDataStore = withTracker(props => {
         history.push(props.path);
       }
     });
-
   }
+
   return {
     user,
     isLoggingIn
