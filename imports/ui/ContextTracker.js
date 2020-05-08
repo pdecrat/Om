@@ -1,6 +1,6 @@
 import React from 'react';
 import { useHistory, useLocation, useRouteMatch} from 'react-router-dom';
-import { withTracker } from 'meteor/react-meteor-data';
+import { useTracker } from 'meteor/react-meteor-data';
 import qs from 'query-string';
 
 import Data from '/imports/core/Data';
@@ -8,8 +8,38 @@ import Interface from '/imports/ui/Interface';
 
 export const Context = React.createContext({})
 
-const Provider = ({ context, query, isReady = false }) => {
-  function call({ name, target, data }, callback) {
+const Provider = () => {
+  const history = useHistory();
+  const match = useRouteMatch();
+  const location = useLocation();
+  const reference = decodeURIComponent(match.params.reference);
+  const type = match.params.type === 's' ? 'space' : 'user';
+  const query = location.search ? qs.parse(location.search) : {};
+
+  const isReady = useTracker(() => {
+    const handle = Meteor.subscribe('context-data', reference);
+
+    return handle.ready();
+  }, [reference]);
+
+  const context = useTracker(() => {
+    if (isReady) {
+      const mongoQuery = Meteor.isServer ?
+        { reference, root: type }
+        : { reference }
+      const context = Data.findOne(mongoQuery);
+      return context;
+    }
+
+    return {};
+  }, [isReady]);
+
+  if (!context && (Meteor.isServer || isReady)) {
+    history.push('/not-found');
+    return null;
+  }
+
+  const call = ({ name, target, data }, callback) => {
     if (!target) {
       target = {
         _id: context._id,
@@ -26,49 +56,16 @@ const Provider = ({ context, query, isReady = false }) => {
       throwStubxceptions: true
     };
     Meteor.apply('do', [{ name, target, data }], options, callback);
-  }
-  // console.log("handle ready in ContextProvider ?")
-  // console.log(isReady)
+  };
+
   return (
     <Context.Provider value={{ context, query, isReady, call }}>
-      <Interface />
+      {isReady && context ?
+        <Interface context={context} />
+        : null
+      }
     </Context.Provider>
   )
 }
 
-export const ContextTracker = withTracker(props => {
-  const history = useHistory();
-  const match = useRouteMatch();
-  const location = useLocation();
-  const reference = decodeURIComponent(match.params.reference);
-  const type = match.params.type === 's' ? 'space' : 'user';
-  const handle = Meteor.subscribe('context-data', reference);
-  const mongoQuery = { reference }
-  if (Meteor.isServer) mongoQuery.root = type;
-  const context = Data.findOne(mongoQuery);
-
-  if (Meteor.isClient && handle.ready()) {
-    Data.find({ $or: [ { type: 'block' }, { type: 'action' } ] }).observe({
-      added: ({type, name}) => {
-        // console.log(`${type} added: ${name}`);
-      },
-      removed: ({type, name}) => {
-        // console.log(`${type} removed: ${name}`);
-      }
-    })
-  }
-
-  if (!context && (Meteor.isServer || handle.ready())) {
-    console.log("redirect from context")
-    history.push('/not-found');
-  }
-
-  // console.log("handle ready in ContextTracker ?")
-  // console.log(handle.ready())
-  const query = qs.parse(location.search);
-  return {
-    context,
-    query,
-    isReady: handle.ready()
-  };
-})(Provider);
+export default Provider;

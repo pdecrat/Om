@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Switch, useHistory } from "react-router-dom";
 
-import { UserTracker } from '/imports/ui/UserTracker';
+import UserTracker from '/imports/ui/UserTracker';
 import NotFound from '/imports/ui/NotFound';
 
 const App = () => {
