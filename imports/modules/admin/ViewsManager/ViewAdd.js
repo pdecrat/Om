@@ -19,14 +19,13 @@ import { Context } from '/imports/ui/ContextTracker';
 const ViewAdd = () => {
   const [isOpen, setOpen] = useState(false);
   const [name, setName] = useState('');
-  const [layout, setLayout] = useState('FullScreen');
   const { call } = useContext(Context);
 
   const handleClose = () => setOpen(false);
   const addView = () => {
     call({
       name: "createView",
-      data: { name, layout }
+      data: { name }
     }, (err) => {
       if (!err) {
         setName('');
@@ -60,19 +59,6 @@ const ViewAdd = () => {
             value={name}
             onChange={e => { setName(e.target.value) }}
           />
-          <FormControl fullWidth>
-            <InputLabel id="select-label">Mise en page</InputLabel>
-            <Select
-              labelId="select-label"
-              id="select"
-              value={layout}
-              onChange={e => { setLayout(e.target.value) }}
-            >
-              <MenuItem value='FullScreen'>Bloc unique</MenuItem>
-              <MenuItem value='Feed'>Liste</MenuItem>
-              <MenuItem value='Grid'>Grille</MenuItem>
-            </Select>
-          </FormControl>
           <DialogActions>
             <Button onClick={handleClose} color="primary">
               Annuler

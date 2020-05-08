@@ -3,7 +3,7 @@ import SimpleSchema from 'simpl-schema';
 import Actions from '/imports/core/Actions';
 import Data from '/imports/core/Data.js';
 
-const addView = ({ data: { name, layout = 'FullScreen' }, target }) => {
+const addView = ({ data: { name }, target }) => {
 
   if (name.length < 2) {
     throw new Meteor.Error(
@@ -13,7 +13,6 @@ const addView = ({ data: { name, layout = 'FullScreen' }, target }) => {
   }
   const _id = Data.insert({
     name,
-    layout,
     type: 'view',
     root: target._id,
     isActive: true,
@@ -22,9 +21,6 @@ const addView = ({ data: { name, layout = 'FullScreen' }, target }) => {
 }
 addView.dataSchema = new SimpleSchema({
   name: {
-    type: String
-  },
-  layout: {
     type: String
   },
 })

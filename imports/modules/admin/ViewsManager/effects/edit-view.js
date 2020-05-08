@@ -20,8 +20,5 @@ editView.dataSchema = new SimpleSchema({
   name: {
     type: String
   },
-  layout: {
-    type: String
-  },
 })
 Actions.registerEffect('editView', editView)

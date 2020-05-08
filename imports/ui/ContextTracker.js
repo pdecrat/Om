@@ -35,7 +35,7 @@ const Provider = () => {
   }, [isReady]);
 
   if (!context && (Meteor.isServer || isReady)) {
-    history.push('/not-found');
+    history.replace('/not-found');
     return null;
   }
 

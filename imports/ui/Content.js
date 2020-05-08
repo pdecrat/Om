@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import { useHistory } from 'react-router-dom';
 import { useTracker } from 'meteor/react-meteor-data';
 import Container from '@material-ui/core/Container';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
 
 import Blocks from '/imports/modules/blocks-index';
 import Data from '/imports/core/Data';
@@ -23,11 +25,9 @@ const Content = () => {
   }, [query.view, isReady]);
 
   if (!view && (Meteor.isServer || isReady)) {
-    history.push('/not-found')
+    history.replace('/not-found')
     return null;
   }
-  const Component = Blocks[view.layout];
-
   const blocks = useTracker(() => {
     return isReady ? Data.find({
       root: context._id,
@@ -39,12 +39,13 @@ const Content = () => {
   }, [isReady, view._id]);
 
   return isReady ?
-    <Container
-      disableGutters
-      style={{ paddingTop: '48px' }}
-    >
-      <Component blocks={blocks} />
-    </Container>
+    <React.Fragment>
+      <div style={{ height: '48px' }} />
+      {blocks.map((block, index) => {
+        const Component = Blocks[block.name];
+        return !!Component && <Component key={index} data={block} />
+      })}
+    </React.Fragment>
     : null;
 }
 

@@ -16,17 +16,16 @@ import Button from '@material-ui/core/Button';
 import '/imports/modules/admin/ViewsManager/effects/edit-view.js';
 import { Context } from '/imports/ui/ContextTracker';
 
-const ViewEdit = ({ name = '', layout = '', _id, root }) => {
+const ViewEdit = ({ name = '', _id, root }) => {
   const [isOpen, setOpen] = useState(false);
   const [newName, setName] = useState(name);
-  const [newLayout, setLayout] = useState(layout);
   const { call, query } = useContext(Context);
 
   const handleClose = () => setOpen(false);
   const addView = () => {
     call({
       name: "editView",
-      data: { name: newName, layout: newLayout },
+      data: { name: newName },
       target: { _id, root }
     }, (err) => {
       if (!err) {
@@ -57,19 +56,6 @@ const ViewEdit = ({ name = '', layout = '', _id, root }) => {
             value={newName}
             onChange={e => { setName(e.target.value) }}
           />
-          <FormControl fullWidth>
-            <InputLabel id="select-label">Mise en page</InputLabel>
-            <Select
-              labelId="select-label"
-              id="select"
-              value={newLayout}
-              onChange={e => { setLayout(e.target.value) }}
-            >
-              <MenuItem value='FullScreen'>Bloc unique</MenuItem>
-              <MenuItem value='Feed'>Liste</MenuItem>
-              <MenuItem value='Grid'>Grille</MenuItem>
-            </Select>
-          </FormControl>
           <DialogActions>
             <Button onClick={handleClose} color="primary">
               Annuler
