@@ -14,18 +14,15 @@ export class Collection extends Mongo.Collection {
 }
 
 export const Collections = {
-  list: {
+  _list: {
+  },
+  get(name) {
+    return this._list[name]
+  },
+  add(name) {
+    this._list[name] = new Collection(name);
+  },
+  register(name, cursor) {
+    this._list[name] = cursor;
   }
 };
-
-Collections.get = name => {
-  return Collections.list[name]
-}
-
-Collections.add = (name) => {
-  Collections.list[name] = new Collection(name);
-}
-
-Collections.register = (name, cursor) => {
-  Collections.list[name] = cursor;
-}

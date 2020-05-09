@@ -3,10 +3,11 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/IconButton';
 import { useHistory, useLocation } from 'react-router-dom';
 
+import Blocks from '/imports/core/Blocks';
 import '/imports/core/Spaces/effects/create-space';
 import { Context } from '/imports/ui/ContextTracker';
 
-const SpaceCreate = () => {
+Blocks.register('spaceCreate', () => {
   const [name, setName] = useState('');
   const { call } = useContext(Context);
   const history = useHistory();
@@ -31,6 +32,4 @@ const SpaceCreate = () => {
       <Button onClick={launchToSpace}>Launch !</Button>
     </React.Fragment>
   )
-}
-
-export default SpaceCreate;
+});

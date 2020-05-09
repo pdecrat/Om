@@ -8,10 +8,11 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 
 import Data from '/imports/core/Data';
+import Blocks from '/imports/core/Blocks';
 import ViewItem from '/imports/modules/admin/ViewsManager/ViewItem';
 import ViewAdd from '/imports/modules/admin/ViewsManager/ViewAdd';
 
-const ViewsManager = ({ data }) => {
+Blocks.register('viewsManager', ({ data }) => {
   const views = useTracker(() => Data.find({
     root: data.root,
     type: 'view',
@@ -33,6 +34,4 @@ const ViewsManager = ({ data }) => {
       <Divider />
     </List>
   );
-}
-
-export default ViewsManager;
+});

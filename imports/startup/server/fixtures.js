@@ -81,7 +81,7 @@ Meteor.startup(() => {
       type: "block",
       text: "Vous pouvez dès maintenant y créer vos propres espaces virtuels, et bientôt profiter pleinement de nombreuses fonctionnalités faites avec soin pour vous faciliter la vie.",
       blockType: "content",
-      name: "Paragraph",
+      name: "paragraph",
       viewOrder: 4,
       viewId: homepageId
     })
@@ -91,7 +91,7 @@ Meteor.startup(() => {
       isPublic: true,
       type: "block",
       blockType: "content",
-      name: "Image",
+      name: "image",
       viewOrder: 5,
       viewId: homepageId
     })
@@ -101,7 +101,7 @@ Meteor.startup(() => {
       isPublic: true,
       type: "block",
       blockType: "content",
-      name: "Image",
+      name: "image",
       viewOrder: 6,
       viewId: homepageId
     })
@@ -111,7 +111,7 @@ Meteor.startup(() => {
       isPublic: true,
       type: "block",
       blockType: "content",
-      name: "Image",
+      name: "image",
       viewOrder: 7,
       viewId: homepageId
     })
@@ -122,7 +122,7 @@ Meteor.startup(() => {
       restrictedTo: ["admin"],
       type: "block",
       blockType: "content",
-      name: "ViewsManager",
+      name: "viewsManager",
       viewOrder: 1,
       viewId: viewManagerId
     })

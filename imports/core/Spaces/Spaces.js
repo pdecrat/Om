@@ -40,7 +40,7 @@ class SpaceCollection extends Collection {
         type: "block",
         text: "Bonjour, et bienvenue sur " + space.name,
         blockType: "content",
-        name: "Paragraph",
+        name: "paragraph",
         viewOrder: 1,
         viewId: mainViewId
       })
@@ -50,7 +50,7 @@ class SpaceCollection extends Collection {
         isPublic: true,
         type: "block",
         blockType: "content",
-        name: "SpaceCreate",
+        name: "spaceCreate",
         viewOrder: 2,
         viewId: mainViewId
       })
@@ -60,7 +60,7 @@ class SpaceCollection extends Collection {
         isPublic: true,
         type: "block",
         blockType: "content",
-        name: "ViewsManager",
+        name: "viewsManager",
         viewOrder: 3,
         viewId: mainViewId
       })

@@ -14,7 +14,7 @@ import Button from '@material-ui/core/Button';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 
 import '/imports/modules/admin/ViewsManager/effects/add-block.js';
-import Blocks from '/imports/modules/blocks-index';
+import Blocks from '/imports/core/Blocks';
 import { Context } from '/imports/ui/ContextTracker';
 
 const BlockAdd = ({ viewId, viewOrder }) => {
@@ -57,7 +57,7 @@ const BlockAdd = ({ viewId, viewOrder }) => {
               value={block}
               onChange={e => { setBlock(e.target.value) }}
             >
-              {Object.keys(Blocks).map(block =>
+              {Blocks.getAll().map(block =>
                 <MenuItem key={block} value={block}>{block}</MenuItem>
               )}
             </Select>

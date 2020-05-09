@@ -4,33 +4,31 @@ import SimpleSchema from 'simpl-schema';
 
 import Data from '/imports/core/Data';
 
-const Actions = {};
+const Actions = {
+  _effects: {},
+  registerEffect(name, effect) {
+    if (!this._effects[name])
+      this._effects[name] = effect;
+  },
+  do({ action, origin, target, data }) {
+    if (!!action.data)
+      data = { ...data, ...action.data };
 
-Actions._effects = {};
-Actions.registerEffect = (name, effect) => {
-  if (!Actions._effects[name])
-    Actions._effects[name] = effect;
-}
-
-Actions.do = ({ action, origin, target, data }) => {
-  if (!!action.data)
-    data = { ...data, ...action.data };
-
-  Object.keys(action.effects).forEach(effect => {
-    Actions._effects[effect].fn({ origin, target, data });
-  });
-}
-
-Actions.validateDataSchema = ({ action, data = {} }) => {
-  const keys = Object.keys(action.effects);
-  const validationSchema = new SimpleSchema({});
-  if (keys.length > 0) {
-    keys.forEach(effect => {
-      validationSchema.extend(Actions._effects[effect].dataSchema);
+    Object.keys(action.effects).forEach(effect => {
+      this._effects[effect].fn({ origin, target, data });
     });
-    validationSchema.validate(data);
+  },
+  validateDataSchema({ action, data = {} }) {
+    const keys = Object.keys(action.effects);
+    const validationSchema = new SimpleSchema({});
+    if (keys.length > 0) {
+      keys.forEach(effect => {
+        validationSchema.extend(this._effects[effect].dataSchema);
+      });
+      validationSchema.validate(data);
+    }
   }
-}
+};
 
 Meteor.methods({
   'do'(action) {

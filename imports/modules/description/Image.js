@@ -1,7 +1,9 @@
 import React from 'react';
 import { Parallax } from 'react-parallax';
 
-const Image = () => {
+import Blocks from '/imports/core/Blocks';
+
+Blocks.register('image', () => {
   return (
     <Parallax
         bgImage={'https://source.unsplash.com/random/800x600'}
@@ -11,6 +13,4 @@ const Image = () => {
         <div style={{ height: '600px' }} />
     </Parallax>
   )
-}
-
-export default Image;
+});

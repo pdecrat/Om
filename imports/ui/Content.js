@@ -6,7 +6,7 @@ import Container from '@material-ui/core/Container';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 
-import Blocks from '/imports/modules/blocks-index';
+import Blocks from '/imports/core/Blocks';
 import Data from '/imports/core/Data';
 import { Context } from '/imports/ui/ContextTracker';
 
@@ -42,7 +42,7 @@ const Content = () => {
     <React.Fragment>
       <div style={{ height: '48px' }} />
       {blocks.map((block, index) => {
-        const Component = Blocks[block.name];
+        const Component = Blocks.get(block.name);
         return !!Component && <Component key={index} data={block} />
       })}
     </React.Fragment>

@@ -1,14 +1,15 @@
-import Paragraph from './description/Paragraph';
-import Image from './description/Image';
-
-import ViewsManager from './admin/ViewsManager/ViewsManager';
-
-import SpaceCreate from '/imports/core/Spaces/blocks/SpaceCreate';
-
 const Blocks = {
-  Paragraph,
-  ViewsManager,
-  SpaceCreate,
-  Image,
+  _components: {},
+  register(name, component) {
+    if (!this._components[name])
+      this._components[name] = component;
+  },
+  get(name) {
+    if (this._components[name])
+      return this._components[name];
+  },
+  getAll() {
+    return Object.keys(this._components);
+  }
 }
 export default Blocks;

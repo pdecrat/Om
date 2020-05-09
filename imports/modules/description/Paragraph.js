@@ -1,12 +1,12 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
 
-const Paragraph = ({ data: { text = 'Hello World!' } }) => {
+import Blocks from '/imports/core/Blocks';
+
+Blocks.register('paragraph', ({ data: { text = 'Hello World!' } }) => {
   return (
     <Typography>
       {text}
     </Typography>
   );
-}
-
-export default Paragraph;
+});
