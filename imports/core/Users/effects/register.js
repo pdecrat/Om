@@ -6,17 +6,18 @@ if (Meteor.isServer) {
 }
 import Actions from '/imports/core/Actions';
 
-const register = ({ data }) => {
-  if (Meteor.isServer) {
-    Passwordless.sendLoginEmail(data.email.toLowerCase(), data.url);
-  }
-}
-register.dataSchema = new SimpleSchema({
-  email: {
-    type: String
+Actions.registerEffect('register', {
+  fn({ data }) {
+    if (Meteor.isServer) {
+      Passwordless.sendLoginEmail(data.email.toLowerCase(), data.url);
+    }
   },
-  url: {
-    type: String
-  }
+  dataSchema: new SimpleSchema({
+    email: {
+      type: String
+    },
+    url: {
+      type: String
+    }
+  })
 })
-Actions.registerEffect('register', register)

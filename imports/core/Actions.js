@@ -17,7 +17,7 @@ Actions.do = ({ action, origin, target, data }) => {
     data = { ...data, ...action.data };
 
   Object.keys(action.effects).forEach(effect => {
-    Actions._effects[effect]({ origin, target, data });
+    Actions._effects[effect].fn({ origin, target, data });
   });
 }
 

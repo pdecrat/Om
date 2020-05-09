@@ -82,7 +82,37 @@ Meteor.startup(() => {
       text: "Vous pouvez dès maintenant y créer vos propres espaces virtuels, et bientôt profiter pleinement de nombreuses fonctionnalités faites avec soin pour vous faciliter la vie.",
       blockType: "content",
       name: "Paragraph",
-      viewOrder: 1,
+      viewOrder: 4,
+      viewId: homepageId
+    })
+    Data.insert({
+      root: omId,
+      isActive: true,
+      isPublic: true,
+      type: "block",
+      blockType: "content",
+      name: "Image",
+      viewOrder: 5,
+      viewId: homepageId
+    })
+    Data.insert({
+      root: omId,
+      isActive: true,
+      isPublic: true,
+      type: "block",
+      blockType: "content",
+      name: "Image",
+      viewOrder: 6,
+      viewId: homepageId
+    })
+    Data.insert({
+      root: omId,
+      isActive: true,
+      isPublic: true,
+      type: "block",
+      blockType: "content",
+      name: "Image",
+      viewOrder: 7,
       viewId: homepageId
     })
     Data.insert({
