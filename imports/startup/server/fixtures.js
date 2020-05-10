@@ -62,20 +62,12 @@ Meteor.startup(() => {
       name: "om",
       isMainView: true,
     })
-    const viewManagerId = Data.insert({
-      root: omId,
-      isPublic: false,
-      restrictedTo: [ 'admin' ],
-      type: "view",
-      name: "view-manager",
-    })
     Data.insert({
       root: omId,
       type: "block",
       text: "Vous pouvez dès maintenant y créer vos propres espaces virtuels, et bientôt profiter pleinement de nombreuses fonctionnalités faites avec soin pour vous faciliter la vie.",
       blockType: "content",
       name: 'Paragraph',
-      viewOrder: 4,
       viewId: homepageId
     })
     Data.insert({
@@ -83,18 +75,7 @@ Meteor.startup(() => {
       type: "block",
       blockType: "content",
       name: 'Image',
-      viewOrder: 5,
       viewId: homepageId
-    })
-    Data.insert({
-      root: omId,
-      isPublic: false,
-      restrictedTo: ["admin"],
-      type: "block",
-      blockType: "content",
-      name: 'ViewsManager',
-      viewOrder: 1,
-      viewId: viewManagerId
     })
   }
 })

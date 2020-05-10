@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 import Blocks from '/imports/core/Blocks';
 import { Context } from '/imports/ui/ContextTracker';
 
-Blocks.register('SpaceCreate', () => {
+Blocks.register('SpaceCreate', ({ block }) => {
   const [name, setName] = useState('');
   const { call } = useContext(Context);
   const history = useHistory();
@@ -26,9 +26,9 @@ Blocks.register('SpaceCreate', () => {
       <TextField
         value={name}
         onChange={changeName}
-        label="Nommez votre espace"
+        label={block.fieldText}
       />
-      <Button onClick={launchToSpace}>Launch !</Button>
+      <Button onClick={launchToSpace}>{block.buttonText}</Button>
     </React.Fragment>
   )
 });

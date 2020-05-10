@@ -11,14 +11,8 @@ import Blocks from '/imports/core/Blocks';
 
 Actions.registerEffect('addBlock', {
   fn({ data: { name = 'Paragraph' }, target }) {
-    const count = Data.find({
-      blockType: 'content',
-      root: target.root,
-      viewId: target._id,
-    }).count()
-    Data.insert({
+    const id = Data.insert({
       name,
-      viewOrder: count + 1,
       type: 'block',
       blockType: 'content',
       root: target.root,
@@ -26,6 +20,7 @@ Actions.registerEffect('addBlock', {
       isActive: true,
       isPublic: true,
     })
+    Data.update({ target }, { $push: { order: id } });
   },
   dataSchema() {
     return new SimpleSchema({

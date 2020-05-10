@@ -15,11 +15,11 @@ import ActionButton from '/imports/ui/components/ActionButton';
 
 import ViewItem from './ViewItem';
 
-Blocks.register('ViewsManager', ({ data }) => {
+Blocks.register('ViewsManager', ({ block }) => {
   const views = useTracker(() => Data.find({
-    root: data.root,
+    root: block.root,
     type: 'view',
-  }).fetch(), [data.root]);
+  }).fetch(), [block.root]);
 
   return (
     <List

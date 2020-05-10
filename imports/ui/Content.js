@@ -29,21 +29,24 @@ const Content = () => {
     return null;
   }
   const blocks = useTracker(() => {
-    return isReady ? Data.find({
+    const blocks = Data.find({
       root: context._id,
       type: 'block',
       blockType: "content",
       viewId: view._id,
-    }, { sort: { viewOrder: 1 } }).fetch()
-    : [];
-  }, [isReady, view._id]);
+    }).fetch();
+    const orderedBlocks = view.order.map(id => {
+      return blocks.find(block => block._id === id)
+    });
+    return isReady ? orderedBlocks : [];
+  }, [isReady, view._id, view.order]);
 
   return isReady ?
     <React.Fragment>
       <div style={{ height: '48px' }} />
       {blocks.map((block, index) => {
         const Component = Blocks.get(block.name);
-        return !!Component && <Component key={index} data={block} />
+        return !!Component && <Component key={index} block={block} />
       })}
     </React.Fragment>
     : null;

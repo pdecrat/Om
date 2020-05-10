@@ -14,7 +14,7 @@ const BlockList = ({ view }) => {
   const blocks = useTracker(() => Data.find({
     type: 'block',
     viewId: view._id,
-  }, { sort: { viewOrder: 1 } }).fetch(), [view._id]);
+  }).fetch());
   const isViewManagerLast = useTracker(() => Data.find({
       type: 'block',
       name: 'ViewsManager'

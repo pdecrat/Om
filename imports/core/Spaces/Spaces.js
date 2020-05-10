@@ -26,6 +26,7 @@ class SpaceCollection extends Collection {
         root: space._id,
         name: space.name,
         isMainView: true,
+        order: [],
       });
       collection.insert({
         root: space._id,
@@ -34,7 +35,6 @@ class SpaceCollection extends Collection {
         text: "Bonjour, et bienvenue sur " + space.name,
         blockType: "content",
         name: 'Paragraph',
-        viewOrder: 1,
         viewId: mainViewId
       })
       collection.insert({
@@ -43,7 +43,8 @@ class SpaceCollection extends Collection {
         label: 'Launcher',
         blockType: "content",
         name: 'SpaceCreate',
-        viewOrder: 2,
+        fieldText: "Nommez votre espace",
+        buttonText: "C'est parti !",
         viewId: mainViewId
       })
       collection.insert({
@@ -52,7 +53,6 @@ class SpaceCollection extends Collection {
         label: 'View Editor',
         blockType: "content",
         name: 'ViewsManager',
-        viewOrder: 3,
         viewId: mainViewId
       })
       collection.insert({
@@ -101,6 +101,25 @@ class SpaceCollection extends Collection {
           {
             name: 'editTextField',
             options: { fieldToChange: 'text' }
+          },
+          {
+            name: 'editTextField',
+            options: { fieldToChange: 'label' }
+          }
+        ]
+      })
+      collection.insert({
+        root: space._id,
+        type: "action",
+        name: "editSpaceCreate",
+        effects: [
+          {
+            name: 'editTextField',
+            options: { fieldToChange: 'fieldText' }
+          },
+          {
+            name: 'editTextField',
+            options: { fieldToChange: 'buttonText' }
           },
           {
             name: 'editTextField',

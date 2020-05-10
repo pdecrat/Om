@@ -27,6 +27,7 @@ const Actions = {
         if (this._effects[name].dataSchema)
           validationSchema.extend(this._effects[name].dataSchema(options));
       });
+      data = validationSchema.clean(data);
       validationSchema.validate(data);
     }
   }

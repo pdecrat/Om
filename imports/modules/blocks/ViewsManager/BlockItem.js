@@ -16,7 +16,7 @@ const BlockItem = ({ block, index, length, isDisabled }) => {
       <ActionButton
         name={`edit${block.name}`}
         target={block}
-        defaultValue={{ text: block.text }}
+        defaultValue={{ ...block }}
       >
         <ListItemIcon>
           <SettingsIcon />

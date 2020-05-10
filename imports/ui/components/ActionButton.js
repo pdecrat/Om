@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useRef, useEffect } from 'react';
 import { useTracker } from 'meteor/react-meteor-data';
 import IconButton from '@material-ui/core/IconButton';
 import Dialog from '@material-ui/core/Dialog';
@@ -19,6 +19,14 @@ const ActionButton = ({
   disableDialog = false,
   children
 }) => {
+  const ref = useRef(false)
+  useEffect(() => {
+    ref.current = true
+    return () => {
+      ref.current = false
+    }
+  }, [])
+
   const action = useTracker(() => {
     const doc = Data.findOne({ name })
 
@@ -28,9 +36,12 @@ const ActionButton = ({
   if (!action) return null;
 
   const [isOpen, setOpen] = useState(false);
-  const [data, setData] = useState(defaultValue);
+  const [data, setData] = useState(disableDialog ? defaultValue : null);
   const { call } = useContext(Context);
-  
+  const open = () => {
+    setData(defaultValue);
+    setOpen(true);
+  }
   const toggle = () => {
     setOpen(!isOpen)
   }
@@ -43,8 +54,14 @@ const ActionButton = ({
   const callAction = () => {
     call({ name, data, target }, (err, res) => {
       if (!err) {
-        setData(defaultValue);
-        setOpen(false);
+        if (ref.current) {
+          if (disableDialog)
+            setData(defaultValue);
+          else {
+            setData(null);
+            setOpen(false);
+          }
+        }
         if (callback) callback(err, res);
       }
     });
@@ -52,8 +69,8 @@ const ActionButton = ({
 
   return action ? (
     <React.Fragment>
-      {React.cloneElement(children, { onClick: disableDialog ? callAction : toggle })}
-      { disableDialog ?
+      {React.cloneElement(children, { onClick: disableDialog ? callAction : open })}
+      { disableDialog || !data ?
         null
         : <Dialog open={isOpen} onClose={toggle} >
             <DialogTitle id="form-dialog-title">Créer une vue</DialogTitle>
