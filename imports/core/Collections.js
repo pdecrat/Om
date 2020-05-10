@@ -7,9 +7,15 @@ export class Collection extends Mongo.Collection {
   insert(doc, callback) {
     if (!doc._id)
       doc._id = new Mongo.ObjectID()._str;
-    doc.dateCreated = Date.now();
+    if (!doc.label)
+      doc.label = doc.name ? doc.name : doc._id;
 
-    return super.insert(doc, callback);
+    return super.insert({
+      isActive: doc.isActive ? doc.isActive : true,
+      isPublic: doc.isPublic ? doc.isPublic : true,
+      dateCreated: Date.now(),
+      ...doc
+    }, callback);
   }
 }
 

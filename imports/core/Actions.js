@@ -24,7 +24,8 @@ const Actions = {
       const validationSchema = new SimpleSchema({});
 
       action.effects.forEach(({ name, options }) => {
-        validationSchema.extend(this._effects[name].dataSchema(options));
+        if (this._effects[name].dataSchema)
+          validationSchema.extend(this._effects[name].dataSchema(options));
       });
       validationSchema.validate(data);
     }

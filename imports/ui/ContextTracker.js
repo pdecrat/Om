@@ -12,7 +12,7 @@ const Provider = () => {
   const history = useHistory();
   const match = useRouteMatch();
   const location = useLocation();
-  const reference = decodeURIComponent(match.params.reference);
+  const reference = encodeURI(match.params.reference);
   const type = match.params.type === 's' ? 'space' : 'user';
   const query = location.search ? qs.parse(location.search) : {};
 

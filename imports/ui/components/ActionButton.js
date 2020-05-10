@@ -26,11 +26,11 @@ const ActionButton = ({
   }, [name]);
 
   if (!action) return null;
+
   const [isOpen, setOpen] = useState(false);
   const [data, setData] = useState(defaultValue);
   const { call } = useContext(Context);
-
-
+  
   const toggle = () => {
     setOpen(!isOpen)
   }

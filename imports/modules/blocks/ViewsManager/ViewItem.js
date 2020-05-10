@@ -28,20 +28,16 @@ const ViewItem = ({ view, isLast }) => {
         <ListItemIcon>
           { isOpen ? <ExpandLess /> : <ExpandMore /> }
         </ListItemIcon>
-        <ListItemText primary={view.name} />
+        <ListItemText primary={view.label} />
         <ListItemSecondaryAction>
           <ActionButton
             name='editView'
             target={view}
-            defaultValue={{ name: view.name }}
+            defaultValue={{ label: view.label }}
           >
             <IconButton
               edge='end'
               aria-label="edit-view"
-              disabled={
-                query.view === view.name
-                || (view.isMainView && !query.view)
-                ? true : false }
             >
               <SettingsIcon />
             </IconButton>

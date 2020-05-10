@@ -30,7 +30,7 @@ const SpaceMenu = ({ views = [], close }) => {
             close();
           }}
         >
-          <ListItemText primary={view.name} />
+          <ListItemText primary={view.label} />
         </ListItem>
       )}
     </List>

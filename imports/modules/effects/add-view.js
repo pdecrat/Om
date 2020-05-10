@@ -18,8 +18,6 @@ Actions.registerEffect('addView', {
       name,
       type: 'view',
       root: target._id,
-      isActive: true,
-      isPublic: true,
     })
   },
   dataSchema() {

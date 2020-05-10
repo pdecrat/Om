@@ -22,7 +22,7 @@ const BlockItem = ({ block, index, length, isDisabled }) => {
           <SettingsIcon />
         </ListItemIcon>
       </ActionButton>
-      <ListItemText primary={block.name} />
+      <ListItemText primary={block.label} />
       <ListItemSecondaryAction>
         <ActionButton
           name="changeOrder"

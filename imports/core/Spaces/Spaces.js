@@ -8,26 +8,20 @@ class SpaceCollection extends Collection {
   insert(space, callback) {
     space = {
       ...space,
-      reference: space.name.toLowerCase().split(' ').join('-'),
+      reference: encodeURI(space.name),
       _id: new Mongo.ObjectID()._str,
       root: "space",
       type: "space",
-      isActive: true,
-      isPublic: true,
     }
     if (Meteor.isServer) {
       Collections.add(space._id);
       const collection = Collections.get(space._id);
       collection.insert({
         ...space,
-        isActive: true,
-        isPublic: true,
         type: 'header',
         root: space._id,
       });
       const mainViewId = collection.insert({
-        isActive: true,
-        isPublic: true,
         type: 'view',
         root: space._id,
         name: space.name,
@@ -35,9 +29,8 @@ class SpaceCollection extends Collection {
       });
       collection.insert({
         root: space._id,
-        isActive: true,
-        isPublic: true,
         type: "block",
+        label: 'Intro',
         text: "Bonjour, et bienvenue sur " + space.name,
         blockType: "content",
         name: 'Paragraph',
@@ -46,9 +39,8 @@ class SpaceCollection extends Collection {
       })
       collection.insert({
         root: space._id,
-        isActive: true,
-        isPublic: true,
         type: "block",
+        label: 'Launcher',
         blockType: "content",
         name: 'SpaceCreate',
         viewOrder: 2,
@@ -56,9 +48,8 @@ class SpaceCollection extends Collection {
       })
       collection.insert({
         root: space._id,
-        isActive: true,
-        isPublic: true,
         type: "block",
+        label: 'View Editor',
         blockType: "content",
         name: 'ViewsManager',
         viewOrder: 3,
@@ -66,8 +57,6 @@ class SpaceCollection extends Collection {
       })
       collection.insert({
         root: space._id,
-        isActive: true,
-        isPublic: true,
         type: "action",
         name: "register user",
         effects: [
@@ -76,8 +65,6 @@ class SpaceCollection extends Collection {
       })
       collection.insert({
         root: space._id,
-        isActive: true,
-        isPublic: true,
         type: "action",
         name: "createSpace",
         effects: [
@@ -86,34 +73,43 @@ class SpaceCollection extends Collection {
       })
       collection.insert({
         root: space._id,
-        isActive: true,
-        isPublic: true,
         type: "action",
         name: "editView",
         effects: [
           {
             name: 'editTextField',
-            options: { fieldToChange: 'name' }
+            options: { fieldToChange: 'label' }
           }
         ]
       })
       collection.insert({
         root: space._id,
-        isActive: true,
-        isPublic: true,
+        type: "action",
+        name: "editImage",
+        effects: [
+          {
+            name: 'editTextField',
+            options: { fieldToChange: 'label' }
+          }
+        ]
+      })
+      collection.insert({
+        root: space._id,
         type: "action",
         name: "editParagraph",
         effects: [
           {
             name: 'editTextField',
             options: { fieldToChange: 'text' }
+          },
+          {
+            name: 'editTextField',
+            options: { fieldToChange: 'label' }
           }
         ]
       })
       collection.insert({
         root: space._id,
-        isActive: true,
-        isPublic: true,
         type: "action",
         name: "addView",
         effects: [
@@ -122,8 +118,6 @@ class SpaceCollection extends Collection {
       })
       collection.insert({
         root: space._id,
-        isActive: true,
-        isPublic: true,
         type: "action",
         name: "removeView",
         effects: [
@@ -132,8 +126,6 @@ class SpaceCollection extends Collection {
       })
       collection.insert({
         root: space._id,
-        isActive: true,
-        isPublic: true,
         type: "action",
         name: "addBlock",
         effects: [
@@ -142,8 +134,6 @@ class SpaceCollection extends Collection {
       })
       collection.insert({
         root: space._id,
-        isActive: true,
-        isPublic: true,
         type: "action",
         name: "removeBlock",
         effects: [
@@ -152,8 +142,6 @@ class SpaceCollection extends Collection {
       })
       collection.insert({
         root: space._id,
-        isActive: true,
-        isPublic: true,
         type: "action",
         name: "changeOrder",
         effects: [
@@ -193,7 +181,7 @@ if (Meteor.isServer) {
         });
 
         query.$or = [
-          { isPublic: true },
+          { isPublic: true }
         ];
         if (membership) {
           query.$or.push(

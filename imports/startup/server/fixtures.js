@@ -43,8 +43,6 @@ Meteor.startup(() => {
     const admin = Meteor.users.findOne({ email: "philippe.decrat@gmail.com" })
     if (admin) {
       const membership = {
-        isActive: true,
-        isPublic: false,
         type: "membership",
         memberOf: omId,
         roles: ["admin"],
@@ -60,15 +58,12 @@ Meteor.startup(() => {
     }
     const { _id: homepageId } = Data.findOne({
       root: omId,
-      isActive: true,
-      isPublic: true,
       type: "view",
       name: "om",
       isMainView: true,
     })
     const viewManagerId = Data.insert({
       root: omId,
-      isActive: true,
       isPublic: false,
       restrictedTo: [ 'admin' ],
       type: "view",
@@ -76,8 +71,6 @@ Meteor.startup(() => {
     })
     Data.insert({
       root: omId,
-      isActive: true,
-      isPublic: true,
       type: "block",
       text: "Vous pouvez dès maintenant y créer vos propres espaces virtuels, et bientôt profiter pleinement de nombreuses fonctionnalités faites avec soin pour vous faciliter la vie.",
       blockType: "content",
@@ -87,8 +80,6 @@ Meteor.startup(() => {
     })
     Data.insert({
       root: omId,
-      isActive: true,
-      isPublic: true,
       type: "block",
       blockType: "content",
       name: 'Image',
@@ -97,7 +88,6 @@ Meteor.startup(() => {
     })
     Data.insert({
       root: omId,
-      isActive: true,
       isPublic: false,
       restrictedTo: ["admin"],
       type: "block",

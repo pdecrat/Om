@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/IconButton';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 import Blocks from '/imports/core/Blocks';
 import { Context } from '/imports/ui/ContextTracker';
@@ -18,7 +18,7 @@ Blocks.register('SpaceCreate', () => {
       data: { name }
     }, (err) => {
       if (!err)
-        history.push('/s/' + name.toLowerCase().split(' ').join('-'));
+        history.push('/s/' + encodeURI(name));
     })
   }
   return (

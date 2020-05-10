@@ -20,7 +20,7 @@ const Provider = () => {
 
   const user = useTracker(() => {
     if (isReady) return Meteor.user();
-    return {};
+    return null;
   }, [isReady])
 
   return (

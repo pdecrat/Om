@@ -15,7 +15,7 @@ Actions.registerEffect('createSpace', {
     const _id = Spaces.insert({ name })
   },
   dataSchema() {
-    new SimpleSchema({
+    return new SimpleSchema({
       name: {
         type: String
       },
