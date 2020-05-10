@@ -1,15 +1,19 @@
 import React from 'react';
 import { useTracker } from 'meteor/react-meteor-data';
 import List from '@material-ui/core/List';
+import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 
-import BlockAdd from '/imports/modules/admin/ViewsManager/BlockAdd';
+import ActionButton from '/imports/ui/components/ActionButton';
 import BlockItem from '/imports/modules/admin/ViewsManager/BlockItem';
 
-const BlockList = ({ viewId }) => {
+const BlockList = ({ view }) => {
   const blocks = useTracker(() => Data.find({
     type: 'block',
-    viewId,
-  }, { sort: { viewOrder: 1 } }).fetch(), [viewId]);
+    viewId: view._id,
+  }, { sort: { viewOrder: 1 } }).fetch(), [view._id]);
   const isViewManagerLast = useTracker(() => Data.find({
       type: 'block',
       name: 'ViewsManager'
@@ -26,7 +30,22 @@ const BlockList = ({ viewId }) => {
           isDisabled={isViewManagerLast}
         />
       )}
-      <BlockAdd viewId={viewId} viewOrder={blocks.length} />
+      <ActionButton
+        name='addBlock'
+        target={view}
+        defaultValue={{ name: 'paragraph' }}
+      >
+        <ListItem
+          style={{ paddingLeft: '40px' }}
+          button
+          dense
+        >
+          <ListItemIcon>
+            <PlaylistAddIcon />
+          </ListItemIcon>
+          <ListItemText primary="Ajouter un bloc" />
+        </ListItem>
+      </ActionButton>
     </List>
   )
 }

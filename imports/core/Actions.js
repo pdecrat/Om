@@ -10,6 +10,10 @@ const Actions = {
     if (!this._effects[name])
       this._effects[name] = effect;
   },
+  getEffect(name) {
+    if (this._effects[name])
+      return this._effects[name];
+  },
   do({ action, origin, target, data }) {
     if (!!action.data)
       data = { ...data, ...action.data };

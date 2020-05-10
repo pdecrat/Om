@@ -13,21 +13,12 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import Divider from '@material-ui/core/Divider';
 
 import BlockList from '/imports/modules/admin/ViewsManager/BlockList';
-import ViewEdit from '/imports/modules/admin/ViewsManager/ViewEdit';
-
-import '/imports/modules/admin/ViewsManager/effects/remove-view.js';
+import ActionButton from '/imports/ui/components/ActionButton';
 import { Context } from '/imports/ui/ContextTracker';
 
 const ViewItem = ({ view, isLast }) => {
   const [isOpen, setOpen] = useState(true);
-  const { call, query } = useContext(Context);
-
-  const removeView = () => {
-    call({
-      name: 'removeView',
-      target: view
-    })
-  }
+  const { query } = useContext(Context);
 
   return (
     <React.Fragment>
@@ -38,22 +29,42 @@ const ViewItem = ({ view, isLast }) => {
         </ListItemIcon>
         <ListItemText primary={view.name} />
         <ListItemSecondaryAction>
-          <ViewEdit {...view} />
-          <IconButton
-            edge="end"
-            aria-label="comments"
-            disabled={
-              view.name === query.view
-              || (view.isMainView && !query.view)
-              || isLast}
-            onClick={removeView}
+          <ActionButton
+            name='editView'
+            target={view}
+            defaultValue={{ name: view.name }}
           >
-            <ClearIcon />
-          </IconButton>
+            <IconButton
+              edge='end'
+              aria-label="edit-view"
+              disabled={
+                query.view === view.name
+                || (view.isMainView && !query.view)
+                ? true : false }
+            >
+              <SettingsIcon />
+            </IconButton>
+          </ActionButton>
+            <ActionButton
+              name='removeView'
+              target={view}
+              disableDialog
+            >
+            <IconButton
+              edge="end"
+              aria-label="removeView"
+              disabled={
+                view.name === query.view
+                || (view.isMainView && !query.view)
+                || isLast}
+            >
+              <ClearIcon />
+            </IconButton>
+            </ActionButton>
         </ListItemSecondaryAction>
       </ListItem>
       <Collapse in={isOpen} timeout="auto" unmountOnExit>
-        <BlockList viewId={view._id} />
+        <BlockList view={{ _id: view._id, root: view.root }} />
       </Collapse>
     </React.Fragment>
   );

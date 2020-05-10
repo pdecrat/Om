@@ -8,10 +8,8 @@ import ClearIcon from '@material-ui/icons/Clear';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import SettingsIcon from '@material-ui/icons/Settings';
-
-import '/imports/modules/admin/ViewsManager/effects/remove-block.js';
-import '/imports/modules/admin/ViewsManager/effects/change-order.js';
 import { Context } from '/imports/ui/ContextTracker';
+import ActionButton from '/imports/ui/components/ActionButton';
 
 const BlockItem = ({ block, index, length, isDisabled }) => {
   const { call } = useContext(Context);
@@ -22,13 +20,6 @@ const BlockItem = ({ block, index, length, isDisabled }) => {
       target: block
     })
   }
-  const changeOrder = (direction) => (() => {
-    call({
-      name: "changeOrder",
-      data: { direction },
-      target: block
-    })
-  })
 
   return (
     <ListItem style={{ paddingLeft: '40px' }} button dense key={block._id}>
@@ -37,30 +28,47 @@ const BlockItem = ({ block, index, length, isDisabled }) => {
       </ListItemIcon>
       <ListItemText primary={block.name} />
       <ListItemSecondaryAction>
-        <IconButton
-          edge="end"
-          aria-label="move up"
-          onClick={changeOrder('up')}
-          disabled={index === 0 ? true : false}
+        <ActionButton
+          name="changeOrder"
+          defaultValue={{ direction: 'up' }}
+          target={block}
+          disableDialog
         >
-          <ArrowUpwardIcon />
-        </IconButton>
-        <IconButton
-          edge="end"
-          aria-label="move down"
-          onClick={changeOrder('down')}
-          disabled={index < length - 1 ? false : true}
+          <IconButton
+            edge="end"
+            aria-label="move up"
+            disabled={index === 0 ? true : false}
+          >
+            <ArrowUpwardIcon />
+          </IconButton>
+        </ActionButton>
+        <ActionButton
+          name="changeOrder"
+          defaultValue={{ direction: 'down' }}
+          target={block}
+          disableDialog
         >
-          <ArrowDownwardIcon />
-        </IconButton>
-        <IconButton
-          edge="end"
-          aria-label="delete"
-          onClick={removeBlock}
-          disabled={isDisabled && (block.name === 'ViewsManager')}
+          <IconButton
+            edge="end"
+            aria-label="move down"
+            disabled={index < length - 1 ? false : true}
+          >
+            <ArrowDownwardIcon />
+          </IconButton>
+        </ActionButton>
+        <ActionButton
+          name="removeBlock"
+          target={block}
+          disableDialog
         >
-          <ClearIcon />
-        </IconButton>
+          <IconButton
+            edge="end"
+            aria-label="delete"
+            disabled={isDisabled && (block.name === 'ViewsManager')}
+          >
+            <ClearIcon />
+          </IconButton>
+        </ActionButton>
       </ListItemSecondaryAction>
     </ListItem>
   )

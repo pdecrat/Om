@@ -1,4 +1,6 @@
 import SimpleSchema from 'simpl-schema';
+import React from 'react';
+import TextField from '@material-ui/core/TextField';
 
 import Actions from '/imports/core/Actions';
 import Data from '/imports/core/Data.js';
@@ -21,5 +23,19 @@ Actions.registerEffect('editView', {
     name: {
       type: String
     },
-  })
+  }),
+  form({ name = '' }, onChange) {
+    return (
+      <TextField
+        key="name"
+        autoFocus
+        margin="dense"
+        label="Nom"
+        type="text"
+        fullWidth
+        value={name}
+        onChange={onChange('name')}
+      />
+    )
+  }
 })

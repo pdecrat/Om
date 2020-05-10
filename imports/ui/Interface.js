@@ -13,7 +13,7 @@ const Interface = ({ context }) => {
     },
     [context],
   );
-  
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />

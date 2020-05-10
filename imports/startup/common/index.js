@@ -1,2 +1,3 @@
 import './apis';
-import './block-list';
+import './blocks-list';
+import './effects-list';

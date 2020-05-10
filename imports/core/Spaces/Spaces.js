@@ -99,7 +99,7 @@ class SpaceCollection extends Collection {
         isActive: true,
         isPublic: true,
         type: "action",
-        name: "createView",
+        name: "addView",
         effects: {
           addView: true
         }

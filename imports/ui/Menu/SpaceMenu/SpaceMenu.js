@@ -1,5 +1,4 @@
 import React, { useContext, useState } from 'react';
-import { styled } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -8,10 +7,7 @@ import Drawer from '@material-ui/core/Drawer';
 
 import { Context } from '/imports/ui/ContextTracker';
 import Links from '/imports/ui/Menu/SpaceMenu/Links';
-
-const Grower = styled('div')({
-  flexGrow: 1,
-});
+import Grower from '/imports/ui/components/Grower';
 
 const SpaceMenu = () => {
   const [isMenuOpen, open] = useState(false);

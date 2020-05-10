@@ -6,11 +6,13 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
+import IconButton from '@material-ui/core/IconButton';
+import PostAdd from '@material-ui/icons/PostAdd';
 
 import Data from '/imports/core/Data';
 import Blocks from '/imports/core/Blocks';
 import ViewItem from '/imports/modules/admin/ViewsManager/ViewItem';
-import ViewAdd from '/imports/modules/admin/ViewsManager/ViewAdd';
+import ActionButton from '/imports/ui/components/ActionButton';
 
 Blocks.register('viewsManager', ({ data }) => {
   const views = useTracker(() => Data.find({
@@ -24,7 +26,15 @@ Blocks.register('viewsManager', ({ data }) => {
       subheader={
         <ListSubheader variant="h4" id="nested-list-subheader">
           Vues
-          <ViewAdd />
+          <ActionButton name='addView'>
+            <IconButton
+              edge='end'
+              aria-label="add-view"
+              style={{ float: 'right' }}
+            >
+              <PostAdd />
+            </IconButton>
+          </ActionButton>
         </ListSubheader>
       }
     >

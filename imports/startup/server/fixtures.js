@@ -98,26 +98,6 @@ Meteor.startup(() => {
     Data.insert({
       root: omId,
       isActive: true,
-      isPublic: true,
-      type: "block",
-      blockType: "content",
-      name: "image",
-      viewOrder: 6,
-      viewId: homepageId
-    })
-    Data.insert({
-      root: omId,
-      isActive: true,
-      isPublic: true,
-      type: "block",
-      blockType: "content",
-      name: "image",
-      viewOrder: 7,
-      viewId: homepageId
-    })
-    Data.insert({
-      root: omId,
-      isActive: true,
       isPublic: false,
       restrictedTo: ["admin"],
       type: "block",

@@ -4,8 +4,6 @@ import { Accounts } from 'meteor/accounts-base';
 import Spaces from '/imports/core/Spaces/Spaces';
 import { Collections } from '/imports/core/Collections';
 
-import '/imports/core/Users/effects/index';
-
 const Users = Meteor.users;
 Collections.register("user", Users);
 
