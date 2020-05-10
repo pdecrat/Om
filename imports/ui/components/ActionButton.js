@@ -19,15 +19,17 @@ const ActionButton = ({
   disableDialog = false,
   children
 }) => {
-  const [isOpen, setOpen] = useState(false);
-  const [data, setData] = useState(defaultValue);
-  const { call } = useContext(Context);
-
   const action = useTracker(() => {
     const doc = Data.findOne({ name })
 
     return doc;
   }, [name]);
+
+  if (!action) return null;
+  const [isOpen, setOpen] = useState(false);
+  const [data, setData] = useState(defaultValue);
+  const { call } = useContext(Context);
+
 
   const toggle = () => {
     setOpen(!isOpen)
@@ -59,10 +61,10 @@ const ActionButton = ({
               <DialogContentText>
                 Ajouter une vue à votre espace.
               </DialogContentText>
-              {Object.keys(action.effects).map(effectName => {
-                const effect = Actions.getEffect(effectName);
+              {action.effects.map(({ name, options }) => {
+                const effect = Actions.getEffect(name);
 
-                return effect.form ? effect.form(data, onChange): null;
+                return effect.form ? effect.form(data, onChange, options): null;
               })}
               <DialogActions>
                 <Button onClick={toggle} color="primary">

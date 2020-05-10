@@ -10,7 +10,7 @@ import Data from '/imports/core/Data.js';
 import Blocks from '/imports/core/Blocks';
 
 Actions.registerEffect('addBlock', {
-  fn({ data: { name = 'paragraph' }, target }) {
+  fn({ data: { name = 'Paragraph' }, target }) {
     const count = Data.find({
       blockType: 'content',
       root: target.root,
@@ -27,13 +27,15 @@ Actions.registerEffect('addBlock', {
       isPublic: true,
     })
   },
-  dataSchema: new SimpleSchema({
-    name: {
-      type: String
-    }
-  }),
+  dataSchema() {
+    return new SimpleSchema({
+      name: {
+        type: String
+      }
+    })
+  },
   form(data, onChange) {
-    const { name = 'paragraph' } = data;
+    const { name = 'Paragraph' } = data;
 
     return (
       <FormControl key="block-name" fullWidth>

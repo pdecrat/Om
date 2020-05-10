@@ -11,10 +11,11 @@ import PostAdd from '@material-ui/icons/PostAdd';
 
 import Data from '/imports/core/Data';
 import Blocks from '/imports/core/Blocks';
-import ViewItem from '/imports/modules/admin/ViewsManager/ViewItem';
 import ActionButton from '/imports/ui/components/ActionButton';
 
-Blocks.register('viewsManager', ({ data }) => {
+import ViewItem from './ViewItem';
+
+Blocks.register('ViewsManager', ({ data }) => {
   const views = useTracker(() => Data.find({
     root: data.root,
     type: 'view',

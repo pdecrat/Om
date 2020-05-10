@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
@@ -8,24 +8,20 @@ import ClearIcon from '@material-ui/icons/Clear';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import SettingsIcon from '@material-ui/icons/Settings';
-import { Context } from '/imports/ui/ContextTracker';
 import ActionButton from '/imports/ui/components/ActionButton';
 
 const BlockItem = ({ block, index, length, isDisabled }) => {
-  const { call } = useContext(Context);
-
-  const removeBlock = () => {
-    call({
-      name: "removeBlock",
-      target: block
-    })
-  }
-
   return (
     <ListItem style={{ paddingLeft: '40px' }} button dense key={block._id}>
-      <ListItemIcon>
-        <SettingsIcon />
-      </ListItemIcon>
+      <ActionButton
+        name={`edit${block.name}`}
+        target={block}
+        defaultValue={{ text: block.text }}
+      >
+        <ListItemIcon>
+          <SettingsIcon />
+        </ListItemIcon>
+      </ActionButton>
       <ListItemText primary={block.name} />
       <ListItemSecondaryAction>
         <ActionButton

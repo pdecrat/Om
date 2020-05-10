@@ -12,9 +12,10 @@ import ClearIcon from '@material-ui/icons/Clear';
 import SettingsIcon from '@material-ui/icons/Settings';
 import Divider from '@material-ui/core/Divider';
 
-import BlockList from '/imports/modules/admin/ViewsManager/BlockList';
 import ActionButton from '/imports/ui/components/ActionButton';
 import { Context } from '/imports/ui/ContextTracker';
+
+import BlockList from './BlockList';
 
 const ViewItem = ({ view, isLast }) => {
   const [isOpen, setOpen] = useState(true);

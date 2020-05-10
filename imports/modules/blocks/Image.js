@@ -3,7 +3,7 @@ import { Parallax } from 'react-parallax';
 
 import Blocks from '/imports/core/Blocks';
 
-Blocks.register('image', () => {
+Blocks.register('Image', () => {
   return (
     <Parallax
         bgImage={'https://source.unsplash.com/random/800x600'}

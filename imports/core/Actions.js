@@ -15,19 +15,16 @@ const Actions = {
       return this._effects[name];
   },
   do({ action, origin, target, data }) {
-    if (!!action.data)
-      data = { ...data, ...action.data };
-
-    Object.keys(action.effects).forEach(effect => {
-      this._effects[effect].fn({ origin, target, data });
+    action.effects.forEach(({ name, options }) => {
+      this._effects[name].fn({ origin, target, data, options });
     });
   },
   validateDataSchema({ action, data = {} }) {
-    const keys = Object.keys(action.effects);
-    const validationSchema = new SimpleSchema({});
-    if (keys.length > 0) {
-      keys.forEach(effect => {
-        validationSchema.extend(this._effects[effect].dataSchema);
+    if (action.effects.length > 0) {
+      const validationSchema = new SimpleSchema({});
+
+      action.effects.forEach(({ name, options }) => {
+        validationSchema.extend(this._effects[name].dataSchema(options));
       });
       validationSchema.validate(data);
     }

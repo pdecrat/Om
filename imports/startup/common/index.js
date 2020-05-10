@@ -1,3 +1,3 @@
 import './apis';
-import './blocks-list';
-import './effects-list';
+import '/imports/modules/blocks/_index';
+import '/imports/modules/effects/_index';

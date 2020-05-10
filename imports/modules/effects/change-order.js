@@ -30,9 +30,11 @@ Actions.registerEffect('changeOrder', {
       }, { $inc: { viewOrder: 1 } })
     }
   },
-  dataSchema: new SimpleSchema({
-    direction: {
-      type: String
-    },
-  })
+  dataSchema() {
+    return new SimpleSchema({
+      direction: {
+        type: String
+      },
+    })
+  }
 })

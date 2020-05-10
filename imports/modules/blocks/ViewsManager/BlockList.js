@@ -7,7 +7,8 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 
 import ActionButton from '/imports/ui/components/ActionButton';
-import BlockItem from '/imports/modules/admin/ViewsManager/BlockItem';
+
+import BlockItem from './BlockItem';
 
 const BlockList = ({ view }) => {
   const blocks = useTracker(() => Data.find({
@@ -33,7 +34,7 @@ const BlockList = ({ view }) => {
       <ActionButton
         name='addBlock'
         target={view}
-        defaultValue={{ name: 'paragraph' }}
+        defaultValue={{ name: 'Paragraph' }}
       >
         <ListItem
           style={{ paddingLeft: '40px' }}

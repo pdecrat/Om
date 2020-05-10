@@ -40,7 +40,7 @@ class SpaceCollection extends Collection {
         type: "block",
         text: "Bonjour, et bienvenue sur " + space.name,
         blockType: "content",
-        name: "paragraph",
+        name: 'Paragraph',
         viewOrder: 1,
         viewId: mainViewId
       })
@@ -50,7 +50,7 @@ class SpaceCollection extends Collection {
         isPublic: true,
         type: "block",
         blockType: "content",
-        name: "spaceCreate",
+        name: 'SpaceCreate',
         viewOrder: 2,
         viewId: mainViewId
       })
@@ -60,7 +60,7 @@ class SpaceCollection extends Collection {
         isPublic: true,
         type: "block",
         blockType: "content",
-        name: "viewsManager",
+        name: 'ViewsManager',
         viewOrder: 3,
         viewId: mainViewId
       })
@@ -70,9 +70,9 @@ class SpaceCollection extends Collection {
         isPublic: true,
         type: "action",
         name: "register user",
-        effects: {
-          register: true
-        }
+        effects: [
+          { name: 'register' }
+        ]
       })
       collection.insert({
         root: space._id,
@@ -80,9 +80,9 @@ class SpaceCollection extends Collection {
         isPublic: true,
         type: "action",
         name: "createSpace",
-        effects: {
-          createSpace: true
-        }
+        effects: [
+          { name: 'createSpace' }
+        ]
       })
       collection.insert({
         root: space._id,
@@ -90,9 +90,25 @@ class SpaceCollection extends Collection {
         isPublic: true,
         type: "action",
         name: "editView",
-        effects: {
-          editView: true
-        }
+        effects: [
+          {
+            name: 'editTextField',
+            options: { fieldToChange: 'name' }
+          }
+        ]
+      })
+      collection.insert({
+        root: space._id,
+        isActive: true,
+        isPublic: true,
+        type: "action",
+        name: "editParagraph",
+        effects: [
+          {
+            name: 'editTextField',
+            options: { fieldToChange: 'text' }
+          }
+        ]
       })
       collection.insert({
         root: space._id,
@@ -100,9 +116,9 @@ class SpaceCollection extends Collection {
         isPublic: true,
         type: "action",
         name: "addView",
-        effects: {
-          addView: true
-        }
+        effects: [
+          { name: 'addView' }
+        ]
       })
       collection.insert({
         root: space._id,
@@ -110,9 +126,9 @@ class SpaceCollection extends Collection {
         isPublic: true,
         type: "action",
         name: "removeView",
-        effects: {
-          removeView: true
-        }
+        effects: [
+          { name: 'removeView' }
+        ]
       })
       collection.insert({
         root: space._id,
@@ -120,9 +136,9 @@ class SpaceCollection extends Collection {
         isPublic: true,
         type: "action",
         name: "addBlock",
-        effects: {
-          addBlock: true
-        }
+        effects: [
+          { name: 'addBlock' }
+        ]
       })
       collection.insert({
         root: space._id,
@@ -130,9 +146,9 @@ class SpaceCollection extends Collection {
         isPublic: true,
         type: "action",
         name: "removeBlock",
-        effects: {
-          removeBlock: true
-        }
+        effects: [
+          { name: 'removeBlock' }
+        ]
       })
       collection.insert({
         root: space._id,
@@ -140,9 +156,9 @@ class SpaceCollection extends Collection {
         isPublic: true,
         type: "action",
         name: "changeOrder",
-        effects: {
-          changeOrder: true
-        }
+        effects: [
+          { name: 'changeOrder' }
+        ]
       })
     }
 

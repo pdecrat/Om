@@ -1,33 +1,39 @@
-import SimpleSchema from 'simpl-schema';
 import React from 'react';
+import SimpleSchema from 'simpl-schema';
 import TextField from '@material-ui/core/TextField';
 
 import Actions from '/imports/core/Actions';
 import Data from '/imports/core/Data.js';
 
-Actions.registerEffect('editView', {
-  fn({ data, target }) {
+Actions.registerEffect('addView', {
+  fn({ data: { name }, target }) {
 
-    if (data.name.length < 2) {
+    if (name.length < 2) {
       throw new Meteor.Error(
         'effects:create-view:name-too-short',
         "The view's name must be at least 3 characters long."
       )
     }
-    Data.update({ _id: target._id, root: target.root }, {
-      ...target,
-      ...data
+    const _id = Data.insert({
+      name,
+      type: 'view',
+      root: target._id,
+      isActive: true,
+      isPublic: true,
     })
   },
-  dataSchema: new SimpleSchema({
-    name: {
-      type: String
-    },
-  }),
-  form({ name = '' }, onChange) {
+  dataSchema() {
+    return new SimpleSchema({
+      name: {
+        type: String
+      },
+    })
+  },
+  form(data, onChange) {
+    const { name = '' } = data;
     return (
       <TextField
-        key="name"
+        key="view-name"
         autoFocus
         margin="dense"
         label="Nom"
