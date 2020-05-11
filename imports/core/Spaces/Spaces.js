@@ -2,15 +2,18 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
 
-import { Collections, Collection } from '/imports/core/Collections';
+import { Collections } from '/imports/core/Collections';
 import Actions from '/imports/core/Actions';
+import Data from '/imports/core/Data';
 
-class SpaceCollection extends Collection {
+class SpaceCollection extends Mongo.Collection {
   insert(space, callback) {
     space = {
       ...space,
       reference: encodeURI(space.name),
       _id: new Mongo.ObjectID()._str,
+      isActive: space.isActive ? space.isActive : true,
+      isPublic: space.isPublic ? space.isPublic : true,
       root: "space",
       type: "space",
     }
@@ -26,23 +29,25 @@ class SpaceCollection extends Collection {
         data: { name: space.name },
         target: { root, _id: root }
       })
-      console.log(mainViewId)
-      Actions._effects.addBlock.fn({
-        data: { name: 'Paragraph' },
-        target: { root, _id: mainViewId }
-      })
-      Actions._effects.addBlock.fn({
-        data: { name: 'ViewsManager' },
-        target: { root, _id: mainViewId }
-      })
-      Actions._effects.addBlock.fn({
-        data: { name: 'SpaceCreate' },
-        target: { root, _id: mainViewId }
-      })
-      Actions._effects.addBlock.fn({
-        data: { name: 'Paragraph' },
-        target: { root, _id: mainViewId }
-      })
+      const target = Data.findOne({ root, _id: mainViewId });
+      Actions.simulate({ target }, [
+        {
+          name: 'addBlock',
+          data: { name: 'Paragraph' },
+        },
+        {
+          name: 'addBlock',
+          data: { name: 'ViewsManager' },
+        },
+        {
+          name: 'addBlock',
+          data: { name: 'SpaceCreate' },
+        },
+        {
+          name: 'addBlock',
+          data: { name: 'Paragraph' },
+        },
+      ]);
       collection.insert({
         root: space._id,
         type: "action",

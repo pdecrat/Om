@@ -23,22 +23,23 @@ const Content = () => {
       ...viewQuery
     }) : {};
   }, [query.view, isReady]);
-  console.log(view)
 
   if (!view && (Meteor.isServer || isReady)) {
     history.replace('/not-found')
     return null;
   }
   const blocks = useTracker(() => {
+    const orderedBlocks = [];
     const temp = Data.find({
       root: context._id,
       type: 'block',
       blockType: "content",
       viewId: view._id,
     }).fetch();
-    console.log(temp)
-    const orderedBlocks = view.order.map(id => {
-      return temp.find(block => block._id === id)
+    view.order.forEach(id => {
+      const block = temp.find(block => block._id === id);
+      if (block)
+        orderedBlocks.push(block)
     });
     return isReady ? orderedBlocks : [];
   }, [isReady, view._id, view.order]);

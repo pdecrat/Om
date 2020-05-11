@@ -61,7 +61,7 @@ const ViewItem = ({ view, isLast }) => {
         </ListItemSecondaryAction>
       </ListItem>
       <Collapse in={isOpen} timeout="auto" unmountOnExit>
-        <BlockList view={{ _id: view._id, root: view.root }} />
+        <BlockList view={view} />
       </Collapse>
     </React.Fragment>
   );

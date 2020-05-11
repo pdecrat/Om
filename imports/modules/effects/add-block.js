@@ -20,7 +20,7 @@ Actions.registerEffect('addBlock', {
       isActive: true,
       isPublic: true,
     })
-    Data.update(target, { $push: { order: id } });
+    target.order.push(id);
 
     return id;
   },

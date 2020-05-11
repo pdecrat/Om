@@ -18,6 +18,20 @@ const Actions = {
     action.effects.forEach(({ name, options }) => {
       this._effects[name].fn({ action, origin, target, data, options });
     });
+    if (target) Data.update({ root: target.root, _id: target._id }, target);
+    if (origin) Data.update({ root: origin.root, _id: origin._id }, origin);
+    if (action) Data.update({ root: action.root, _id: action._id }, action);
+  },
+  simulate({ origin, target }, effects = []) {
+    let targetData = target ? Data.findOne(target) : null;
+    let originData = origin ? Data.findOne(origin) : null;
+
+    effects.forEach(({ name, data, options }) => {
+      this._effects[name].fn({
+        action: {}, origin: originData, target: targetData, data, options });
+    });
+    if (target) Data.update(target, targetData);
+    if (origin) Data.update(origin, originData);
   },
   validateDataSchema({ action, data = {} }) {
     if (action.effects.length > 0) {

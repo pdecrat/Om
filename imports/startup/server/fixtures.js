@@ -56,5 +56,27 @@ Meteor.startup(() => {
         ...membership,
       })
     }
+    const { _id: homepageId } = Data.findOne({
+      root: omId,
+      type: "view",
+      name: "om",
+      isMainView: true,
+    })
+    Data.insert({
+      root: omId,
+      type: "block",
+      text: "Vous pouvez dès maintenant y créer vos propres espaces virtuels, et bientôt profiter pleinement de nombreuses fonctionnalités faites avec soin pour vous faciliter la vie.",
+      blockType: "content",
+      name: 'Paragraph',
+      isPublic: false,
+      viewId: homepageId
+    })
+    Data.insert({
+      root: omId,
+      type: "block",
+      blockType: "content",
+      name: 'Image',
+      viewId: homepageId
+    })
   }
 })

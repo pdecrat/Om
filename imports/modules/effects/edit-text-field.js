@@ -7,10 +7,7 @@ import Data from '/imports/core/Data';
 
 Actions.registerEffect('editTextField', {
   fn({ data, target, options: { fieldToChange } }) {
-    const modification = {
-      [fieldToChange]: data[fieldToChange]
-    };
-    Data.update(target, { $set: { ...modification } })
+    target[fieldToChange] = data[fieldToChange]
   },
   dataSchema({ fieldToChange }) {
     return new SimpleSchema({
@@ -20,7 +17,7 @@ Actions.registerEffect('editTextField', {
     })
   },
   form(data, onChange, { fieldToChange, isMultiline = false }) {
-    const value = data[fieldToChange]
+    const value = data[fieldToChange] || ''
 
     return (
       <TextField

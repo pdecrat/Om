@@ -6,7 +6,7 @@ import Spaces from '/imports/core/Spaces/Spaces';
 export class Collection extends Mongo.Collection {
   insert(doc, callback) {
     if (!doc._id)
-      doc._id = new Mongo.ObjectID()._str;
+      doc._id = new Mongo.ObjectID().valueOf();
     if (!doc.label)
       doc.label = doc.name ? doc.name : doc._id;
 

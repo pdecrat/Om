@@ -11,10 +11,21 @@ import ActionButton from '/imports/ui/components/ActionButton';
 import BlockItem from './BlockItem';
 
 const BlockList = ({ view }) => {
-  const blocks = useTracker(() => Data.find({
-    type: 'block',
-    viewId: view._id,
-  }).fetch());
+  const blocks = useTracker(() => {
+    const orderedBlocks = [];
+    const temp = Data.find({
+      root: view.root,
+      type: 'block',
+      blockType: "content",
+      viewId: view._id,
+    }).fetch();
+    view.order.forEach(id => {
+      const block = temp.find(block => block._id === id);
+      if (block)
+        orderedBlocks.push(block)
+    });
+    return orderedBlocks;
+  }, [view._id, view.order]);
   const isViewManagerLast = useTracker(() => Data.find({
       type: 'block',
       name: 'ViewsManager'
