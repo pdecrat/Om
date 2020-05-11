@@ -27,6 +27,8 @@ export const Collections = {
   },
   add(name) {
     this._list[name] = new Collection(name);
+
+    return this._list[name];
   },
   register(name, cursor) {
     this._list[name] = cursor;

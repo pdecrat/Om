@@ -12,7 +12,7 @@ Actions.registerEffect('createSpace', {
         "The space's name must be at least 3 characters long."
       )
     }
-    const _id = Spaces.insert({ name })
+    return Spaces.insert({ name })
   },
   dataSchema() {
     return new SimpleSchema({

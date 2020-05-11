@@ -14,11 +14,14 @@ Actions.registerEffect('addView', {
         "The view's name must be at least 3 characters long."
       )
     }
-    const _id = Data.insert({
+    const hasMainView = Data.findOne({ isMainView: true, root: target._id })
+    return Data.insert({
       name,
       type: 'view',
       root: target._id,
-    })
+      isMainView: hasMainView ? false : true,
+      order: []
+    });
   },
   dataSchema() {
     return new SimpleSchema({

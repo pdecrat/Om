@@ -16,7 +16,7 @@ const Actions = {
   },
   do({ action, origin, target, data }) {
     action.effects.forEach(({ name, options }) => {
-      this._effects[name].fn({ origin, target, data, options });
+      this._effects[name].fn({ action, origin, target, data, options });
     });
   },
   validateDataSchema({ action, data = {} }) {

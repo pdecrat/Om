@@ -3,6 +3,7 @@ import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
 
 import { Collections, Collection } from '/imports/core/Collections';
+import Actions from '/imports/core/Actions';
 
 class SpaceCollection extends Collection {
   insert(space, callback) {
@@ -14,46 +15,33 @@ class SpaceCollection extends Collection {
       type: "space",
     }
     if (Meteor.isServer) {
-      Collections.add(space._id);
-      const collection = Collections.get(space._id);
+      const root = space._id;
+      const collection = Collections.add(root);
       collection.insert({
         ...space,
         type: 'header',
-        root: space._id,
+        root,
       });
-      const mainViewId = collection.insert({
-        type: 'view',
-        root: space._id,
-        name: space.name,
-        isMainView: true,
-        order: [],
-      });
-      collection.insert({
-        root: space._id,
-        type: "block",
-        label: 'Intro',
-        text: "Bonjour, et bienvenue sur " + space.name,
-        blockType: "content",
-        name: 'Paragraph',
-        viewId: mainViewId
+      const mainViewId = Actions._effects.addView.fn({
+        data: { name: space.name },
+        target: { root, _id: root }
       })
-      collection.insert({
-        root: space._id,
-        type: "block",
-        label: 'Launcher',
-        blockType: "content",
-        name: 'SpaceCreate',
-        fieldText: "Nommez votre espace",
-        buttonText: "C'est parti !",
-        viewId: mainViewId
+      console.log(mainViewId)
+      Actions._effects.addBlock.fn({
+        data: { name: 'Paragraph' },
+        target: { root, _id: mainViewId }
       })
-      collection.insert({
-        root: space._id,
-        type: "block",
-        label: 'View Editor',
-        blockType: "content",
-        name: 'ViewsManager',
-        viewId: mainViewId
+      Actions._effects.addBlock.fn({
+        data: { name: 'ViewsManager' },
+        target: { root, _id: mainViewId }
+      })
+      Actions._effects.addBlock.fn({
+        data: { name: 'SpaceCreate' },
+        target: { root, _id: mainViewId }
+      })
+      Actions._effects.addBlock.fn({
+        data: { name: 'Paragraph' },
+        target: { root, _id: mainViewId }
       })
       collection.insert({
         root: space._id,
