@@ -10,6 +10,9 @@ export const UserContext = React.createContext({});
 
 const Provider = () => {
   const isUserRegistered = useTracker(() => !!Meteor.userId())
+  const isLoggingIn = useTracker(() => Meteor.loggingIn());
+  const history = useHistory();
+  const query = qs.parse(history.location.search) || {};
 
   const isReady = useTracker(() => {
     if (isUserRegistered) {
@@ -22,6 +25,21 @@ const Provider = () => {
     if (isReady) return Meteor.user();
     return null;
   }, [isReady])
+
+  if (!!query.token && !isLoggingIn && !user) {
+    Accounts.callLoginMethod({
+      methodArguments: [{
+        'passwordless': {
+          token: query.token
+        }
+      }],
+      userCallback: function(err, res) {
+        if (err) console.log(err);
+        const { token, ...rest } = query;
+        history.push(`${history.location.pathname}?${qs.stringify({ ...rest })}`)
+      }
+    });
+  }
 
   return (
     <UserContext.Provider value={{ user }}>
