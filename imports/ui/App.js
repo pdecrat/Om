@@ -6,9 +6,14 @@ import NotFound from '/imports/ui/NotFound';
 
 const App = () => {
   const history = useHistory();
+
+  if (history.location.pathname === '/') {
+    history.push('/s/om')
+    return null;
+  }
+
   return (
     <Switch>
-      <Route exact path="/" render={() => { history.push('/s/om'); return null; }} />
       <Route path='/:type([s, u])/:reference' component={UserTracker} />
       <Route component={NotFound} />
     </Switch>

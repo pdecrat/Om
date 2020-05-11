@@ -1,49 +1,22 @@
-import { Meteor } from 'meteor/meteor';
 import React from 'react';
-import { useLocation, useHistory } from 'react-router-dom';
-import { useTracker } from 'meteor/react-meteor-data';
-import qs from 'query-string';
 
 import ContextTracker from '/imports/ui/ContextTracker';
+import useQuery from '/imports/ui/hooks/useQuery';
+import useUser from '/imports/ui/hooks/useUser';
 
 export const UserContext = React.createContext({});
 
 const Provider = () => {
-  const isUserRegistered = useTracker(() => !!Meteor.userId())
-  const isLoggingIn = useTracker(() => Meteor.loggingIn());
-  const history = useHistory();
-  const query = qs.parse(history.location.search) || {};
+  const query = useQuery();
+  const { isReady, user, register } = useUser();
 
-  const isReady = useTracker(() => {
-    if (isUserRegistered) {
-      const handle = Meteor.subscribe('user-data')
-      return handle.ready();
-    } else return false;
-  }, [isUserRegistered]);
-
-  const user = useTracker(() => {
-    if (isReady) return Meteor.user();
-    return null;
-  }, [isReady])
-
-  if (!!query.token && !isLoggingIn && !user) {
-    Accounts.callLoginMethod({
-      methodArguments: [{
-        'passwordless': {
-          token: query.token
-        }
-      }],
-      userCallback: function(err, res) {
-        if (err) console.log(err);
-        const { token, ...rest } = query;
-        history.push(`${history.location.pathname}?${qs.stringify({ ...rest })}`)
-      }
-    });
+  if (!!query.token && isReady && !user) {
+    register(query)
   }
 
   return (
     <UserContext.Provider value={{ user }}>
-      {isReady || !isUserRegistered ?
+      {isReady ?
         <ContextTracker />
         : null
       }

@@ -1,12 +1,10 @@
-import React, { useContext } from 'react';
-import { withTracker } from 'meteor/react-meteor-data';
-import { useHistory, useLocation } from 'react-router-dom';
+import React from 'react';
+import { useHistory } from 'react-router-dom';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import List from '@material-ui/core/List';
 
-import Data from '/imports/core/Data';
-import { Context } from '/imports/ui/ContextTracker';
+import useLinks from '/imports/ui/hooks/useLinks';
 
 const isMainCategory = (path, category) => {
   const split = path.split('/')
@@ -17,16 +15,16 @@ const isMainCategory = (path, category) => {
 
 const SpaceMenu = ({ views = [], close }) => {
   const history = useHistory();
-  const location = useLocation();
+  const links = useLinks();
 
   return (
     <List style={{ minWidth:'240px' }} >
-      {views.map((view, index) =>
+      {links.map((view, index) =>
         <ListItem
           button
           key={index}
           onClick={e => {
-            history.push(`${location.pathname}?view=${view.name}`);
+            history.push(`${history.location.pathname}?view=${view.name}`);
             close();
           }}
         >
@@ -37,18 +35,4 @@ const SpaceMenu = ({ views = [], close }) => {
   )
 }
 
-export default ConnectedMenu = withTracker(props => {
-  const { context } = useContext(Context);
-  if (context && context._id) {
-    const views = Data.find({
-      root: context._id,
-      type: "view",
-    }).fetch();
-
-    return {
-      views,
-      ...props
-    }
-  }
-  return props;
-})(SpaceMenu);
+export default SpaceMenu;

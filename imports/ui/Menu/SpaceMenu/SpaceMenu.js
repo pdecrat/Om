@@ -11,9 +11,7 @@ import Grower from '/imports/ui/components/Grower';
 
 const SpaceMenu = () => {
   const [isMenuOpen, open] = useState(false);
-  const {
-    context,
-  } = useContext(Context)
+  const { context } = useContext(Context)
   const handleClose = () => { open(false) }
 
   return (

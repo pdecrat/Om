@@ -13,13 +13,13 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import Divider from '@material-ui/core/Divider';
 
 import ActionButton from '/imports/ui/components/ActionButton';
-import { Context } from '/imports/ui/ContextTracker';
+import useQuery from '/imports/ui/hooks/useQuery';
 
 import BlockList from './BlockList';
 
 const ViewItem = ({ view, isLast }) => {
   const [isOpen, setOpen] = useState(true);
-  const { query } = useContext(Context);
+  const query = useQuery();
 
   return (
     <React.Fragment>

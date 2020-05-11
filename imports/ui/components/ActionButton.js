@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useTracker } from 'meteor/react-meteor-data';
 import IconButton from '@material-ui/core/IconButton';
 import Dialog from '@material-ui/core/Dialog';
@@ -9,7 +9,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 
 import Actions from '/imports/core/Actions';
-import { Context } from '/imports/ui/ContextTracker';
+import useCall from '/imports/ui/hooks/useCall';
 
 const ActionButton = ({
   name,
@@ -37,7 +37,7 @@ const ActionButton = ({
 
   const [isOpen, setOpen] = useState(false);
   const [data, setData] = useState(disableDialog ? defaultValue : null);
-  const { call } = useContext(Context);
+  const call = useCall();
   const open = () => {
     setData(defaultValue);
     setOpen(true);

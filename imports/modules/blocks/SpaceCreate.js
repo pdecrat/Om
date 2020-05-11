@@ -1,14 +1,14 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/IconButton';
 import { useHistory } from 'react-router-dom';
 
 import Blocks from '/imports/core/Blocks';
-import { Context } from '/imports/ui/ContextTracker';
+import useCall from '/imports/ui/hooks/useCall';
 
 Blocks.register('SpaceCreate', ({ block }) => {
   const [name, setName] = useState('');
-  const { call } = useContext(Context);
+  const call = useCall();
   const history = useHistory();
 
   const changeName = e => setName(e.target.value);

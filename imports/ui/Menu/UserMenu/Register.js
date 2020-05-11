@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import TextField from '@material-ui/core/TextField';
 import IconButton from '@material-ui/core/IconButton';
@@ -10,11 +10,11 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-import { Context } from '/imports/ui/ContextTracker';
+import useCall from '/imports/ui/hooks/useCall';
 
 const Register = () => {
   const [email, setEmail] = useState('');
-  const { call } = useContext(Context);
+  const call = useCall();
   const [open, setOpen] = useState(false);
   const location = useLocation();
 
@@ -47,6 +47,7 @@ const Register = () => {
             autoFocus
             margin="dense"
             label="Email"
+            id="email"
             type="email"
             fullWidth
             value={email}
