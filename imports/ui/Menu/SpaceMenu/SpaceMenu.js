@@ -5,7 +5,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Backdrop from '@material-ui/core/Backdrop';
 import Drawer from '@material-ui/core/Drawer';
 
-import { Context } from '/imports/ui/ContextTracker';
+import { Context } from '/imports/ui/providers/ContextProvider';
 import Links from '/imports/ui/Menu/SpaceMenu/Links';
 import Grower from '/imports/ui/components/Grower';
 

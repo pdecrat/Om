@@ -1,25 +1,30 @@
 import React from 'react';
-import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 import Content from '/imports/ui/Content';
 import Menu from '/imports/ui/Menu/Menu';
-import CssBaseline from '@material-ui/core/CssBaseline';
+import UserProvider from '/imports/ui/providers/UserProvider';
+import ContextProvider from '/imports/ui/providers/ContextProvider';
+import StyleProvider from '/imports/ui/providers/StyleProvider';
+import useUI from '/imports/ui/hooks/useUI';
 
-const Interface = ({ context }) => {
-  const theme = React.useMemo(() => {
-      return context ?
-        createMuiTheme(context.theme)
-        : createMuiTheme();
-    },
-    [context],
-  );
+export const InterfaceContext = React.createContext({})
+
+const Interface = () => {
+  const uiStatus = useUI();
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Menu />
-      <Content />
-    </ThemeProvider>
+    <UserProvider>
+      <ContextProvider>
+        <StyleProvider>
+          <InterfaceContext.Provider value={uiStatus}>
+            <React.Fragment>
+              <Menu />
+              <Content />
+            </React.Fragment>
+          </InterfaceContext.Provider>
+        </StyleProvider>
+      </ContextProvider>
+    </UserProvider>
   );
 }
 

@@ -1,14 +1,21 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { useHistory } from 'react-router-dom';
+import { styled } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
+import Box from '@material-ui/core/Box';
+import Paper from '@material-ui/core/Paper';
 
 import Blocks from '/imports/core/Blocks';
-import Data from '/imports/core/Data';
 import useView from '/imports/ui/hooks/useView';
 import useBlocks from '/imports/ui/hooks/useBlocks';
+
+const StyledContent = styled(Box)({
+  marginTop: '48px'
+});
+const StyledBlock = styled(Paper)({
+  transform: 'scale(0.9)',
+  transition: 'transform .2s ease-in-out'
+});
 
 const Content = () => {
   const history = useHistory()
@@ -19,15 +26,21 @@ const Content = () => {
     return null;
   }
   const blocks = useBlocks();
+  const renderBlocks = (block) => {
+    const Component = Blocks.get(block.name);
+
+    if (!Component) return null;
+    return (
+      <StyledBlock key={block._id} >
+        <Component block={block} />
+      </StyledBlock>
+    )
+  }
 
   return (
-    <React.Fragment>
-      <div style={{ height: '48px' }} />
-      {blocks.map((block, index) => {
-        const Component = Blocks.get(block.name);
-        return !!Component && <Component key={index} block={block} />
-      })}
-    </React.Fragment>
+    <StyledContent>
+      {blocks.map(renderBlocks)}
+    </StyledContent>
   );
 }
 

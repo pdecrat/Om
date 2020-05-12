@@ -1,7 +1,7 @@
 import { useTracker } from 'meteor/react-meteor-data';
 import { useContext } from 'react';
 
-import { Context } from '/imports/ui/ContextTracker';
+import { Context } from '/imports/ui/providers/ContextProvider';
 
 const useLinks = () => {
   const { context } = useContext(Context);

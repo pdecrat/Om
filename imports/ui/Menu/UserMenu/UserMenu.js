@@ -3,7 +3,7 @@ import { styled } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Avatar from '@material-ui/core/Avatar';
 
-import { UserContext } from '/imports/ui/UserTracker';
+import { UserContext } from '/imports/ui/providers/UserProvider';
 import Register from '/imports/ui/Menu/UserMenu/Register';
 
 const StyledAvatar = styled(Avatar)(({ theme }) => ({

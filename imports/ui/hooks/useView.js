@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { useTracker } from 'meteor/react-meteor-data';
 
 import useQuery from '/imports/ui/hooks/useQuery';
-import { Context } from '/imports/ui/ContextTracker';
+import { Context } from '/imports/ui/providers/ContextProvider';
 
 const useView = () => {
   const query = useQuery();
