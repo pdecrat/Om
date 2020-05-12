@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import useSpace from '/imports/ui/hooks/useSpace';
+import useSpace from '/imports/ui/_hooks/useSpace';
 
 const useUI = () => {
   const [isMenuOpen, setMenuOpen] = useState(false);

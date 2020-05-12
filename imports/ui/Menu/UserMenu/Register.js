@@ -10,7 +10,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-import useCall from '/imports/ui/hooks/useCall';
+import useCall from '/imports/ui/_hooks/useCall';
 
 const Register = () => {
   const [email, setEmail] = useState('');

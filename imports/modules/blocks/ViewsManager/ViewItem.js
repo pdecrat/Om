@@ -12,8 +12,8 @@ import ClearIcon from '@material-ui/icons/Clear';
 import SettingsIcon from '@material-ui/icons/Settings';
 import Divider from '@material-ui/core/Divider';
 
-import ActionButton from '/imports/ui/components/ActionButton';
-import useQuery from '/imports/ui/hooks/useQuery';
+import ActionButton from '/imports/ui/_components/ActionButton';
+import useQuery from '/imports/ui/_hooks/useQuery';
 
 import BlockList from './BlockList';
 

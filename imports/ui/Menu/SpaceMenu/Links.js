@@ -4,7 +4,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import List from '@material-ui/core/List';
 
-import useLinks from '/imports/ui/hooks/useLinks';
+import useLinks from '/imports/ui/_hooks/useLinks';
 
 const isMainCategory = (path, category) => {
   const split = path.split('/')

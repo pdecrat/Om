@@ -9,7 +9,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 
 import Actions from '/imports/core/Actions';
-import useCall from '/imports/ui/hooks/useCall';
+import useCall from '/imports/ui/_hooks/useCall';
 
 const ActionButton = ({
   name,

@@ -11,7 +11,7 @@ import PostAdd from '@material-ui/icons/PostAdd';
 
 import Data from '/imports/core/Data';
 import Blocks from '/imports/core/Blocks';
-import ActionButton from '/imports/ui/components/ActionButton';
+import ActionButton from '/imports/ui/_components/ActionButton';
 
 import ViewItem from './ViewItem';
 

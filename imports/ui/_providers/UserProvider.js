@@ -1,8 +1,8 @@
 import React from 'react';
 
-import ContextTracker from '/imports/ui/providers/ContextProvider';
-import useQuery from '/imports/ui/hooks/useQuery';
-import useUser from '/imports/ui/hooks/useUser';
+import ContextTracker from '/imports/ui/_providers/ContextProvider';
+import useQuery from '/imports/ui/_hooks/useQuery';
+import useUser from '/imports/ui/_hooks/useUser';
 
 export const UserContext = React.createContext({});
 

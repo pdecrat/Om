@@ -6,8 +6,8 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 
-import ActionButton from '/imports/ui/components/ActionButton';
-import useBlocks from '/imports/ui/hooks/useBlocks';
+import ActionButton from '/imports/ui/_components/ActionButton';
+import useBlocks from '/imports/ui/_hooks/useBlocks';
 
 import BlockItem from './BlockItem';
 

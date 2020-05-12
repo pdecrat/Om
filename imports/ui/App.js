@@ -1,8 +1,24 @@
 import React from 'react';
 import { Route, Switch, useHistory } from "react-router-dom";
 
+
+import UserProvider from '/imports/ui/_providers/UserProvider';
+import ContextProvider from '/imports/ui/_providers/ContextProvider';
+import StyleProvider from '/imports/ui/_providers/StyleProvider';
+import UIProvider from '/imports/ui/_providers/UIProvider';
 import Interface from '/imports/ui/Interface';
 import NotFound from '/imports/ui/NotFound';
+
+const Providers = () =>
+  <UserProvider>
+    <ContextProvider>
+      <StyleProvider>
+        <UIProvider>
+          <Interface />
+        </UIProvider>
+      </StyleProvider>
+    </ContextProvider>
+  </UserProvider>
 
 const App = () => {
   const history = useHistory();
@@ -14,7 +30,7 @@ const App = () => {
 
   return (
     <Switch>
-      <Route path='/:type([s, u])/:reference' component={Interface} />
+      <Route path='/:type([s, u])/:reference' component={Providers} />
       <Route component={NotFound} />
     </Switch>
   );

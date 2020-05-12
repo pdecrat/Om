@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { Context } from '/imports/ui/providers/ContextProvider';
+import { Context } from '/imports/ui/_providers/ContextProvider';
 
 const useCall = () => {
   const { context } = useContext(Context);

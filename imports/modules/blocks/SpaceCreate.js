@@ -4,7 +4,7 @@ import Button from '@material-ui/core/IconButton';
 import { useHistory } from 'react-router-dom';
 
 import Blocks from '/imports/core/Blocks';
-import useCall from '/imports/ui/hooks/useCall';
+import useCall from '/imports/ui/_hooks/useCall';
 
 Blocks.register('SpaceCreate', ({ block }) => {
   const [name, setName] = useState('');

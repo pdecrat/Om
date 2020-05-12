@@ -1,8 +1,8 @@
 import { useContext } from 'react';
 import { useTracker } from 'meteor/react-meteor-data';
 
-import useView from '/imports/ui/hooks/useView';
-import { Context } from '/imports/ui/providers/ContextProvider';
+import useView from '/imports/ui/_hooks/useView';
+import { Context } from '/imports/ui/_providers/ContextProvider';
 
 const useBlocks = (view = null) => {
   const { context, isReady } = useContext(Context);

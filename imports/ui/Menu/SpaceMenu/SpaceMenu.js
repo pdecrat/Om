@@ -4,15 +4,15 @@ import Typography from '@material-ui/core/Typography';
 import MenuIcon from '@material-ui/icons/Menu';
 import Backdrop from '@material-ui/core/Backdrop';
 import Drawer from '@material-ui/core/Drawer';
+import EditIcon from '@material-ui/icons/Edit';
 
-import { Context } from '/imports/ui/providers/ContextProvider';
-import { InterfaceContext } from '/imports/ui/Interface';
+import { Context } from '/imports/ui/_providers/ContextProvider';
+import { UIContext } from '/imports/ui/_providers/UIProvider';
 import Links from '/imports/ui/Menu/SpaceMenu/Links';
-import Grower from '/imports/ui/components/Grower';
-import useUI from '/imports/ui/hooks/useUI';
+import Grower from '/imports/ui/_components/Grower';
 
 const SpaceMenu = () => {
-  const { isMenuOpen, setMenuOpen, isEdited, setEdit } = useContext(InterfaceContext);
+  const { isMenuOpen, setMenuOpen, isEdited, setEdit } = useContext(UIContext);
   const { context } = useContext(Context)
   const handleClose = () => { setMenuOpen(false) }
   const toggle = () => { setMenuOpen(!isMenuOpen) }
@@ -52,7 +52,7 @@ const SpaceMenu = () => {
         aria-label="edit"
         onClick={toggleEdit}
       >
-        <MenuIcon/>
+        <EditIcon/>
       </IconButton>
     </React.Fragment>
   )

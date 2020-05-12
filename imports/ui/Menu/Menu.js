@@ -1,33 +1,20 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Slide from '@material-ui/core/Slide';
-import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 
 import UserMenu from '/imports/ui/Menu/UserMenu/UserMenu';
 import SpaceMenu from '/imports/ui/Menu/SpaceMenu/SpaceMenu';
-
-function HideOnScroll(props) {
-  const { children } = props;
-  const trigger = useScrollTrigger();
-
-  return (
-    <Slide appear={true} direction="down" in={!trigger}>
-      {children}
-    </Slide>
-  );
-}
+import { UIContext } from '/imports/ui/_providers/UIProvider';
 
 const Menu = () => {
+  const { isEdited } = useContext(UIContext);
   return (
-    <HideOnScroll >
-      <AppBar>
-        <Toolbar variant="dense">
-          <SpaceMenu />
-          <UserMenu />
-        </Toolbar>
-      </AppBar>
-    </HideOnScroll>
+    <AppBar color={ isEdited ? 'transparent' : 'primary' }>
+      <Toolbar variant="dense">
+        <SpaceMenu />
+        <UserMenu />
+      </Toolbar>
+    </AppBar>
   )
 }
 
