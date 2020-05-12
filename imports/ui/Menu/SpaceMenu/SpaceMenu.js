@@ -6,13 +6,17 @@ import Backdrop from '@material-ui/core/Backdrop';
 import Drawer from '@material-ui/core/Drawer';
 
 import { Context } from '/imports/ui/providers/ContextProvider';
+import { InterfaceContext } from '/imports/ui/Interface';
 import Links from '/imports/ui/Menu/SpaceMenu/Links';
 import Grower from '/imports/ui/components/Grower';
+import useUI from '/imports/ui/hooks/useUI';
 
 const SpaceMenu = () => {
-  const [isMenuOpen, open] = useState(false);
+  const { isMenuOpen, setMenuOpen, isEdited, setEdit } = useContext(InterfaceContext);
   const { context } = useContext(Context)
-  const handleClose = () => { open(false) }
+  const handleClose = () => { setMenuOpen(false) }
+  const toggle = () => { setMenuOpen(!isMenuOpen) }
+  const toggleEdit = () => { setEdit(!isEdited) }
 
   return (
     <React.Fragment>
@@ -20,7 +24,7 @@ const SpaceMenu = () => {
         edge="start"
         color="inherit"
         aria-label="menu"
-        onClick={e => { open(!isMenuOpen) }}
+        onClick={toggle}
       >
         <MenuIcon/>
       </IconButton>
@@ -33,15 +37,23 @@ const SpaceMenu = () => {
       <Drawer
         anchor="left"
         open={isMenuOpen}
-        onClose={e => { open(false) }}
+        onClose={handleClose}
       >
         <Links close={handleClose} />
       </Drawer>
       <Backdrop
         open={isMenuOpen}
-        onClick={e => { open(false) }}
+        onClick={handleClose}
       />
       <Grower />
+      <IconButton
+        edge="end"
+        color="inherit"
+        aria-label="edit"
+        onClick={toggleEdit}
+      >
+        <MenuIcon/>
+      </IconButton>
     </React.Fragment>
   )
 }

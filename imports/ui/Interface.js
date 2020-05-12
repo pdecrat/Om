@@ -16,7 +16,7 @@ const Interface = () => {
     <UserProvider>
       <ContextProvider>
         <StyleProvider>
-          <InterfaceContext.Provider value={uiStatus}>
+          <InterfaceContext.Provider value={{ ...uiStatus }}>
             <React.Fragment>
               <Menu />
               <Content />
