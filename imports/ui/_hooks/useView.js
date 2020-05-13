@@ -18,6 +18,7 @@ const useView = () => {
     }) : {};
   }, [query.view, isReady]);
 
+
   return view;
 }
 

@@ -29,14 +29,7 @@ const Register = () => {
 
   return (
     <React.Fragment>
-      <IconButton
-        edge="end"
-        color="inherit"
-        aria-label="create account"
-        onClick={e => { setOpen(true) }}
-      >
-        <PersonAddIcon />
-      </IconButton>
+      <PersonAddIcon />
       <Dialog open={open} onClose={handleClose} >
         <DialogTitle id="form-dialog-title">Créer un compte</DialogTitle>
         <DialogContent>

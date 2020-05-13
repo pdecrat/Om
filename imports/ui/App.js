@@ -6,7 +6,7 @@ import UserProvider from '/imports/ui/_providers/UserProvider';
 import ContextProvider from '/imports/ui/_providers/ContextProvider';
 import StyleProvider from '/imports/ui/_providers/StyleProvider';
 import UIProvider from '/imports/ui/_providers/UIProvider';
-import Interface from '/imports/ui/Interface';
+import Layout from '/imports/ui/Layout';
 import NotFound from '/imports/ui/NotFound';
 
 const Providers = () =>
@@ -14,7 +14,7 @@ const Providers = () =>
     <ContextProvider>
       <StyleProvider>
         <UIProvider>
-          <Interface />
+          <Layout />
         </UIProvider>
       </StyleProvider>
     </ContextProvider>

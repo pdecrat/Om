@@ -10,7 +10,7 @@ import Data from '/imports/core/Data.js';
 import Blocks from '/imports/core/Blocks';
 
 Actions.registerEffect('addBlock', {
-  fn({ data: { name = 'Paragraph' }, target }) {
+  fn({ data: { name = 'Paragraph', blockType = 'content' }, target }) {
     const id = Data.insert({
       name,
       type: 'block',
@@ -27,6 +27,10 @@ Actions.registerEffect('addBlock', {
   dataSchema() {
     return new SimpleSchema({
       name: {
+        type: String
+      },
+      blockType: {
+        optional: true,
         type: String
       }
     })

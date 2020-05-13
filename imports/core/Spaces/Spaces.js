@@ -16,6 +16,7 @@ class SpaceCollection extends Mongo.Collection {
       isPublic: space.isPublic ? space.isPublic : true,
       root: "space",
       type: "space",
+      layout: 'DefaultLayout'
     }
     if (Meteor.isServer) {
       const root = space._id;

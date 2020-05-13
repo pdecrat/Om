@@ -1,11 +1,12 @@
 import React from 'react';
 
+import Blocks from '/imports/core/Blocks';
+
 import Menu from '/imports/ui/Menu/Menu';
 import Content from '/imports/ui/Content';
 import Editable from '/imports/ui/_components/Editable';
 
-const Interface = () => {
-
+Blocks.register('DefaultLayout', () => {
   return (
     <React.Fragment>
       <Menu />
@@ -13,7 +14,5 @@ const Interface = () => {
         <Content />
       </Editable>
     </React.Fragment>
-  )
-}
-
-export default Interface;
+  );
+});

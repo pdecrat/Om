@@ -5,11 +5,12 @@ import { ThemeProvider, StylesProvider, createMuiTheme } from '@material-ui/core
 import { Context } from '/imports/ui/_providers/ContextProvider';
 
 const StyleProvider = ({ children }) => {
-  const { context } = useContext(Context);
+  const { context: { theme: ctxTheme = {} }, view: { theme: viewTheme = {} } } = useContext(Context);
+  const theme = { ...ctxTheme, ...viewTheme }
   const muiTheme = React.useMemo(() => {
-      return createMuiTheme(context.theme)
+      return createMuiTheme(theme)
     },
-    [context.theme],
+    [theme],
   );
 
   return (

@@ -12,11 +12,7 @@ import useBlocks from '/imports/ui/_hooks/useBlocks';
 import BlockItem from './BlockItem';
 
 const BlockList = ({ view }) => {
-  const blocks = useBlocks(view);
-  const isViewManagerLast = useTracker(() => Data.find({
-      type: 'block',
-      name: 'ViewsManager'
-    }).count() === 1, [blocks.length]);
+  const blocks = useBlocks({ viewId: view._id }, view.order);
 
   return (
     <List component="div" disablePadding>
@@ -26,7 +22,6 @@ const BlockList = ({ view }) => {
           block={block}
           index={index}
           length={blocks.length}
-          isDisabled={isViewManagerLast}
         />
       )}
       <ActionButton
