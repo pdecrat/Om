@@ -1,8 +1,7 @@
 import { useContext } from 'react';
 import { useTracker } from 'meteor/react-meteor-data';
 
-import useView from '/imports/ui/_hooks/useView';
-import { Context } from '/imports/ui/_providers/ContextProvider';
+import { ViewContext } from '/imports/ui/_providers/ViewProvider';
 
 const orderBlocks = (blocks, orderByIds) => {
   const orderedBlocks = [];
@@ -16,17 +15,16 @@ const orderBlocks = (blocks, orderByIds) => {
 }
 
 const useBlocks = (query = {}, orderByIds = null) => {
-  const { context, isReady } = useContext(Context);
-  const view = useView();
+  const { view } = useContext(ViewContext);
 
   const finalQuery = {
-    root: context._id,
+    root: view.root,
     viewId: view._id,
     ...query
   };
   const blocks = useTracker(() => {
-    return isReady ? Data.find(query).fetch() : [];
-  }, [isReady, view._id, view.order]);
+    return Data.find(query).fetch();
+  }, [view._id, view.order]);
 
   return orderByIds ? orderBlocks(blocks, orderByIds) : blocks;
 }

@@ -5,22 +5,21 @@ import { ThemeProvider, StylesProvider, createMuiTheme } from '@material-ui/core
 import { Context } from '/imports/ui/_providers/ContextProvider';
 
 const StyleProvider = ({ children }) => {
-  const { context: { theme: ctxTheme = {} }, view: { theme: viewTheme = {} } } = useContext(Context);
-  const theme = { ...ctxTheme, ...viewTheme }
+  const { context: { theme: ctxTheme = {} }, view } = useContext(Context);
+  if (view && view.theme)
+    ctxTheme = { ...ctxTheme, ...view.theme }
   const muiTheme = React.useMemo(() => {
-      return createMuiTheme(theme)
+      return createMuiTheme(ctxTheme)
     },
-    [theme],
+    [ctxTheme],
   );
 
   return (
     <React.Fragment>
       <CssBaseline />
-      <StylesProvider disableGeneration={Meteor.isServer}>
         <ThemeProvider theme={muiTheme}>
           {children}
         </ThemeProvider>
-      </StylesProvider>
     </React.Fragment>
   )
 }

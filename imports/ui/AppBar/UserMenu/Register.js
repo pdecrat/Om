@@ -14,10 +14,11 @@ import useCall from '/imports/ui/_hooks/useCall';
 
 const Register = () => {
   const [email, setEmail] = useState('');
+  const [isOpen, setOpen] = useState(false);
   const call = useCall();
-  const [open, setOpen] = useState(false);
   const location = useLocation();
 
+  const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const registerUser = () => {
     const name = 'register user';
@@ -29,8 +30,13 @@ const Register = () => {
 
   return (
     <React.Fragment>
-      <PersonAddIcon />
-      <Dialog open={open} onClose={handleClose} >
+      <IconButton
+        aria-label="create account"
+        onClick={handleOpen}
+      >
+        <PersonAddIcon />
+      </IconButton>
+      <Dialog open={isOpen} onClose={handleClose} >
         <DialogTitle id="form-dialog-title">Créer un compte</DialogTitle>
         <DialogContent>
           <DialogContentText>

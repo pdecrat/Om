@@ -5,8 +5,9 @@ import { Route, Switch, useHistory } from "react-router-dom";
 import UserProvider from '/imports/ui/_providers/UserProvider';
 import ContextProvider from '/imports/ui/_providers/ContextProvider';
 import StyleProvider from '/imports/ui/_providers/StyleProvider';
+import ViewProvider from '/imports/ui/_providers/ViewProvider';
 import UIProvider from '/imports/ui/_providers/UIProvider';
-import Layout from '/imports/ui/Layout';
+import View from '/imports/ui/View';
 import NotFound from '/imports/ui/NotFound';
 
 const Providers = () =>
@@ -14,7 +15,9 @@ const Providers = () =>
     <ContextProvider>
       <StyleProvider>
         <UIProvider>
-          <Layout />
+          <ViewProvider>
+            <View />
+          </ViewProvider>
         </UIProvider>
       </StyleProvider>
     </ContextProvider>

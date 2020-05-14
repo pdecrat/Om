@@ -12,9 +12,14 @@ const UserMenuButton = () => {
   const { user } = useContext(UserContext);
 
   return (
-    <StyledAvatar>
-      {user.name}
-    </StyledAvatar>
+    <IconButton
+      aria-label="user menu"
+      onClick={e => { setOpen(true) }}
+    >
+      <StyledAvatar>
+        {user.name}
+      </StyledAvatar>
+    </IconButton>
   );
 }
 

@@ -1,14 +1,21 @@
-import React from 'react';
-
-import useUI from '/imports/ui/_hooks/useUI';
+import React, { useState } from 'react';
 
 export const UIContext = React.createContext({})
 
 const UIProvider = ({ children }) => {
-  const uiStatus = useUI();
+  const [isMenuOpen, setMenuOpen] = useState(false);
+  const [isNavHidden, setNavHidden] = useState(false);
+  const [isEdited, setEdit] = useState(false);
 
   return (
-    <UIContext.Provider value={{ ...uiStatus }}>
+    <UIContext.Provider value={{
+      isMenuOpen,
+      setMenuOpen,
+      isNavHidden,
+      setNavHidden,
+      isEdited,
+      setEdit
+    }}>
       {children}
     </UIContext.Provider>
   )

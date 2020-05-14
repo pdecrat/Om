@@ -13,7 +13,7 @@ const isMainCategory = (path, category) => {
   return space === category;
 }
 
-const SpaceMenu = ({ views = [], close }) => {
+const SpaceMenu = ({ close }) => {
   const history = useHistory();
   const links = useLinks();
 
@@ -24,8 +24,8 @@ const SpaceMenu = ({ views = [], close }) => {
           button
           key={index}
           onClick={e => {
-            history.push(`${history.location.pathname}?view=${view.name}`);
             close();
+            history.push(`${history.location.pathname}?view=${view.name}`);
           }}
         >
           <ListItemText primary={view.label} />

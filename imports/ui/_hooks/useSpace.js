@@ -21,7 +21,7 @@ const useSpace = () => {
       return context;
     }
 
-    return {};
+    return null;
   }, [isReady]);
 
     return { isReady, context };
