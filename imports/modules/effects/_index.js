@@ -8,3 +8,5 @@ import './remove-block';
 import './change-order';
 
 import './edit-text-field';
+
+import './push-at-index';

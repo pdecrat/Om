@@ -27,7 +27,7 @@ const ViewProvider = ({ children }) => {
 
   return (
     <ViewContext.Provider value={{ view }}>
-      {view ? children : null}
+      {view && isReady ? children : null}
     </ViewContext.Provider>
   )
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useTracker } from 'meteor/react-meteor-data';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import List from '@material-ui/core/List';
@@ -12,6 +12,7 @@ import PostAdd from '@material-ui/icons/PostAdd';
 import Data from '/imports/core/Data';
 import Blocks from '/imports/core/Blocks';
 import ActionButton from '/imports/ui/_components/ActionButton';
+import { Context } from '/imports/ui/_providers/ContextProvider';
 
 import ViewItem from './ViewItem';
 

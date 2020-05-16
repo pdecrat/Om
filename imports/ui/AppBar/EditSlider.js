@@ -9,17 +9,20 @@ import { UIContext } from '/imports/ui/_providers/UIProvider';
 import { Context } from '/imports/ui/_providers/ContextProvider';
 
 const StyledEditSlider = styled(({ isEdited, ...rest }) => <Paper {...rest} />)({
-  opacity: ({ isEdited }) => { return isEdited ? 0.9 : 0 },
+  opacity: ({ isEdited }) => { return isEdited ? 1 : 0 },
   transition: 'opacity 0.1s linear',
   position: 'absolute',
   marginTop: '48px',
+  backgroundColor: 'white',
+  width: '100%',
+  height: '48px',
 })
 
 const EditSlider = () => {
   const { isEdited } = useContext(UIContext);
 
   return (
-      <StyledEditSlider isEdited={isEdited} elevation={0}>
+      <StyledEditSlider isEdited={isEdited} elevation={0} square>
         <Slide in={isEdited}>
           <Box>
             <ViewActionBar />

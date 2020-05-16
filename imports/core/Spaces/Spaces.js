@@ -37,7 +37,7 @@ class SpaceCollection extends Mongo.Collection {
         },
         {
           name: 'addBlock',
-          data: { name: 'ViewsManager' },
+          data: { name: 'Image' },
         },
         {
           name: 'addBlock',
@@ -45,7 +45,19 @@ class SpaceCollection extends Mongo.Collection {
         },
         {
           name: 'addBlock',
+          data: { name: 'ViewsManager' },
+        },
+        {
+          name: 'addBlock',
+          data: { name: 'Image' },
+        },
+        {
+          name: 'addBlock',
           data: { name: 'Paragraph' },
+        },
+        {
+          name: 'addBlock',
+          data: { name: 'Image' },
         },
       ]);
       collection.insert({
@@ -158,6 +170,17 @@ class SpaceCollection extends Mongo.Collection {
         name: "changeOrder",
         effects: [
           { name: 'changeOrder' }
+        ]
+      })
+      collection.insert({
+        root: space._id,
+        type: "action",
+        name: "pushAtIndex",
+        effects: [
+          {
+            name: 'pushAtIndex',
+            options: { fieldName: 'order' }
+          }
         ]
       })
     }

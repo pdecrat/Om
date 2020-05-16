@@ -3,9 +3,11 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider, StylesProvider, createMuiTheme } from '@material-ui/core/styles';
 
 import { Context } from '/imports/ui/_providers/ContextProvider';
+import { ViewContext } from '/imports/ui/_providers/ViewProvider';
 
 const StyleProvider = ({ children }) => {
-  const { context: { theme: ctxTheme = {} }, view } = useContext(Context);
+  const { context: { theme: ctxTheme = {} } } = useContext(Context);
+  const { view } = useContext(ViewContext);
   if (view && view.theme)
     ctxTheme = { ...ctxTheme, ...view.theme }
   const muiTheme = React.useMemo(() => {
@@ -17,9 +19,9 @@ const StyleProvider = ({ children }) => {
   return (
     <React.Fragment>
       <CssBaseline />
-        <ThemeProvider theme={muiTheme}>
-          {children}
-        </ThemeProvider>
+      <ThemeProvider theme={muiTheme}>
+        {children}
+      </ThemeProvider>
     </React.Fragment>
   )
 }

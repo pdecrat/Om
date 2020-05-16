@@ -1,4 +1,7 @@
 import React from 'react';
+import { DndProvider } from 'react-dnd'
+import Backend from 'react-dnd-html5-backend'
+import TouchBackend from 'react-dnd-touch-backend'
 
 import ContextTracker from '/imports/ui/_providers/ContextProvider';
 import useQuery from '/imports/ui/_hooks/useQuery';
@@ -15,12 +18,14 @@ const UserProvider = ({ children }) => {
   }
 
   return (
-    <UserContext.Provider value={{ user }}>
-      {isReady ?
-        children
-        : null
-      }
-    </UserContext.Provider>
+    <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
+      <UserContext.Provider value={{ user, isUserSubReady: isReady }}>
+        {isReady ?
+          children
+          : null
+        }
+      </UserContext.Provider>
+    </DndProvider>
   )
 }
 

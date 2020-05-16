@@ -1,7 +1,6 @@
 import React from 'react';
 import { Route, Switch, useHistory } from "react-router-dom";
 
-
 import UserProvider from '/imports/ui/_providers/UserProvider';
 import ContextProvider from '/imports/ui/_providers/ContextProvider';
 import StyleProvider from '/imports/ui/_providers/StyleProvider';
@@ -13,13 +12,13 @@ import NotFound from '/imports/ui/NotFound';
 const Providers = () =>
   <UserProvider>
     <ContextProvider>
-      <StyleProvider>
-        <UIProvider>
-          <ViewProvider>
-            <View />
-          </ViewProvider>
-        </UIProvider>
-      </StyleProvider>
+      <ViewProvider>
+        <StyleProvider>
+          <UIProvider>
+              <View />
+          </UIProvider>
+        </StyleProvider>
+      </ViewProvider>
     </ContextProvider>
   </UserProvider>
 
