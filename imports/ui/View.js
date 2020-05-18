@@ -1,38 +1,26 @@
 import React, { useContext } from 'react';
 import { styled } from '@material-ui/core/styles';
-import Box from '@material-ui/core/Box';
+import Paper from '@material-ui/core/Paper';
 
-import Blocks from '/imports/core/Blocks';
-
-import AppBar from '/imports/ui/AppBar/AppBar';
 import Content from '/imports/ui/Content/Content';
+import ExpandableContainer from '/imports/ui/_components/ExpandableContainer';
 import { UIContext } from '/imports/ui/_providers/UIProvider';
-import { ViewContext } from '/imports/ui/_providers/ViewProvider';
 
-const animationSpeed = '330ms cubic-bezier(0.4, 0, 0.2, 1) 0ms';
-
-const StyledView = styled(Box)({
-  display: 'flex',
-  flexDirection: 'column'
-});
-
-const StyledAppBarContainer = styled(({ isEdited, ...rest }) => <Box {...rest} />)({
-  flex: ({ isEdited }) => isEdited ? '0 0 96px' : '0 0 48px',
-  backgroundColor: 'white',
-  transition: `flex ${animationSpeed}`,
-  height: '100vh',
+const StyledView = styled(Paper)({
+  marginTop: '48px',
 });
 
 const View = () => {
   const { isEdited } = useContext(UIContext);
 
   return (
-    <StyledView>
-      <StyledAppBarContainer>
-        <AppBar />
-      </StyledAppBarContainer>
-      <Content />
-    </StyledView>
+    <ExpandableContainer>
+      <StyledView elevation={isEdited ? 2 : 0} >
+        <ExpandableContainer t={'48px'}>
+          <Content />
+        </ExpandableContainer>
+      </StyledView>
+    </ExpandableContainer>
   )
 }
 

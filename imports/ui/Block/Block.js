@@ -4,16 +4,17 @@ import Paper from '@material-ui/core/Paper';
 
 import Blocks from '/imports/core/Blocks';
 import { UIContext } from '/imports/ui/_providers/UIProvider';
+import { Context } from '/imports/ui/_providers/ContextProvider';
 
 const animationSpeed = '330ms cubic-bezier(0.4, 0, 0.2, 1) 0ms';
 
 const StyledBlockContainer = styled(({ isPreview, ...rest }) => <Paper {...rest} />)({
-  width: ({ isPreview }) => isPreview ? '200px' : 'auto',
-  height: ({ isPreview }) => isPreview ? '100px' : 'auto',
+  overflowY: 'hidden',
+  minHeight: '48px',
   transition: `box-shadow ${animationSpeed}`,
 })
 
-const BlockContainer = ({ block, index, isPreview = false }) => {
+const BlockContainer = ({ block, isPreview = false }) => {
   const [ shouldRender, setShouldRender ] = useState(false);
   const { isEdited } = useContext(UIContext);
   const Component = Blocks.get(block.name);
@@ -27,7 +28,7 @@ const BlockContainer = ({ block, index, isPreview = false }) => {
       square
       isPreview={isPreview}
     >
-          {shouldRender ? <Component block={block} /> : null }
+      {shouldRender ? <Component block={block} /> : null }
     </StyledBlockContainer>
   );
 }

@@ -19,14 +19,13 @@ const AppBar = () => {
 
   return (
     <StyledAppBar
-      color={isEdited ? 'transparent' : 'primary' }
-      elevation={isEdited ? 0 : 2}
+      color={isEdited ? 'secondary' : 'primary' }
+      elevation={isEdited ? 2 : 4 }
     >
       <Toolbar variant="dense">
         <SpaceMenu />
         <UserMenu />
       </Toolbar>
-      <EditSlider />
     </StyledAppBar>
   );
 }
