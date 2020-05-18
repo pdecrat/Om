@@ -17,7 +17,7 @@ const BlockHolder = ({ block }) => {
   const { isEdited } = useContext(UIContext);
 
   return (
-    <ExpandableContainer l={'20%'} r={'5%'}>
+    <ExpandableContainer l={'20%'} r={'5%'} t={'48px'} b={0}>
       <Block block={block} />
     </ExpandableContainer>
   );

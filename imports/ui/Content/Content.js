@@ -29,15 +29,6 @@ const Content = () => {
       <DragDropContext onDragEnd={() => { console.log('hey') }}>
           <Droppable
             droppableId="content"
-            renderClone={(provided, snapshot, rubric) => (
-              <div
-                ref={provided.innerRef}
-                {...provided.draggableProps}
-                {...provided.dragHandleProps}
-              >
-                <Block block={blocks[rubric.source.index]} isPreview />
-              </div>
-            )}
           >
             {(provided, snapshot) => (
               <div

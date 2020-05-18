@@ -12,7 +12,6 @@ Blocks.register('Image', () => {
         bgImage={'https://source.unsplash.com/random/800x600'}
         bgImageAlt="the cat"
         strength={300}
-        disabled={isEdited}
     >
         <div style={{ height: "400px" }} />
     </Parallax>

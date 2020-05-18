@@ -24,7 +24,7 @@ const BlockContainer = ({ block, isPreview = false }) => {
 
   return (
     <StyledBlockContainer
-      elevation={isEdited ? 2 : 0}
+      elevation={isEdited ? 4 : 0}
       square
       isPreview={isPreview}
     >
