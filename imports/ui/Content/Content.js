@@ -13,7 +13,7 @@ import EditModeSpacer from '/imports/ui/_components/EditModeSpacer';
 
 const animationSpeed = '330ms cubic-bezier(0.4, 0, 0.2, 1) 0ms';
 
-const StyledContent = styled(({ isEdited, ...props }) => <div {...props} />)({
+const StyledContent = styled('div')({
   display: 'flex',
   flexDirection: 'column',
   flexGrow: 1,
@@ -31,30 +31,15 @@ const Content = () => {
             droppableId="content"
           >
             {(provided, snapshot) => (
-              <div
+              <StyledContent
                 {...provided.droppableProps}
                 ref={provided.innerRef}
               >
-                  {blocks.map((block, index) => (
-                    <Draggable
-                      key={block._id}
-                      draggableId={block._id}
-                      index={index}
-                      isDragDisabled={!isEdited}
-                    >
-                      {(provided, snapshot) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                        >
-                          <BlockHolder block={block} />
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-              </div>
+                {blocks.map((block, index) =>
+                  <BlockHolder block={block} index={index} key={block._id} />
+                )}
+                {provided.placeholder}
+              </StyledContent>
             )}
           </Droppable>
       </DragDropContext>

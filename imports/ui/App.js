@@ -8,7 +8,6 @@ import ViewProvider from '/imports/ui/_providers/ViewProvider';
 import UIProvider from '/imports/ui/_providers/UIProvider';
 import View from '/imports/ui/View';
 import NotFound from '/imports/ui/NotFound';
-import AppBar from '/imports/ui/AppBar/AppBar';
 
 const Providers = () =>
   <UserProvider>
@@ -16,10 +15,7 @@ const Providers = () =>
       <ViewProvider>
         <StyleProvider>
           <UIProvider>
-            <React.Fragment>
-              <AppBar />
-              <View />
-            </React.Fragment>
+            <View />
           </UIProvider>
         </StyleProvider>
       </ViewProvider>

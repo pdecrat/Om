@@ -8,6 +8,7 @@ import ClearIcon from '@material-ui/icons/Clear';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import SettingsIcon from '@material-ui/icons/Settings';
+
 import ActionButton from '/imports/ui/_components/ActionButton';
 
 const BlockItem = ({ block, index, length, isDisabled }) => {

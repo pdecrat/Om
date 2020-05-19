@@ -8,13 +8,13 @@ import { Context } from '/imports/ui/_providers/ContextProvider';
 
 const animationSpeed = '330ms cubic-bezier(0.4, 0, 0.2, 1) 0ms';
 
-const StyledBlockContainer = styled(({ isPreview, ...rest }) => <Paper {...rest} />)({
+const StyledBlock = styled(Paper)({
   overflowY: 'hidden',
   minHeight: '48px',
   transition: `box-shadow ${animationSpeed}`,
 })
 
-const BlockContainer = ({ block, isPreview = false }) => {
+const Block = ({ block, isPreview = false }) => {
   const [ shouldRender, setShouldRender ] = useState(false);
   const { isEdited } = useContext(UIContext);
   const Component = Blocks.get(block.name);
@@ -23,14 +23,13 @@ const BlockContainer = ({ block, isPreview = false }) => {
   }, [])
 
   return (
-    <StyledBlockContainer
+    <StyledBlock
       elevation={isEdited ? 4 : 0}
       square
-      isPreview={isPreview}
     >
       {shouldRender ? <Component block={block} /> : null }
-    </StyledBlockContainer>
+    </StyledBlock>
   );
 }
 
-export default BlockContainer;
+export default Block;

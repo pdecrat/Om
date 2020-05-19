@@ -1,26 +1,60 @@
 import React, { useContext } from 'react';
 import { styled } from '@material-ui/core/styles';
 import { Draggable } from "react-beautiful-dnd";
+import Slide from '@material-ui/core/Slide';
 
 import Block from '/imports/ui/Block/Block';
+import BlockToolbar from '/imports/ui/Block/BlockToolbar';
 import { UIContext } from '/imports/ui/_providers/UIProvider';
-import ExpandableContainer from '/imports/ui/_components/ExpandableContainer';
+import EditModeSpacer from '/imports/ui/_components/EditModeSpacer';
 
 const animationSpeed = '330ms cubic-bezier(0.4, 0, 0.2, 1) 0ms';
 
-const StyledBlockHolder = styled(({ isEdited, ...rest }) => <div {...rest} />)({
-  display:'flex',
+const StyledBlockContainer = styled('div')({
+  display: 'flex',
   flexDirection: 'column',
-});
+})
 
-const BlockHolder = ({ block }) => {
+const StyledBlockToolbar = styled(({ isEdited, ...rest }) => <div {...rest} />)({
+  opacity: ({ isEdited }) => isEdited ? `0.9` : '0',
+  transition: `opacity ${animationSpeed}`,
+  display: 'flex',
+  position: 'relative',
+  float: 'left',
+  minHeight: '48px',
+  marginLeft: '-48px',
+  marginTop: '-48px',
+  alignItems: 'center',
+})
+
+const BlockContainer = ({ block, index }) => {
   const { isEdited } = useContext(UIContext);
 
   return (
-    <ExpandableContainer l={'20%'} r={'5%'} t={'48px'} b={0}>
-      <Block block={block} />
-    </ExpandableContainer>
+    <Draggable
+      key={block._id}
+      draggableId={block._id}
+      index={index}
+      isDragDisabled={!isEdited}
+    >
+      {(provided, snapshot) => (
+        <StyledBlockContainer
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+        >
+          <EditModeSpacer maxSize={'60px'} />
+          <BlockToolbar
+            block={block}
+            index={index}
+            dragHandleProps={provided.dragHandleProps}
+          />
+          <div style={{ flexGrow: 1 }}>
+            <Block block={block} />
+          </div>
+        </StyledBlockContainer>
+      )}
+    </Draggable>
   );
 }
 
-export default BlockHolder;
+export default BlockContainer;

@@ -33,6 +33,7 @@ const Register = () => {
       <IconButton
         aria-label="create account"
         onClick={handleOpen}
+        edge='end'
       >
         <PersonAddIcon />
       </IconButton>

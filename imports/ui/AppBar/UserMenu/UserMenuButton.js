@@ -13,6 +13,7 @@ const UserMenuButton = () => {
 
   return (
     <IconButton
+      edge='end'
       aria-label="user menu"
       onClick={e => { setOpen(true) }}
     >
