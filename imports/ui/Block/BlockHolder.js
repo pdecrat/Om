@@ -28,7 +28,7 @@ const StyledBlockToolbar = styled(({ isEdited, ...rest }) => <div {...rest} />)(
   alignItems: 'center',
 })
 
-const BlockContainer = ({ block, index }) => {
+const BlockContainer = ({ block, index, isLast }) => {
   const { isEdited } = useContext(UIContext);
 
   return (
@@ -36,6 +36,7 @@ const BlockContainer = ({ block, index }) => {
       key={block._id}
       draggableId={block._id}
       index={index}
+      disableInteractiveElementBlocking
     >
       {(provided, snapshot) => (
         <StyledBlockContainer
@@ -48,7 +49,12 @@ const BlockContainer = ({ block, index }) => {
             index={index}
           />
           <div style={{ display: 'flex', flexGrow: 1, alignItems: 'center' }}>
-            <DragHandle dragHandleProps={provided.dragHandleProps} block={block} />
+            <DragHandle
+              dragHandleProps={provided.dragHandleProps}
+              block={block}
+              index={index}
+              isLast={isLast}
+            />
             <div style={{ flexGrow: 1 }}>
               <Block block={block} />
             </div>

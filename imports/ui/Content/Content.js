@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { styled } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
@@ -6,6 +6,7 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import BlockHolder from '/imports/ui/Block/BlockHolder';
 import Block from '/imports/ui/Block/Block';
 import useBlocks from '/imports/ui/_hooks/useBlocks';
+import useCall from '/imports/ui/_hooks/useCall';
 import { ViewContext } from '/imports/ui/_providers/ViewProvider';
 import { Context } from '/imports/ui/_providers/ContextProvider';
 import { UIContext } from '/imports/ui/_providers/UIProvider';
@@ -20,17 +21,32 @@ const StyledContent = styled('div')({
 });
 
 const Content = () => {
+  const call = useCall();
   const { view } = useContext(ViewContext);
   const { isReady } = useContext(Context);
   const { isEdited } = useContext(UIContext);
   const blocks = useBlocks({}, view.order);
+  const [ displayedOrder, setDisplayedOrder ] = useState(blocks)
   const [ draggedBlockId, setDraggedBlockId ] = useState('');
 
+  useEffect(() => {
+    setDisplayedOrder(blocks);
+  }, [view.order])
   const beforeCapture = ({ draggableId }) => {
     setDraggedBlockId(draggableId)
   }
-  const onDragEnd = () => {
-    setDraggedBlockId('');
+  const onDragEnd = ({ draggableId, destination, source }) => {
+    const order = displayedOrder;
+    const block = displayedOrder[source.index];
+    order.splice(source.index, 1);
+    order.splice(destination.index, 0, block);
+    setDisplayedOrder(order);
+    call({
+      name: 'pushAtIndex',
+      data: { index: destination.index, toPush: draggableId },
+      target: { _id: view._id, root: view.root }
+    });
+
   }
 
   return (
@@ -46,8 +62,13 @@ const Content = () => {
                 {...provided.droppableProps}
                 ref={provided.innerRef}
               >
-                {blocks.map((block, index) =>
-                  <BlockHolder isDragged={block._id === draggedBlockId} block={block} index={index} key={block._id} />
+                {displayedOrder.map((block, index) =>
+                  <BlockHolder
+                    isDragged={block._id === draggedBlockId}
+                    block={block} index={index}
+                    key={block._id}
+                    isLast={displayedOrder.length === index + 1}
+                  />
                 )}
                 {provided.placeholder}
               </StyledContent>

@@ -21,7 +21,7 @@ const StyledDragIcon = styled(DragIndicatorIcon)({
   marginBottom: '-12px',
 })
 
-const DragHandle = ({ block, index, dragHandleProps }) => {
+const DragHandle = ({ block, index, dragHandleProps, isLast }) => {
   return (
     <StyledDragHandle {...dragHandleProps}>
       <ActionButton
@@ -46,7 +46,7 @@ const DragHandle = ({ block, index, dragHandleProps }) => {
       >
         <IconButton
           aria-label="move down"
-          disabled={index < length - 1 ? false : true}
+          disabled={isLast}
         >
           <ArrowDownwardIcon />
         </IconButton>
