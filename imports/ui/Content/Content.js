@@ -31,17 +31,17 @@ const Content = () => {
 
   useEffect(() => {
     setDisplayedOrder(blocks);
-  }, [view.order])
+  }, [blocks])
   const beforeCapture = ({ draggableId }) => {
     setDraggedBlockId(draggableId)
   }
   const onDragEnd = ({ draggableId, destination, source }) => {
+    setDraggedBlockId('')
     const order = displayedOrder;
     const block = displayedOrder[source.index];
     order.splice(source.index, 1);
     order.splice(destination.index, 0, block);
     setDisplayedOrder(order);
-    setDraggedBlockId('')
     call({
       name: 'pushAtIndex',
       data: { index: destination.index, toPush: draggableId },

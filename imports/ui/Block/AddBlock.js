@@ -6,7 +6,7 @@ import { UIContext } from '/imports/ui/_providers/UIProvider';
 import { ViewContext } from '/imports/ui/_providers/ViewProvider';
 import ActionButton from '/imports/ui/_components/ActionButton';
 
-const animationSpeed = '330ms cubic-bezier(0.4, 0, 0.2, 1) 0ms';
+const animationSpeed = '110ms cubic-bezier(0.4, 0, 0.2, 1) 0ms';
 
 const StyledAddBlockContainer = styled(({ isEdited, ...rest }) => <div {...rest} />)({
   flex: ({ isEdited }) => isEdited ? `0 0 96px` : '0 0 0',
@@ -19,6 +19,7 @@ const StyledAddBlockContainer = styled(({ isEdited, ...rest }) => <div {...rest}
 
 const StyledAddBlock = styled(({ isEdited, ...rest }) => <div {...rest} />)({
   opacity: ({ isEdited }) => isEdited ? `0.9` : '0',
+  transition: `opacity ${animationSpeed}`,
   float: 'left',
   marginTop: '-48px',
   height: '48px',
