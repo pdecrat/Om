@@ -8,6 +8,7 @@ Actions.registerEffect('changeOrder', {
     data: { direction = '' },
     target: { _id, root, viewId }
   }) {
+    console.log(viewId)
     const { order = [] } = Data.findOne({ root, _id: viewId });
 
     if (order.length <= 1) {

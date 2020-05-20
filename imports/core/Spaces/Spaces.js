@@ -45,10 +45,6 @@ class SpaceCollection extends Mongo.Collection {
         },
         {
           name: 'addBlock',
-          data: { name: 'ViewsManager' },
-        },
-        {
-          name: 'addBlock',
           data: { name: 'Image' },
         },
         {

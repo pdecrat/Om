@@ -5,6 +5,7 @@ import Slide from '@material-ui/core/Slide';
 
 import Block from '/imports/ui/Block/Block';
 import BlockToolbar from '/imports/ui/Block/BlockToolbar';
+import DragHandle from '/imports/ui/Block/DragHandle';
 import { UIContext } from '/imports/ui/_providers/UIProvider';
 import EditModeSpacer from '/imports/ui/_components/EditModeSpacer';
 
@@ -35,7 +36,6 @@ const BlockContainer = ({ block, index }) => {
       key={block._id}
       draggableId={block._id}
       index={index}
-      isDragDisabled={!isEdited}
     >
       {(provided, snapshot) => (
         <StyledBlockContainer
@@ -48,8 +48,11 @@ const BlockContainer = ({ block, index }) => {
             index={index}
             dragHandleProps={provided.dragHandleProps}
           />
-          <div style={{ flexGrow: 1 }}>
-            <Block block={block} />
+          <div style={{ display: 'flex', flexGrow: 1, alignItems: 'center' }}>
+            <DragHandle />
+            <div style={{ flexGrow: 1 }}>
+              <Block block={block} />
+            </div>
           </div>
         </StyledBlockContainer>
       )}

@@ -24,9 +24,13 @@ const Content = () => {
   const { isReady } = useContext(Context);
   const { isEdited } = useContext(UIContext);
   const blocks = useBlocks({}, view.order);
+  const onDragEnd = () => {
+  }
 
   return (
-      <DragDropContext onDragEnd={() => { console.log('hey') }}>
+      <DragDropContext
+        onDragEnd={onDragEnd}
+      >
           <Droppable
             droppableId="content"
           >
