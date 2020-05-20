@@ -4,10 +4,10 @@ import { Draggable } from "react-beautiful-dnd";
 import Slide from '@material-ui/core/Slide';
 
 import Block from '/imports/ui/Block/Block';
+import AddBlock from '/imports/ui/Block/AddBlock';
 import BlockToolbar from '/imports/ui/Block/BlockToolbar';
 import DragHandle from '/imports/ui/Block/DragHandle';
 import { UIContext } from '/imports/ui/_providers/UIProvider';
-import EditModeSpacer from '/imports/ui/_components/EditModeSpacer';
 
 const animationSpeed = '330ms cubic-bezier(0.4, 0, 0.2, 1) 0ms';
 
@@ -28,7 +28,7 @@ const StyledBlockToolbar = styled(({ isEdited, ...rest }) => <div {...rest} />)(
   alignItems: 'center',
 })
 
-const BlockContainer = ({ block, index, isLast }) => {
+const BlockContainer = ({ block, index, isLast, isDragged }) => {
   const { isEdited } = useContext(UIContext);
 
   return (
@@ -43,10 +43,9 @@ const BlockContainer = ({ block, index, isLast }) => {
           ref={provided.innerRef}
           {...provided.draggableProps}
         >
-          <EditModeSpacer maxSize={'72px'} />
+          <AddBlock index={index} isDragged={isDragged} />
           <BlockToolbar
             block={block}
-            index={index}
           />
           <div style={{ display: 'flex', flexGrow: 1, alignItems: 'center' }}>
             <DragHandle

@@ -41,6 +41,7 @@ const Content = () => {
     order.splice(source.index, 1);
     order.splice(destination.index, 0, block);
     setDisplayedOrder(order);
+    setDraggedBlockId('')
     call({
       name: 'pushAtIndex',
       data: { index: destination.index, toPush: draggableId },

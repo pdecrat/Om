@@ -10,7 +10,7 @@ import Data from '/imports/core/Data.js';
 import Blocks from '/imports/core/Blocks';
 
 Actions.registerEffect('addBlock', {
-  fn({ data: { name = 'Paragraph', blockType = 'content' }, target }) {
+  fn({ data: { name = 'Paragraph', blockType = 'content', index = null }, target }) {
     const id = Data.insert({
       name,
       type: 'block',
@@ -20,7 +20,11 @@ Actions.registerEffect('addBlock', {
       isActive: true,
       isPublic: true,
     })
-    target.order.push(id);
+    if (index !== null) {
+      target.order.splice(index, 0, id);
+    } else {
+      target.order.push(id);
+    }
 
     return id;
   },
@@ -32,6 +36,10 @@ Actions.registerEffect('addBlock', {
       blockType: {
         optional: true,
         type: String
+      },
+      index: {
+        optional: true,
+        type: Number
       }
     })
   },

@@ -24,7 +24,7 @@ const StyledDragHandle = styled('div')({
   alignItems: 'center',
 })
 
-const BlockToolbar = ({ block, index, isDragged }) => {
+const BlockToolbar = ({ block, isDragged }) => {
   const { isEdited } = useContext(UIContext);
 
   return (
