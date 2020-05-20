@@ -42,14 +42,13 @@ const BlockContainer = ({ block, index }) => {
           ref={provided.innerRef}
           {...provided.draggableProps}
         >
-          <EditModeSpacer maxSize={'60px'} />
+          <EditModeSpacer maxSize={'72px'} />
           <BlockToolbar
             block={block}
             index={index}
-            dragHandleProps={provided.dragHandleProps}
           />
           <div style={{ display: 'flex', flexGrow: 1, alignItems: 'center' }}>
-            <DragHandle />
+            <DragHandle dragHandleProps={provided.dragHandleProps} block={block} />
             <div style={{ flexGrow: 1 }}>
               <Block block={block} />
             </div>

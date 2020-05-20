@@ -3,6 +3,7 @@ import { styled } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 
 import ActionButton from '/imports/ui/_components/ActionButton';
 
@@ -12,12 +13,17 @@ const StyledDragHandle = styled('div')({
   alignItems: 'center',
   float: 'left',
   marginLeft: '-48px',
-  marginTop: '-48px',
+  marginTop: '-48px'
 })
 
-const DragHandle = ({ block, index }) => {
+const StyledDragIcon = styled(DragIndicatorIcon)({
+  marginTop: '-12px',
+  marginBottom: '-12px',
+})
+
+const DragHandle = ({ block, index, dragHandleProps }) => {
   return (
-    <StyledDragHandle>
+    <StyledDragHandle {...dragHandleProps}>
       <ActionButton
         name="changeOrder"
         defaultValue={{ direction: 'up' }}
@@ -31,6 +37,7 @@ const DragHandle = ({ block, index }) => {
           <ArrowUpwardIcon />
         </IconButton>
       </ActionButton>
+      <StyledDragIcon />
       <ActionButton
         name="changeOrder"
         defaultValue={{ direction: 'down' }}

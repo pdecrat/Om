@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import { styled } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
-import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 
 import { UIContext } from '/imports/ui/_providers/UIProvider';
 import BlockActionBar from '/imports/ui/Block/BlockActionBar';
@@ -25,13 +24,12 @@ const StyledDragHandle = styled('div')({
   alignItems: 'center',
 })
 
-const BlockToolbar = ({ block, index, dragHandleProps }) => {
+const BlockToolbar = ({ block, index, isDragged }) => {
   const { isEdited } = useContext(UIContext);
 
   return (
     <StyledBlockToolbar isEdited={isEdited}>
-      <StyledDragHandle {...dragHandleProps}>
-        <DragIndicatorIcon />
+      <StyledDragHandle>
         {block.label}
       </StyledDragHandle>
       <BlockActionBar block={block} />

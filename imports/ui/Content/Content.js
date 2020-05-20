@@ -24,11 +24,18 @@ const Content = () => {
   const { isReady } = useContext(Context);
   const { isEdited } = useContext(UIContext);
   const blocks = useBlocks({}, view.order);
+  const [ draggedBlockId, setDraggedBlockId ] = useState('');
+
+  const beforeCapture = ({ draggableId }) => {
+    setDraggedBlockId(draggableId)
+  }
   const onDragEnd = () => {
+    setDraggedBlockId('');
   }
 
   return (
       <DragDropContext
+        onBeforeCapture={beforeCapture}
         onDragEnd={onDragEnd}
       >
           <Droppable
@@ -40,7 +47,7 @@ const Content = () => {
                 ref={provided.innerRef}
               >
                 {blocks.map((block, index) =>
-                  <BlockHolder block={block} index={index} key={block._id} />
+                  <BlockHolder isDragged={block._id === draggedBlockId} block={block} index={index} key={block._id} />
                 )}
                 {provided.placeholder}
               </StyledContent>
