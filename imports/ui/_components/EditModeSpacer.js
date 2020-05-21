@@ -3,17 +3,16 @@ import { styled } from '@material-ui/core/styles';
 
 import { UIContext } from '/imports/ui/_providers/UIProvider';
 
-const animationSpeed = '330ms cubic-bezier(0.4, 0, 0.2, 1) 0ms';
+const animationSpeed = '220ms cubic-bezier(0.4, 0, 0.2, 1) 0ms';
 
-const StyledEditModeSpacer = styled(({ isEdited, maxSize, ...rest }) => <div {...rest} />)({
-  flex: ({ isEdited, maxSize }) => isEdited ? `0 0 ${maxSize}` : '0 0 0',
+const StyledEditModeSpacer = styled(({ isOpen, maxSize, minSize, ...rest }) => <div {...rest} />)({
+  flex: ({ isOpen, maxSize, minSize }) => isOpen ? `0 0 ${maxSize}` : `0 0 ${minSize}`,
   transition: `flex ${animationSpeed}`,
 });
 
-const EditModeSpacer = ({ maxSize = '48px' }) => {
-  const { isEdited } = useContext(UIContext);
+const EditModeSpacer = ({ minSize = '0', maxSize = '48px', isOpen = false }) => {
 
-  return <StyledEditModeSpacer maxSize={maxSize} isEdited={isEdited} />
+  return <StyledEditModeSpacer minSize={minSize} maxSize={maxSize} isOpen={isOpen} />
 }
 
 export default EditModeSpacer;

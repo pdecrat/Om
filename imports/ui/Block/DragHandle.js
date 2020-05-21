@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { styled } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
@@ -6,6 +6,8 @@ import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 
 import ActionButton from '/imports/ui/_components/ActionButton';
+import { Context } from '/imports/ui/_providers/ContextProvider';
+import { BlockContext } from '/imports/ui/_providers/BlockProvider';
 
 const StyledDragHandle = styled('div')({
   display: 'flex',
@@ -21,7 +23,8 @@ const StyledDragIcon = styled(DragIndicatorIcon)({
   marginBottom: '-12px',
 })
 
-const DragHandle = ({ block, index, dragHandleProps, isLast }) => {
+const DragHandle = ({ index, dragHandleProps, isLast }) => {
+  const { block } = useContext(BlockContext);
   return (
     <StyledDragHandle {...dragHandleProps}>
       <ActionButton

@@ -15,18 +15,24 @@ const StyledAppBar = styled(MuiAppBar)({
 })
 
 const AppBar = () => {
-  const { setEdit, isEdited } = useContext(UIContext);
+  const { isEdited } = useContext(UIContext);
 
   return (
     <StyledAppBar
       color={isEdited ? 'secondary' : 'primary' }
       elevation={isEdited ? 0 : 2}
     >
+      { isEdited ?
       <Toolbar variant="dense">
         <SpaceMenu />
         <UserMenu />
       </Toolbar>
-      <EditSlider />
+:
+<Toolbar variant="dense">
+  <SpaceMenu />
+  <UserMenu />
+</Toolbar>
+    }
     </StyledAppBar>
   );
 }
