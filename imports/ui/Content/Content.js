@@ -10,7 +10,7 @@ import useCall from '/imports/ui/_hooks/useCall';
 import { ViewContext } from '/imports/ui/_providers/ViewProvider';
 import { Context } from '/imports/ui/_providers/ContextProvider';
 import { UIContext } from '/imports/ui/_providers/UIProvider';
-import EditModeSpacer from '/imports/ui/_components/EditModeSpacer';
+import FlexSpacer from '/imports/ui/_components/FlexSpacer';
 
 const animationSpeed = '220ms cubic-bezier(0.4, 0, 0.2, 1) 0ms';
 

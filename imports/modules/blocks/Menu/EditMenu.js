@@ -6,15 +6,18 @@ import Blocks from '/imports/core/Blocks';
 import UserMenu from '/imports/ui/AppBar/UserMenu/UserMenu';
 import SpaceMenu from '/imports/ui/AppBar/SpaceMenu/SpaceMenu';
 
-Blocks.register('DefaultMenu', () => {
+Blocks.register('EditMenu', () => {
   return (
     <AppBar
-      color='primary'
+      color='secondary'
       elevation={2}
     >
       <Toolbar variant="dense">
         <SpaceMenu />
         <UserMenu />
+      </Toolbar>
+      <Toolbar variant="dense">
+        <SpaceMenu />
       </Toolbar>
     </AppBar>
   );
