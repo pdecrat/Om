@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { styled } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Slide from '@material-ui/core/Slide';
+import { SwitchTransition, Transition } from "react-transition-group";
 
 import Blocks from '/imports/core/Blocks';
 import UserMenu from '/imports/ui/AppBar/UserMenu/UserMenu';
@@ -22,38 +23,58 @@ const editMenu = {
   size: '96px',
 };
 
+const transitionStyles = {
+  entering: { opacity: 1 },
+  entered:  { opacity: 1 },
+  exiting:  { opacity: 0 },
+  exited:  { opacity: 0 },
+};
+
+const setMenu = () => {
+
+}
+
 const AppBar = () => {
-  const [state, show, hide] = useDelayedUnmounting();
   const { isEdited } = useContext(UIContext);
   const { context } = useContext(Context);
   const { view } = useContext(ViewContext);
-  const [ currentMenu, setCurrentMenu ] = useState(defaultMenu);
-  const Component = Blocks.get(currentMenu.name);
-
-  useEffect(() => {
-    hide();
+  const getMenu = () => {
     if (isEdited) {
-      setCurrentMenu(editMenu);
-    } else if (view.menu) {
-      setCurrentMenu(view.menu);
-    } else if (context.menu) {
-      setCurrentMenu(context.menu);
+      return editMenu;
     } else {
-      setCurrentMenu(defaultMenu);
+      return {
+        ...defaultMenu,
+        ...context.menu,
+        ...view.menu
+      }
     }
-  }, [context.menu, view.menu, isEdited]);
-  useEffect(() => {
-    if (state === 'unmounted') {
-      show()
-    }
-  }, [currentMenu, state])
 
-  return (
+  }
+
+  const [ currentMenu, setCurrentMenu ] = useState(getMenu());
+  const Component = currentMenu && Blocks.get(currentMenu.name);
+
+  useEffect(() => {
+    setCurrentMenu(getMenu());
+  }, [context.menu, view.menu, isEdited]);
+
+  return currentMenu ? (
     <React.Fragment>
-      {Component && state !== 'unmounted' && <Component />}
-      <FlexSpacer maxSize={currentMenu.size} isOpen={state !== 'unmounted'} />
+      <SwitchTransition>
+        <Transition key={currentMenu.name} timeout={160}>
+          {state => (
+            <div style={{
+              transition: `opacity ${160}ms ease-in-out`,
+              ...transitionStyles[state]
+            }}>
+              <Component />
+            </div>
+          )}
+        </Transition>
+      </SwitchTransition>
+      <FlexSpacer maxSize={currentMenu.size} isOpen={true} />
     </React.Fragment>
-  )
+  ) : null;
 }
 
 export default AppBar;
