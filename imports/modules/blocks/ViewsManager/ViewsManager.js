@@ -22,7 +22,6 @@ Blocks.register('ViewsManager', ({ block }) => {
     type: 'view',
   }).fetch(), [block.root]);
 
-  console.log(views)
   return (
     <List
       aria-labelledby="nested-list-subheader"

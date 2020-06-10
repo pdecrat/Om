@@ -11,7 +11,6 @@ import { UIContext } from '/imports/ui/_providers/UIProvider';
 import { ViewContext } from '/imports/ui/_providers/ViewProvider';
 import { Context } from '/imports/ui/_providers/ContextProvider';
 import FlexSpacer from '/imports/ui/_components/FlexSpacer';
-import useDelayedUnmounting from '/imports/ui/_hooks/useDelayedUnmounting';
 
 const defaultMenu = {
   name: 'DefaultMenu',
@@ -30,9 +29,6 @@ const transitionStyles = {
   exited:  { opacity: 0 },
 };
 
-const setMenu = () => {
-
-}
 
 const AppBar = () => {
   const { isEdited } = useContext(UIContext);
@@ -48,7 +44,6 @@ const AppBar = () => {
         ...view.menu
       }
     }
-
   }
 
   const [ currentMenu, setCurrentMenu ] = useState(getMenu());

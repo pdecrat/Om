@@ -163,14 +163,6 @@ class SpaceCollection extends Mongo.Collection {
       collection.insert({
         root: space._id,
         type: "action",
-        name: "changeOrder",
-        effects: [
-          { name: 'changeOrder' }
-        ]
-      })
-      collection.insert({
-        root: space._id,
-        type: "action",
         name: "pushAtIndex",
         effects: [
           {

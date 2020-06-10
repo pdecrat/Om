@@ -10,6 +10,7 @@ const animationSpeed = '220ms cubic-bezier(0.4, 0, 0.2, 1) 0ms';
 
 const StyledAddBlockContainer = styled(({ isEdited, ...rest }) => <div {...rest} />)({
   flex: ({ isEdited }) => isEdited ? `0 0 96px` : '0 0 0',
+  pointerEvents: ({ isEdited }) => isEdited ? `auto` : 'none',
   transition: `flex ${animationSpeed}`,
   display: 'flex',
   flexDirection: 'column',

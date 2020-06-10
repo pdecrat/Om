@@ -37,7 +37,7 @@ const ActionButton = ({
 
   const [isOpen, setOpen] = useState(false);
   const [data, setData] = useState(disableDialog ? defaultValue : null);
-  const call = useCall();
+  const call = useCall(name, defaultValue, target);
   const open = () => {
     setData(defaultValue);
     setOpen(true);
@@ -52,7 +52,7 @@ const ActionButton = ({
     });
   }
   const callAction = () => {
-    call({ name, data, target }, (err, res) => {
+    call(data, (err, res) => {
       if (!err) {
         if (ref.current) {
           if (disableDialog)

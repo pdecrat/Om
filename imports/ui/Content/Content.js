@@ -1,11 +1,9 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { styled } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
 import BlockContainer from '/imports/ui/Block/BlockContainer';
-import Block from '/imports/ui/Block/Block';
-import useBlocks from '/imports/ui/_hooks/useBlocks';
+import AddBlock from '/imports/ui/Block/AddBlock';
 import useCall from '/imports/ui/_hooks/useCall';
 import { ViewContext } from '/imports/ui/_providers/ViewProvider';
 import { Context } from '/imports/ui/_providers/ContextProvider';
@@ -21,8 +19,10 @@ const StyledContent = styled('div')({
 });
 
 const Content = () => {
-  const call = useCall();
   const { view } = useContext(ViewContext);
+  const call = useCall('pushAtIndex', {}, {
+    _id: view._id, root: view.root
+  });
   const { isReady } = useContext(Context);
   const { isEdited } = useContext(UIContext);
   const [ displayedOrder, setDisplayedOrder ] = useState(view.order)
@@ -40,15 +40,11 @@ const Content = () => {
     order.splice(destination.index, 0, draggableId);
     setDisplayedOrder(order);
     setDraggedBlockId('')
-    call({
-      name: 'pushAtIndex',
-      data: { index: destination.index, toPush: draggableId },
-      target: { _id: view._id, root: view.root }
-    });
-
+    call({ index: destination.index, toPush: draggableId  });
   }
 
   return (
+    <React.Fragment>
       <DragDropContext
         onBeforeCapture={beforeCapture}
         onDragEnd={onDragEnd}
@@ -71,10 +67,12 @@ const Content = () => {
                   />
                 )}
                 {provided.placeholder}
+                <AddBlock index={displayedOrder.length} />
               </StyledContent>
             )}
           </Droppable>
       </DragDropContext>
+    </React.Fragment>
   );
 }
 

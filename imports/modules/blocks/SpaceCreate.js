@@ -8,15 +8,12 @@ import useCall from '/imports/ui/_hooks/useCall';
 
 Blocks.register('SpaceCreate', ({ block }) => {
   const [name, setName] = useState('');
-  const call = useCall();
+  const call = useCall('createSpace');
   const history = useHistory();
 
   const changeName = e => setName(e.target.value);
   const launchToSpace = () => {
-    call({
-      name: 'createSpace',
-      data: { name }
-    }, (err) => {
+    call({ name }, (err) => {
       if (!err)
         history.push('/s/' + encodeURI(name));
     })

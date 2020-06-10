@@ -5,9 +5,8 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 
-import ActionButton from '/imports/ui/_components/ActionButton';
-import { Context } from '/imports/ui/_providers/ContextProvider';
 import { BlockContext } from '/imports/ui/_providers/BlockProvider';
+import useCall from '/imports/ui/_hooks/useCall';
 
 const StyledDragHandle = styled('div')({
   display: 'flex',
@@ -25,35 +24,29 @@ const StyledDragIcon = styled(DragIndicatorIcon)({
 
 const DragHandle = ({ index, dragHandleProps, isLast }) => {
   const { block } = useContext(BlockContext);
+  const target = {
+    _id: block.viewId,
+    root: block.root
+  }
+  const call = useCall('pushAtIndex', { toPush: block._id }, target);
+
   return (
     <StyledDragHandle {...dragHandleProps}>
-      <ActionButton
-        name="changeOrder"
-        defaultValue={{ direction: 'up' }}
-        target={block}
-        disableDialog
+      <IconButton
+        aria-label="move up"
+        disabled={index === 0}
+        onClick={e => call({ index: index - 1 })}
       >
-        <IconButton
-          aria-label="move up"
-          disabled={index === 0 ? true : false}
-        >
-          <ArrowUpwardIcon />
-        </IconButton>
-      </ActionButton>
+        <ArrowUpwardIcon />
+      </IconButton>
       <StyledDragIcon />
-      <ActionButton
-        name="changeOrder"
-        defaultValue={{ direction: 'down' }}
-        target={block}
-        disableDialog
+      <IconButton
+        aria-label="move down"
+        disabled={isLast}
+        onClick={e => call({ index: index + 1 })}
       >
-        <IconButton
-          aria-label="move down"
-          disabled={isLast}
-        >
-          <ArrowDownwardIcon />
-        </IconButton>
-      </ActionButton>
+        <ArrowDownwardIcon />
+      </IconButton>
     </StyledDragHandle>
   )
 }
