@@ -15,15 +15,13 @@ import useCall from '/imports/ui/_hooks/useCall';
 const Register = () => {
   const [email, setEmail] = useState('');
   const [isOpen, setOpen] = useState(false);
-  const call = useCall();
+  const call = useCall('register user');
   const location = useLocation();
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const registerUser = () => {
-    const name = 'register user';
-    const data = { email, url: location.pathname };
-    call({ name, data }, (err, res) => {
+    call({ email, url: location.pathname }, (err, res) => {
       if (!err) setOpen(false);
     })
   }

@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { styled } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
+import IconButton from '@material-ui/core/IconButton';
 
 import { UserContext } from '/imports/ui/_providers/UserProvider';
 const StyledAvatar = styled(Avatar)(({ theme }) => ({
@@ -15,7 +16,6 @@ const UserMenuButton = () => {
     <IconButton
       edge='end'
       aria-label="user menu"
-      onClick={e => { setOpen(true) }}
     >
       <StyledAvatar>
         {user.name}

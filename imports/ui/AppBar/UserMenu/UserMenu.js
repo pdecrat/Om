@@ -1,6 +1,5 @@
 import React, { useState, useContext } from 'react';
 import { styled } from '@material-ui/core/styles';
-import IconButton from '@material-ui/core/IconButton';
 
 import { UserContext } from '/imports/ui/_providers/UserProvider';
 import Register from '/imports/ui/AppBar/UserMenu/Register';
