@@ -5,6 +5,7 @@ import { styled } from '@material-ui/core/styles';
 
 import Blocks from '/imports/core/Blocks';
 import UserMenu from '/imports/ui/AppBar/UserMenu/UserMenu';
+import EditToolbar from '/imports/modules/blocks/Menu/EditMenu/EditToolbar';
 import SpaceMenu from '/imports/ui/AppBar/SpaceMenu/SpaceMenu';
 
 const StyledEditBar = styled(AppBar)({
@@ -21,8 +22,7 @@ Blocks.register('EditMenu', () => {
         <SpaceMenu />
         <UserMenu />
       </Toolbar>
-      <Toolbar variant="dense">
-      </Toolbar>
+      <EditToolbar />
     </StyledEditBar>
   );
 });

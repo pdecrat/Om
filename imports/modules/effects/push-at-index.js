@@ -9,7 +9,6 @@ Actions.registerEffect('pushAtIndex', {
     target,
     options: { fieldName }
   }) {
-    console.log(index)
     const array = target[fieldName];
     if (array.length <= 1) {
       return;

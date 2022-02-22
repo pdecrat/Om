@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
+import EditIcon from '@material-ui/icons/Edit';
 
 import Grower from '/imports/ui/_components/Grower';
 import HomeButton from '/imports/ui/AppBar/SpaceMenu/HomeButton';
@@ -21,7 +21,7 @@ const SpaceMenu = () => {
         aria-label="space-menu"
         onClick={handleEdit}
       >
-        <MenuIcon/>
+        <EditIcon/>
       </IconButton>
 
     </React.Fragment>

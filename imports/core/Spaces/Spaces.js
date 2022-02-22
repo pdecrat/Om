@@ -37,7 +37,7 @@ class SpaceCollection extends Mongo.Collection {
         },
         {
           name: 'addBlock',
-          data: { name: 'Image' },
+          data: { name: 'Paragraph' },
         },
         {
           name: 'addBlock',
@@ -91,6 +91,10 @@ class SpaceCollection extends Mongo.Collection {
           {
             name: 'editTextField',
             options: { fieldToChange: 'label' }
+          },
+          {
+            name: 'editUrlField',
+            options: { fieldToChange: 'imgUrl' }
           }
         ]
       })
