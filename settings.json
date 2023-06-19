@@ -1,9 +1,0 @@
-{
-  "appName": "Om",
-  "email": {
-    "from": "no-reply@om.com",
-    "login": "postmaster%40sandbox3658a7b45f3941719dd3ca90d12d0f7e.mailgun.org",
-    "key": "9a6da5bd2b4bd6241fbd73e565edc358",
-    "hostname": "smtp.mailgun.org:587"
-  }
-}
