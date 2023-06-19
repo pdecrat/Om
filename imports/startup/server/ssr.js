@@ -2,14 +2,13 @@ import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { StaticRouter} from 'react-router-dom';
 import { onPageLoad } from 'meteor/server-render';
-import { FastRender } from 'meteor/staringatlights:fast-render';
 import { Helmet } from 'react-helmet';
 import { createMemoryHistory } from 'history';
 import { ServerStyleSheets } from '@material-ui/core/styles';
 
 import App from '/imports/ui/App';
 
-FastRender.onPageLoad((sink) => {
+onPageLoad((sink) => {
   const history = createMemoryHistory({
     initialEntries: [sink.request.url],
   })
