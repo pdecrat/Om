@@ -18,20 +18,20 @@ const useUser = () => {
     return null;
   }, [isReady])
 
-  const register = (query) => {
-    const history = useHistory();
-    Accounts.callLoginMethod({
-      methodArguments: [{
-        'passwordless': {
-          token: query.token
-        }
-      }],
-      userCallback: function(err, res) {
-        if (err) console.log(err);
-        const { token, ...rest } = query;
-        history.push(`${history.location.pathname}?${qs.stringify({ ...rest })}`)
-      }
-    });
+  // const register = (query) => {
+  //   const history = useHistory();
+  //   Accounts.callLoginMethod({
+  //     methodArguments: [{
+  //       'passwordless': {
+  //         token: query.token
+  //       }
+  //     }],
+  //     userCallback: function(err, res) {
+  //       if (err) console.log(err);
+  //       const { token, ...rest } = query;
+  //       history.push(`${history.location.pathname}?${qs.stringify({ ...rest })}`)
+  //     }
+  //   });
   }
 
   return { isReady: (isReady && !isLoggingIn), user, register };
