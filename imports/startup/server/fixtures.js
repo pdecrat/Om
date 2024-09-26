@@ -42,6 +42,15 @@ Meteor.startup(() => {
     });
     const admin = Meteor.users.findOne({ email: "philippe.decrat@gmail.com" })
     if (admin) {
+      db.dropCollection(admin._id);
+      Collections.get(admin._id).insert({
+        isActive: true,
+        isPublic: true,
+        type: 'header',
+        root: admin._id,
+        email: "philippe.decrat@gmail.com",
+      });
+
       const membership = {
         type: "membership",
         memberOf: omId,
@@ -50,6 +59,20 @@ Meteor.startup(() => {
       Data.insert({
         root: omId,
         ...membership,
+      })
+      Data.insert({
+        root: admin._id,
+        type: "menuItem",
+        label: "Settings",
+        icon: "SettingsIcon",
+        restrictedTo: "admin",
+      })
+      Data.insert({
+        root: admin._id,
+        type: "view",
+        name: "Settings",
+        restrictedTo: "admin",
+        order: [],
       })
       Data.insert({
         root: admin._id,

@@ -189,10 +189,13 @@ export default Spaces;
 if (Meteor.isServer) {
   Meteor.publish('context-data', function(reference) {
     check(reference, String);
-    const cursor = Spaces.find({ reference });
+    let cursor = Spaces.find({ reference });
 
     if (cursor.count() === 0) {
-      this.ready();
+      cursor = Meteor.users.find({  _id: reference });
+      if (cursor.count() === 0) {
+        this.ready();
+      }
     } else {
       const space = cursor.fetch()[0];
       let query = {

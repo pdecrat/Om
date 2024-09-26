@@ -12,7 +12,7 @@ export class Collection extends Mongo.Collection {
 
     return super.insert({
       isActive: doc.isActive ? doc.isActive : true,
-      isPublic: doc.isPublic ? doc.isPublic : true,
+      isPublic: doc.isPublic ? doc.isPublic : false,
       dateCreated: Date.now(),
       ...doc
     }, callback);

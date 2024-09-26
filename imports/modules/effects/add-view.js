@@ -20,7 +20,8 @@ Actions.registerEffect('addView', {
       type: 'view',
       root: target._id,
       isMainView: hasMainView ? false : true,
-      order: []
+      order: [],
+      isPublic: true,
     });
   },
   dataSchema() {
