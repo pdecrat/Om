@@ -1,0 +1,3739 @@
+================================================
+FILE: README.md
+================================================
+# Om Network
+
+This application's intent is to allow its users to easily set up exchanges between one another.
+
+Each user comes with its own page (called spaces), containing the resources it offers and needs, in the forms of modules attached to its space.
+
+Groups are a way for different users to gather their resources to help manage communities
+and provide more complex services/merge common needs.
+
+
+
+================================================
+FILE: package.json
+================================================
+{
+  "name": "Om",
+  "private": true,
+  "scripts": {
+    "start": "meteor --settings settings-dev.json"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.17.9",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@material-ui/core": "^4.9.12",
+    "@material-ui/icons": "^4.9.1",
+    "@mui/material": "^5.14.11",
+    "bcrypt": "^3.0.8",
+    "gulp-cli": "^2.2.0",
+    "meteor-node-stubs": "^0.3.3",
+    "query-string": "^6.11.1",
+    "react": "^16.14.0",
+    "react-beautiful-dnd": "^13.0.0",
+    "react-dom": "^16.14.0",
+    "react-feather": "^1.1.6",
+    "react-helmet": "^5.2.1",
+    "react-is": "^16.13.1",
+    "react-parallax": "^3.0.3",
+    "react-router": "^5.1.2",
+    "react-router-dom": "^5.3.1",
+    "redux-thunk": "^2.3.0",
+    "simpl-schema": "^1.5.7"
+  }
+}
+
+
+
+================================================
+FILE: client/main.html
+================================================
+<head>
+  <title>Om</title>
+  <meta
+    name="viewport"
+    content="minimum-scale=1, initial-scale=1, width=device-width"
+  />
+  <link rel="manifest" href="/pwa.json">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+</head>
+
+<body>
+  <div id="react-root"></div>
+</body>
+
+
+
+================================================
+FILE: client/main.js
+================================================
+import '/imports/startup/client';
+import '/imports/startup/common';
+
+
+
+================================================
+FILE: imports/core/Actions.js
+================================================
+import { Meteor } from 'meteor/meteor'
+import { Mongo } from 'meteor/mongo';
+import SimpleSchema from 'simpl-schema';
+
+import Data from '/imports/core/Data';
+
+const Actions = {
+  _effects: {},
+  registerEffect(name, effect) {
+    if (!this._effects[name])
+      this._effects[name] = effect;
+  },
+  getEffect(name) {
+    if (this._effects[name])
+      return this._effects[name];
+  },
+  do({ action, origin, target, data }) {
+    action.effects.forEach(({ name, options }) => {
+      this._effects[name].fn({ action, origin, target, data, options });
+    });
+    if (target) Data.update({ root: target.root, _id: target._id }, target);
+    if (origin) Data.update({ root: origin.root, _id: origin._id }, origin);
+    if (action) Data.update({ root: action.root, _id: action._id }, action);
+  },
+  simulate({ origin, target }, effects = []) {
+    let targetData = target ? Data.findOne(target) : null;
+    let originData = origin ? Data.findOne(origin) : null;
+
+    effects.forEach(({ name, data, options }) => {
+      this._effects[name].fn({
+        action: {}, origin: originData, target: targetData, data, options });
+    });
+    if (target) Data.update(target, targetData);
+    if (origin) Data.update(origin, originData);
+  },
+  validateDataSchema({ action, data = {} }) {
+    if (action.effects.length > 0) {
+      const validationSchema = new SimpleSchema({});
+
+      action.effects.forEach(({ name, options }) => {
+        if (this._effects[name].dataSchema)
+          validationSchema.extend(this._effects[name].dataSchema(options));
+      });
+      data = validationSchema.clean(data);
+      validationSchema.validate(data);
+    }
+  }
+};
+
+Meteor.methods({
+  'do'(action) {
+    new SimpleSchema({
+      name: {
+        type: String
+      },
+      data: {
+        type: Object,
+        blackbox: true,
+        optional: true,
+        defaultValue: {}
+      },
+      target: {
+        type: Object,
+        optional: true,
+        defaultValue: null
+      },
+      'target._id': {
+        type: String
+      },
+      'target.root': {
+        type: String
+      }
+    }).validate(action);
+
+    const requestedAction = Data.findOne({
+      root: action.target.root,
+      type: "action",
+      name: action.name
+    });
+    if (!requestedAction) {
+      throw new Meteor.Error(
+        'action-method:action-not-found',
+        `The requested action doesn't exist`
+      );
+    }
+    if (!!action.target) {
+      action.target = Data.findOne(action.target);
+      if (!action.target) {
+        throw new Meteor.Error(
+          'action-method:target-not-found',
+          "The object you tried to interact with could not be found"
+        )
+      }
+    }
+    action.origin = Meteor.isServer ?
+      Meteor.user()
+      : Data.findOne({
+          type: "header",
+          root: Meteor.userId()
+        })
+    Actions.validateDataSchema({ action: requestedAction, ...action });
+    return Actions.do({ action: requestedAction, ...action });
+  }
+});
+
+export default Actions;
+
+if (Meteor.isClient) {
+  window.Actions = Actions;
+}
+
+
+
+================================================
+FILE: imports/core/Blocks.js
+================================================
+const Blocks = {
+  _components: {},
+  register(name, component) {
+    if (!this._components[name])
+      this._components[name] = component;
+  },
+  get(name) {
+    if (this._components[name])
+      return this._components[name];
+  },
+  getAll() {
+    return Object.keys(this._components);
+  }
+}
+export default Blocks;
+
+
+
+================================================
+FILE: imports/core/Collections.js
+================================================
+import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
+
+import Spaces from '/imports/core/Spaces/Spaces';
+
+export class Collection extends Mongo.Collection {
+  insert(doc, callback) {
+    if (!doc._id)
+      doc._id = new Mongo.ObjectID().valueOf();
+    if (!doc.label)
+      doc.label = doc.name ? doc.name : doc._id;
+
+    return super.insert({
+      isActive: doc.isActive ? doc.isActive : true,
+      isPublic: doc.isPublic ? doc.isPublic : false,
+      dateCreated: Date.now(),
+      ...doc
+    }, callback);
+  }
+}
+
+export const Collections = {
+  _list: {
+  },
+  get(name) {
+    return this._list[name]
+  },
+  add(name) {
+    this._list[name] = new Collection(name);
+
+    return this._list[name];
+  },
+  register(name, cursor) {
+    this._list[name] = cursor;
+  }
+};
+
+
+
+================================================
+FILE: imports/core/Data.js
+================================================
+import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
+
+const Data = Meteor.isClient ? new Mongo.Collection('data') : {};
+
+if (Meteor.isServer) {
+  import { Collections } from '/imports/core/Collections';
+  Data.find = (query) => {
+    const collection = Collections.get(query.root);
+    return !!collection && collection.find(query)
+  };
+  Data.insert = (doc) => {
+    const collection = Collections.get(doc.root);
+    return !!collection && collection.insert(doc)
+  };
+  Data.findOne = (query) => {
+    const collection = Collections.get(query.root);
+    return !!collection && collection.findOne(query)
+  };
+  Data.update = (selector, update) => {
+    const collection = Collections.get(selector.root);
+    return !!collection && collection.update(selector, update);
+  };
+  Data.remove = (selector) => {
+    const collection = Collections.get(selector.root);
+    return !!collection && collection.remove(selector);
+  };
+}
+
+export default Data;
+
+if (Meteor.isClient)
+  window.Data = Data;
+
+
+
+================================================
+FILE: imports/core/Spaces/Spaces.js
+================================================
+import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
+import { check } from 'meteor/check';
+
+import { Collections } from '/imports/core/Collections';
+import Actions from '/imports/core/Actions';
+import Data from '/imports/core/Data';
+
+class SpaceCollection extends Mongo.Collection {
+  insert(space, callback) {
+    space = {
+      ...space,
+      reference: encodeURI(space.name),
+      _id: new Mongo.ObjectID()._str,
+      isActive: space.isActive ? space.isActive : true,
+      isPublic: space.isPublic ? space.isPublic : true,
+      root: "space",
+      type: "space",
+    }
+    if (Meteor.isServer) {
+      const root = space._id;
+      const collection = Collections.add(root);
+      collection.insert({
+        ...space,
+        type: 'header',
+        root,
+      });
+      const mainViewId = Actions._effects.addView.fn({
+        data: { name: space.name },
+        target: { root, _id: root }
+      })
+      const target = Data.findOne({ root, _id: mainViewId });
+      Actions.simulate({ target }, [
+        {
+          name: 'addBlock',
+          data: { name: 'Paragraph' },
+        },
+        {
+          name: 'addBlock',
+          data: { name: 'Paragraph' },
+        },
+        {
+          name: 'addBlock',
+          data: { name: 'SpaceCreate' },
+        },
+        {
+          name: 'addBlock',
+          data: { name: 'Image' },
+        },
+        {
+          name: 'addBlock',
+          data: { name: 'Paragraph' },
+        },
+        {
+          name: 'addBlock',
+          data: { name: 'Image' },
+        },
+      ]);
+      collection.insert({
+        root: space._id,
+        type: "action",
+        name: "register user",
+        effects: [
+          { name: 'register' }
+        ]
+      })
+      collection.insert({
+        root: space._id,
+        type: "action",
+        name: "createSpace",
+        effects: [
+          { name: 'createSpace' }
+        ]
+      })
+      collection.insert({
+        root: space._id,
+        type: "action",
+        name: "editView",
+        effects: [
+          {
+            name: 'editTextField',
+            options: { fieldToChange: 'label' }
+          }
+        ]
+      })
+      collection.insert({
+        root: space._id,
+        type: "action",
+        name: "editImage",
+        effects: [
+          {
+            name: 'editTextField',
+            options: { fieldToChange: 'label' }
+          },
+          {
+            name: 'editUrlField',
+            options: { fieldToChange: 'imgUrl' }
+          }
+        ]
+      })
+      collection.insert({
+        root: space._id,
+        type: "action",
+        name: "editParagraph",
+        effects: [
+          {
+            name: 'editTextField',
+            options: { fieldToChange: 'text' }
+          },
+          {
+            name: 'editTextField',
+            options: { fieldToChange: 'label' }
+          }
+        ]
+      })
+      collection.insert({
+        root: space._id,
+        type: "action",
+        name: "editSpaceCreate",
+        effects: [
+          {
+            name: 'editTextField',
+            options: { fieldToChange: 'fieldText' }
+          },
+          {
+            name: 'editTextField',
+            options: { fieldToChange: 'buttonText' }
+          },
+          {
+            name: 'editTextField',
+            options: { fieldToChange: 'label' }
+          }
+        ]
+      })
+      collection.insert({
+        root: space._id,
+        type: "action",
+        name: "addView",
+        effects: [
+          { name: 'addView' }
+        ]
+      })
+      collection.insert({
+        root: space._id,
+        type: "action",
+        name: "removeView",
+        effects: [
+          { name: 'removeView' }
+        ]
+      })
+      collection.insert({
+        root: space._id,
+        type: "action",
+        name: "addBlock",
+        effects: [
+          { name: 'addBlock' }
+        ]
+      })
+      collection.insert({
+        root: space._id,
+        type: "action",
+        name: "removeBlock",
+        effects: [
+          { name: 'removeBlock' }
+        ]
+      })
+      collection.insert({
+        root: space._id,
+        type: "action",
+        name: "pushAtIndex",
+        effects: [
+          {
+            name: 'pushAtIndex',
+            options: { fieldName: 'order' }
+          }
+        ]
+      })
+    }
+
+    return super.insert(space, callback);
+  }
+};
+
+const Spaces = new SpaceCollection('spaces');
+Collections.register("space", Spaces);
+
+export default Spaces;
+
+if (Meteor.isServer) {
+  Meteor.publish('context-data', function(reference) {
+    check(reference, String);
+    let cursor = Spaces.find({ reference });
+
+    if (cursor.count() === 0) {
+      cursor = Meteor.users.find({  _id: reference });
+      if (cursor.count() === 0) {
+        this.ready();
+      }
+    } else {
+      const space = cursor.fetch()[0];
+      let query = {
+        isActive: true,
+        type: { $in: [ 'header', "block", "view", "action" ] },
+      };
+      if (!this.userId)
+        query.isPublic = true;
+      else {
+        const membership = this.userId && Collections.get(this.userId).findOne({
+          type: 'membership',
+          memberOf: space._id,
+        });
+
+        query.$or = [
+          { isPublic: true }
+        ];
+        if (membership) {
+          query.$or.push(
+            { restrictedTo: { $in: membership.roles } },
+          )
+        }
+      }
+      const contentCursor = Collections.get(space._id).find(query);
+      Mongo.Collection._publishCursor(contentCursor, this, 'data');
+
+      this.ready();
+    }
+  });
+}
+
+
+
+================================================
+FILE: imports/core/Users/Passwordless.js
+================================================
+// import { Meteor } from 'meteor/meteor';
+// import { Random } from 'meteor/random';
+// import { Base64 } from 'meteor/ostrio:base64';
+// import { Email } from 'meteor/email';
+// import { check } from 'meteor/check';
+//
+// import { Collections } from '/imports/core/Collections';
+//
+// const {
+//   login,
+//   key,
+//   hostname
+// } = Meteor.settings.email;
+// process.env.MAIL_URL = `smtp://${login}:${key}@${hostname}`;
+// const appName = Meteor.settings.appName;
+//
+// const pendingCredentials = new Meteor.Collection('passwordless_pending_credentials');
+//
+// Passwordless = {};
+//
+// Passwordless.emailTemplates = {
+//   sendLoginEmail: {
+//     subject: `Your login link for ${appName}`,
+//     text: function (url) {
+//       return `You requested access to ${appName}.
+// Please click on the following link to proceed
+// ${url}
+// Thank you !`;
+//     }
+//   }
+// };
+//
+// Passwordless.sendLoginEmail = (email, url) => {
+//   const token = Random.secret();
+//   const loginUrl = Meteor.absoluteUrl(`${url}?token=${token}`);
+//   const pendingCredential = pendingCredentials.findOne({ email });
+//   const now = Date.now();
+//
+//   if (pendingCredential) {
+//     /**
+//       In case of existing pending credentials for this email, we check its
+//       expiry date, and only proceed - by updating the existing one with the new
+//       token - if it is expired.
+//     **/
+//     if (pendingCredential.when < (now - 3600000)) {
+//       pendingCredentials.update(pendingCredential._id, {
+//         $set: {
+//           token,
+//           when: now
+//         }
+//       });
+//     } else {
+//       throw new Meteor.Error('token-already-sent',
+//         "You already requested access recently, please check your inbox"
+//       );
+//     }
+//   } else {
+//     pendingCredentials.insert({
+//       email,
+//       token,
+//       when: now
+//     });
+//   }
+//
+//   Email.send({
+//     to: email,
+//     from: Meteor.settings.email.from,
+//     subject: Passwordless.emailTemplates.sendLoginEmail.subject,
+//     text: Passwordless.emailTemplates.sendLoginEmail.text(loginUrl),
+//   });
+//
+// };
+//
+// Passwordless.verifyToken = ({ token }) => {
+//   const pendingCredential = pendingCredentials.findOne({ token });
+//   const now = Date.now();
+//
+//   if (!pendingCredential) {
+//     throw new Meteor.Error('no-pending-credential',
+//       "No pending credential was found for this email"
+//     );
+//   }
+//
+//   if (pendingCredential.when < (now - 3600000)) {
+//     pendingCredentials.remove({ token });
+//     throw new Meteor.Error('token-expired',
+//       "You waited too long before using this token"
+//     );
+//   }
+//   const serviceData = {
+//     id: pendingCredential.email
+//   };
+//
+//   pendingCredentials.remove({ token });
+//
+//   const { userId } = Accounts.updateOrCreateUserFromExternalService('passwordless', serviceData, {
+//     email: pendingCredential.email
+//   });
+//
+//   return {
+//     userId,
+//   };
+// }
+//
+// Accounts.registerLoginHandler('passwordless', (options) => {
+//   if (!options.passwordless)
+//     return undefined;
+//
+//   check(options.passwordless, {
+//     token: String,
+//   });
+//
+//   return Passwordless.verifyToken(options.passwordless);
+// });
+//
+// export default Passwordless;
+
+
+
+================================================
+FILE: imports/core/Users/Users.js
+================================================
+import { Meteor } from 'meteor/meteor';
+import { Accounts } from 'meteor/accounts-base';
+
+import Spaces from '/imports/core/Spaces/Spaces';
+import { Collections } from '/imports/core/Collections';
+
+const Users = Meteor.users;
+Collections.register("user", Users);
+
+if (Meteor.isServer) {
+  Accounts.onCreateUser((options, user) => {
+
+    Collections.add(user._id);
+    Collections.get(user._id).insert({
+      isActive: true,
+      isPublic: true,
+      type: 'header',
+      root: user._id,
+      email: options.email,
+    });
+    return {
+      ...user,
+      email: options.email,
+    }
+  })
+
+  Meteor.publish('user-data', function() {
+    const userId = this.userId;
+
+    if (userId) {
+      const contentCursor = Collections.get(userId).find();
+      Mongo.Collection._publishCursor(contentCursor, this, 'data');
+
+      this.ready();
+    }
+  });
+}
+
+export default Users;
+
+
+
+================================================
+FILE: imports/modules/blocks/_index.js
+================================================
+import './SpaceCreate';
+import './Image';
+import './Paragraph';
+import './Menu/DefaultMenu';
+import './Menu/EditMenu/EditMenu';
+import './ViewsManager/ViewsManager';
+
+
+
+================================================
+FILE: imports/modules/blocks/Image.js
+================================================
+import React, { useContext } from 'react';
+import { Parallax } from 'react-parallax';
+
+import Blocks from '/imports/core/Blocks';
+import { UIContext } from '/imports/ui/_providers/UIProvider';
+
+Blocks.register('Image', ({ block: { imgUrl = 'https://source.unsplash.com/random/800x600' } }) => {
+  const { isEdited } = useContext(UIContext);
+
+  return (
+    <Parallax
+        bgImage={imgUrl}
+        bgImageAlt="the cat"
+        strength={300}
+    >
+        <div style={{ height: "400px" }} />
+    </Parallax>
+  )
+});
+
+
+
+================================================
+FILE: imports/modules/blocks/Paragraph.js
+================================================
+import React from 'react';
+import Typography from '@material-ui/core/Typography';
+import Container from '@material-ui/core/Container';
+
+import Blocks from '/imports/core/Blocks';
+
+Blocks.register('Paragraph', ({ block: { text = 'Hello World!' } }) => {
+  return (
+    <Container maxWidth="md">
+      <Typography variant="body1">
+        {text}
+      </Typography>
+    </Container>
+  );
+});
+
+
+
+================================================
+FILE: imports/modules/blocks/SpaceCreate.js
+================================================
+import React, { useState } from 'react';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/IconButton';
+import { useHistory } from 'react-router-dom';
+
+import Blocks from '/imports/core/Blocks';
+import useCall from '/imports/ui/_hooks/useCall';
+
+Blocks.register('SpaceCreate', ({ block }) => {
+  const [name, setName] = useState('');
+  const call = useCall('createSpace');
+  const history = useHistory();
+
+  const changeName = e => setName(e.target.value);
+  const launchToSpace = () => {
+    call({ name }, (err) => {
+      if (!err)
+        history.push('/s/' + encodeURI(name));
+    })
+  }
+  return (
+    <React.Fragment>
+      <TextField
+        value={name}
+        onChange={changeName}
+        label={block.fieldText}
+      />
+      <Button onClick={launchToSpace}>{block.buttonText}</Button>
+    </React.Fragment>
+  )
+});
+
+
+
+================================================
+FILE: imports/modules/blocks/Menu/DefaultMenu.js
+================================================
+import React from 'react';
+import Toolbar from '@material-ui/core/Toolbar';
+import AppBar from '@material-ui/core/AppBar';
+
+import { UserContext } from '/imports/ui/_providers/UserProvider';
+import Blocks from '/imports/core/Blocks';
+import UserMenu from '/imports/ui/AppBar/UserMenu/UserMenu';
+import Register from '/imports/ui/AppBar/UserMenu/Register';
+import SpaceMenu from '/imports/ui/AppBar/SpaceMenu/SpaceMenu';
+
+Blocks.register('DefaultMenu', () => {
+  const { user } = React.useContext(UserContext);
+
+  return (
+    <AppBar
+      color='primary'
+      elevation={2}
+    >
+      <Toolbar variant="dense">
+        <SpaceMenu />
+        { user ?
+          <UserMenu />
+          : <Register />
+        }
+      </Toolbar>
+    </AppBar>
+  );
+});
+
+
+
+================================================
+FILE: imports/modules/blocks/Menu/EditMenu/EditMenu.js
+================================================
+import React from 'react';
+import Toolbar from '@material-ui/core/Toolbar';
+import AppBar from '@material-ui/core/AppBar';
+import { styled } from '@material-ui/core/styles';
+
+import Blocks from '/imports/core/Blocks';
+import UserMenu from '/imports/ui/AppBar/UserMenu/UserMenu';
+import EditToolbar from '/imports/modules/blocks/Menu/EditMenu/EditToolbar';
+import SpaceMenu from '/imports/ui/AppBar/SpaceMenu/SpaceMenu';
+
+const StyledEditBar = styled(AppBar)({
+  backgroundColor: 'white'
+});
+
+Blocks.register('EditMenu', () => {
+  return (
+    <StyledEditBar
+      elevation={2}
+      color='primary'
+    >
+      <Toolbar variant="dense">
+        <SpaceMenu />
+        <UserMenu />
+      </Toolbar>
+      <EditToolbar />
+    </StyledEditBar>
+  );
+});
+
+
+
+================================================
+FILE: imports/modules/blocks/Menu/EditMenu/EditToolbar.js
+================================================
+import React, { useContext } from 'react';
+import { useTracker } from 'meteor/react-meteor-data';
+import { useHistory } from 'react-router-dom';
+import Toolbar from '@material-ui/core/Toolbar';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
+import FormControl from '@material-ui/core/FormControl';
+
+import Data from '/imports/core/Data';
+import { ViewContext } from '/imports/ui/_providers/ViewProvider';
+import { Context } from '/imports/ui/_providers/ContextProvider';
+
+const EditToolbar = () => {
+  const { context } = useContext(Context);
+  const { view } = useContext(ViewContext);
+  const history = useHistory();
+  const views = useTracker(() => Data.find({
+    type: 'view',
+    root: context.root
+  }).fetch());
+
+  const changeView = e => {
+    history.push(`${history.location.pathname}?view=${e.target.value}`)
+  }
+
+
+  return (
+    <Toolbar variant="dense">
+      <FormControl>
+        <InputLabel id="demo-simple-select-label">View</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={view.name}
+          onChange={changeView}
+        >
+          {views.map(view => <MenuItem
+            key={view._id}
+            value={view.name}
+            >{view.name}</MenuItem>
+          )}
+        </Select>
+      </FormControl>
+    </Toolbar>
+
+  )
+}
+
+export default EditToolbar;
+
+
+
+================================================
+FILE: imports/modules/blocks/TodoList/TodoItem.js
+================================================
+import React from 'react';
+import { useTracker } from 'meteor/react-meteor-data';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Checkbox from '@mui/material/Checkbox';
+import IconButton from '@mui/material/IconButton';
+import CommentIcon from '@mui/icons-material/Comment';
+
+import ActionButton from '/imports/ui/_components/ActionButton';
+import Data from '/imports/core/Data';
+import useCall from '/imports/ui/_hooks/useCall';
+
+const TodoItem = ({ todo }) => {
+  const toggleStatus = useCall('toggleStatus', {}, todo);
+
+  return (
+    <ListItem
+      key={value}
+      secondaryAction={
+        <IconButton edge="end" aria-label="comments">
+          <CommentIcon />
+        </IconButton>
+      }
+      disablePadding
+    >
+      <ListItemButton role={undefined} onClick={handleToggle(value)} dense>
+        <ListItemIcon>
+          <Checkbox
+            edge="start"
+            checked={todo.isFinished}
+            tabIndex={-1}
+            disableRipple
+            inputProps={{ 'aria-labelledby': labelId }}
+          />
+        </ListItemIcon>
+        <ListItemText id={labelId} primary={`Line item ${value + 1}`} />
+      </ListItemButton>
+    </ListItem>
+  );
+}
+
+
+
+================================================
+FILE: imports/modules/blocks/TodoList/TodoList.js
+================================================
+import React from 'react';
+import List from '@material-ui/core/List';
+import ListSubheader from '@material-ui/core/ListSubheader';
+
+import Blocks from '/imports/core/Blocks';
+import Data from '/imports/core/Data';
+import ActionButton from '/imports/ui/_components/ActionButton';
+import useCall from '/imports/ui/_hooks/useCall';
+
+import TodoItem from './TodoItem';
+
+Blocks.register('TodoList', ({ block }) => {
+  const tasks = useTracker(() => Data.find({
+    root: block.root,
+    type: 'todo',
+  }).fetch(), [block.root]);
+
+  return (
+    <List
+      subheader={
+
+      }
+    >
+      {tasks.map(task =>
+        <TodoItem key={task._id} task={task} />
+      )}
+    </List>
+  )
+});
+
+
+
+================================================
+FILE: imports/modules/blocks/ViewsManager/BlockItem.js
+================================================
+import React from 'react';
+import { useTracker } from 'meteor/react-meteor-data';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import ListItemText from '@material-ui/core/ListItemText';
+import IconButton from '@material-ui/core/IconButton';
+import ClearIcon from '@material-ui/icons/Clear';
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
+import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import SettingsIcon from '@material-ui/icons/Settings';
+
+import ActionButton from '/imports/ui/_components/ActionButton';
+import Data from '/imports/core/Data';
+import useCall from '/imports/ui/_hooks/useCall';
+
+const BlockItem = ({ blockId, index, length, isDisabled }) => {
+  const block = useTracker(() => Data.findOne({ _id: blockId }));
+  const callReorder = useCall('pushAtIndex', { toPush: blockId });
+
+  return block ? (
+    <ListItem style={{ paddingLeft: '40px' }} button dense key={block._id}>
+      <ActionButton
+        name={`edit${block.name}`}
+        target={block}
+        defaultValue={{ ...block }}
+      >
+        <ListItemIcon>
+          <SettingsIcon />
+        </ListItemIcon>
+      </ActionButton>
+      <ListItemText primary={block.label} />
+      <ListItemSecondaryAction>
+        <IconButton
+          edge="end"
+          aria-label="move up"
+          onClick={e => callReorder({ index: index - 1 }, null, {
+            _id: block.viewId,
+            root: block.root
+          })}
+          disabled={index === 0 ? true : false}
+        >
+          <ArrowUpwardIcon />
+        </IconButton>
+        <IconButton
+          edge="end"
+          aria-label="move down"
+          onClick={e => callReorder({ index: index + 1 }, null, {
+            _id: block.viewId,
+            root: block.root
+          })}
+          disabled={index < length - 1 ? false : true}
+        >
+          <ArrowDownwardIcon />
+        </IconButton>
+        <ActionButton
+          name="removeBlock"
+          target={block}
+          disableDialog
+        >
+          <IconButton
+            edge="end"
+            aria-label="delete"
+            disabled={isDisabled && (block.name === 'ViewsManager')}
+          >
+            <ClearIcon />
+          </IconButton>
+        </ActionButton>
+      </ListItemSecondaryAction>
+    </ListItem>
+  ) : null;
+}
+
+export default BlockItem;
+
+
+
+================================================
+FILE: imports/modules/blocks/ViewsManager/BlockList.js
+================================================
+import React from 'react';
+import List from '@material-ui/core/List';
+import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+
+import ActionButton from '/imports/ui/_components/ActionButton';
+
+import BlockItem from './BlockItem';
+
+const BlockList = ({ view }) => {
+
+  return (
+    <List component="div" disablePadding>
+      {view.order.map((blockId, index) =>
+        <BlockItem
+          key={index}
+          blockId={blockId}
+          index={index}
+          length={view.order.length}
+        />
+      )}
+      <ActionButton
+        name='addBlock'
+        target={view}
+        defaultValue={{ name: 'Paragraph' }}
+      >
+        <ListItem
+          style={{ paddingLeft: '40px' }}
+          button
+          dense
+        >
+          <ListItemIcon>
+            <PlaylistAddIcon />
+          </ListItemIcon>
+          <ListItemText primary="Ajouter un bloc" />
+        </ListItem>
+      </ActionButton>
+    </List>
+  )
+}
+
+export default BlockList;
+
+
+
+================================================
+FILE: imports/modules/blocks/ViewsManager/ViewItem.js
+================================================
+import React, { useState, useContext } from 'react';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import ListItemText from '@material-ui/core/ListItemText';
+import IconButton from '@material-ui/core/IconButton';
+import Collapse from '@material-ui/core/Collapse';
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
+import ClearIcon from '@material-ui/icons/Clear';
+import SettingsIcon from '@material-ui/icons/Settings';
+import Divider from '@material-ui/core/Divider';
+
+import ActionButton from '/imports/ui/_components/ActionButton';
+import useQuery from '/imports/ui/_hooks/useQuery';
+
+import BlockList from './BlockList';
+
+const ViewItem = ({ view, isLast }) => {
+  const [isOpen, setOpen] = useState(true);
+  const query = useQuery();
+
+  return (
+    <React.Fragment>
+      <Divider />
+      <ListItem button onClick={e => setOpen(!isOpen)}>
+        <ListItemIcon>
+          { isOpen ? <ExpandLess /> : <ExpandMore /> }
+        </ListItemIcon>
+        <ListItemText primary={view.label} />
+        <ListItemSecondaryAction>
+          <ActionButton
+            name='editView'
+            target={view}
+            defaultValue={{ label: view.label }}
+          >
+            <IconButton
+              edge='end'
+              aria-label="edit-view"
+            >
+              <SettingsIcon />
+            </IconButton>
+          </ActionButton>
+            <ActionButton
+              name='removeView'
+              target={view}
+              disableDialog
+            >
+            <IconButton
+              edge="end"
+              aria-label="removeView"
+              disabled={
+                view.name === query.view
+                || (view.isMainView && !query.view)
+                || isLast}
+            >
+              <ClearIcon />
+            </IconButton>
+            </ActionButton>
+        </ListItemSecondaryAction>
+      </ListItem>
+      <Collapse in={isOpen} timeout="auto" unmountOnExit>
+        <BlockList view={view} />
+      </Collapse>
+    </React.Fragment>
+  );
+}
+
+export default ViewItem;
+
+
+
+================================================
+FILE: imports/modules/blocks/ViewsManager/ViewsManager.js
+================================================
+import React, { useContext } from 'react';
+import { useTracker } from 'meteor/react-meteor-data';
+import ListSubheader from '@material-ui/core/ListSubheader';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Divider from '@material-ui/core/Divider';
+import IconButton from '@material-ui/core/IconButton';
+import PostAdd from '@material-ui/icons/PostAdd';
+
+import Data from '/imports/core/Data';
+import Blocks from '/imports/core/Blocks';
+import ActionButton from '/imports/ui/_components/ActionButton';
+import { Context } from '/imports/ui/_providers/ContextProvider';
+
+import ViewItem from './ViewItem';
+
+Blocks.register('ViewsManager', ({ block }) => {
+  const views = useTracker(() => Data.find({
+    root: block.root,
+    type: 'view',
+  }).fetch(), [block.root]);
+
+  return (
+    <List
+      aria-labelledby="nested-list-subheader"
+      subheader={
+        <ListSubheader variant="h4" id="nested-list-subheader">
+          Vues
+          <ActionButton name='addView'>
+            <IconButton
+              edge='end'
+              aria-label="add-view"
+              style={{ float: 'right' }}
+            >
+              <PostAdd />
+            </IconButton>
+          </ActionButton>
+        </ListSubheader>
+      }
+    >
+      {views.map(view =>
+        <ViewItem key={view._id} view={view} isLast={views.length === 1} />
+      )}
+      <Divider />
+    </List>
+  );
+});
+
+
+
+================================================
+FILE: imports/modules/effects/_index.js
+================================================
+import './create-space';
+import './register';
+
+import './add-view';
+import './add-block';
+import './remove-view';
+import './remove-block';
+
+import './edit-text-field';
+import './edit-url-field';
+
+import './push-at-index';
+
+
+
+================================================
+FILE: imports/modules/effects/add-block.js
+================================================
+import SimpleSchema from 'simpl-schema';
+import React from 'react';
+import FormControl from '@material-ui/core/FormControl';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+
+import Actions from '/imports/core/Actions';
+import Data from '/imports/core/Data.js';
+import Blocks from '/imports/core/Blocks';
+
+Actions.registerEffect('addBlock', {
+  fn({ data: { name = 'Paragraph', blockType = 'content', index = null }, target }) {
+    const id = Data.insert({
+      name,
+      type: 'block',
+      blockType: 'content',
+      root: target.root,
+      viewId: target._id,
+      isActive: true,
+      isPublic: true,
+    })
+    if (index !== null) {
+      target.order.splice(index, 0, id);
+    } else {
+      target.order.push(id);
+    }
+
+    return id;
+  },
+  dataSchema() {
+    return new SimpleSchema({
+      name: {
+        type: String
+      },
+      blockType: {
+        optional: true,
+        type: String
+      },
+      index: {
+        optional: true,
+        type: Number
+      }
+    })
+  },
+  form(data, onChange) {
+    const { name = 'Paragraph' } = data;
+
+    return (
+      <FormControl key="block-name" fullWidth>
+        <InputLabel id="select-label">Type de bloc</InputLabel>
+        <Select
+          labelId="select-label"
+          id="select"
+          value={name}
+          onChange={onChange('name')}
+        >
+          {Blocks.getAll().map(block =>
+            <MenuItem key={block} value={block}>{block}</MenuItem>
+          )}
+        </Select>
+      </FormControl>
+    )
+  }
+});
+
+
+
+================================================
+FILE: imports/modules/effects/add-view.js
+================================================
+import React from 'react';
+import SimpleSchema from 'simpl-schema';
+import TextField from '@material-ui/core/TextField';
+
+import Actions from '/imports/core/Actions';
+import Data from '/imports/core/Data.js';
+
+Actions.registerEffect('addView', {
+  fn({ data: { name }, target }) {
+
+    if (name.length < 2) {
+      throw new Meteor.Error(
+        'effects:create-view:name-too-short',
+        "The view's name must be at least 3 characters long."
+      )
+    }
+    const hasMainView = Data.findOne({ isMainView: true, root: target._id })
+    return Data.insert({
+      name,
+      type: 'view',
+      root: target._id,
+      isMainView: hasMainView ? false : true,
+      order: [],
+      isPublic: true,
+    });
+  },
+  dataSchema() {
+    return new SimpleSchema({
+      name: {
+        type: String
+      },
+    })
+  },
+  form(data, onChange) {
+    const { name = '' } = data;
+    return (
+      <TextField
+        key="view-name"
+        autoFocus
+        margin="dense"
+        label="Nom"
+        type="text"
+        fullWidth
+        value={name}
+        onChange={onChange('name')}
+      />
+    )
+  }
+})
+
+
+
+================================================
+FILE: imports/modules/effects/create-space.js
+================================================
+import React from 'react';
+import SimpleSchema from 'simpl-schema';
+
+import Actions from '/imports/core/Actions';
+import Spaces from '/imports/core/Spaces/Spaces';
+
+Actions.registerEffect('createSpace', {
+  fn({ data: { name = '' } }) {
+    if (name.length < 2) {
+      throw new Meteor.Error(
+        'effects:create-space:name-too-short',
+        "The space's name must be at least 3 characters long."
+      )
+    }
+    return Spaces.insert({ name })
+  },
+  dataSchema() {
+    return new SimpleSchema({
+      name: {
+        type: String
+      },
+    })
+  },
+  form(data, onChange) {
+    return null
+  }
+});
+
+
+
+================================================
+FILE: imports/modules/effects/edit-text-field.js
+================================================
+import React from 'react';
+import SimpleSchema from 'simpl-schema';
+import TextField from '@material-ui/core/TextField';
+
+import Actions from '/imports/core/Actions';
+import Data from '/imports/core/Data';
+
+Actions.registerEffect('editTextField', {
+  fn({ data, target, options: { fieldToChange } }) {
+    target[fieldToChange] = data[fieldToChange]
+  },
+  dataSchema({ fieldToChange }) {
+    return new SimpleSchema({
+      [fieldToChange]: {
+        type: String
+      }
+    })
+  },
+  form(data, onChange, { fieldToChange, isMultiline = false }) {
+    const value = data[fieldToChange] || ''
+
+    return (
+      <TextField
+        key={fieldToChange}
+        margin="dense"
+        label={fieldToChange}
+        type="text"
+        fullWidth
+        multiline={isMultiline}
+        rows={4}
+        value={value}
+        onChange={onChange(fieldToChange)}
+      />
+    )
+  }
+})
+
+
+
+================================================
+FILE: imports/modules/effects/edit-url-field.js
+================================================
+import React from 'react';
+import SimpleSchema from 'simpl-schema';
+import TextField from '@material-ui/core/TextField';
+
+import Actions from '/imports/core/Actions';
+import Data from '/imports/core/Data';
+
+Actions.registerEffect('editUrlField', {
+  fn({ data, target, options: { fieldToChange } }) {
+    target[fieldToChange] = data[fieldToChange]
+  },
+  dataSchema({ fieldToChange }) {
+    return new SimpleSchema({
+      [fieldToChange]: {
+        type: String
+      }
+    })
+  },
+  form(data, onChange, { fieldToChange, isMultiline = false }) {
+    const value = data[fieldToChange] || ''
+
+    return (
+      <TextField
+        key={fieldToChange}
+        margin="dense"
+        label={fieldToChange}
+        type="text"
+        fullWidth
+        multiline={isMultiline}
+        rows={4}
+        value={value}
+        onChange={onChange(fieldToChange)}
+      />
+    )
+  }
+})
+
+
+
+================================================
+FILE: imports/modules/effects/push-at-index.js
+================================================
+import SimpleSchema from 'simpl-schema';
+
+import Actions from '/imports/core/Actions';
+import Data from '/imports/core/Data.js';
+
+Actions.registerEffect('pushAtIndex', {
+  fn({
+    data: { index = 0, toPush = '' },
+    target,
+    options: { fieldName }
+  }) {
+    const array = target[fieldName];
+    if (array.length <= 1) {
+      return;
+    }
+
+    const i = array.findIndex(value => value === toPush);
+    array.splice(i, 1);
+    array.splice(index, 0, toPush);
+    target[fieldName] = array;
+  },
+  dataSchema() {
+    return new SimpleSchema({
+      toPush: {
+        type: String
+      },
+      index: {
+        type: Number,
+        min: 0
+      },
+    })
+  }
+})
+
+
+
+================================================
+FILE: imports/modules/effects/register.js
+================================================
+// import { Meteor } from 'meteor/meteor';
+// import SimpleSchema from 'simpl-schema';
+//
+// if (Meteor.isServer) {
+//   import Passwordless from '/imports/core/Users/Passwordless';
+// }
+// import Actions from '/imports/core/Actions';
+//
+// Actions.registerEffect('register', {
+//   fn({ data }) {
+//     if (Meteor.isServer) {
+//       Passwordless.sendLoginEmail(data.email.toLowerCase(), data.url);
+//     }
+//   },
+//   dataSchema() {
+//     return new SimpleSchema({
+//       email: {
+//         type: String
+//       },
+//       url: {
+//         type: String
+//       }
+//     })
+//   }
+// })
+
+
+
+================================================
+FILE: imports/modules/effects/remove-block.js
+================================================
+import Actions from '/imports/core/Actions';
+import Data from '/imports/core/Data.js';
+
+Actions.registerEffect('removeBlock', {
+  fn({ target }) {
+    Data.remove({
+      _id: target._id,
+      root: target.root
+    })
+    Data.update({ root: target.root, _id: target.viewId }, {
+      $pull: { order: target._id }
+    })
+    target = null;
+  }
+})
+
+
+
+================================================
+FILE: imports/modules/effects/remove-view.js
+================================================
+import Actions from '/imports/core/Actions';
+import Data from '/imports/core/Data.js';
+
+Actions.registerEffect('removeView', {
+  fn({ target: { root, _id, isMainView } }) {
+    if (isMainView) {
+      Data.update({ _id: { $ne: _id }, root, type: "view" }, { $set: { isMainView: true } });
+    }
+    Data.remove({
+      root,
+      $or: [
+        { _id },
+        { type: 'block', viewId: _id }
+      ]
+    })
+  }
+})
+
+
+
+================================================
+FILE: imports/startup/client/index.js
+================================================
+import './render'
+
+
+
+================================================
+FILE: imports/startup/client/render.js
+================================================
+import { Meteor } from 'meteor/meteor';
+import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
+import { hydrate } from 'react-dom';
+import { onPageLoad } from 'meteor/server-render';
+import { createBrowserHistory } from 'history';
+
+import App from '/imports/ui/App';
+
+onPageLoad(() => {
+  hydrate(
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+    , document.getElementById('react-root'));
+});
+
+
+
+================================================
+FILE: imports/startup/common/apis.js
+================================================
+import '/imports/core/Actions';
+import '/imports/core/Users/Users';
+import 'meteor/universe:i18n';
+
+
+
+================================================
+FILE: imports/startup/common/index.js
+================================================
+import './apis';
+import '/imports/modules/blocks/_index';
+import '/imports/modules/effects/_index';
+
+
+
+================================================
+FILE: imports/startup/server/fixtures.js
+================================================
+import { Meteor } from 'meteor/meteor';
+
+import Spaces from '/imports/core/Spaces/Spaces';
+import { Collections } from '/imports/core/Collections';
+import Data from '/imports/core/Data';
+
+Meteor.startup(() => {
+  const db = MongoInternals.defaultRemoteCollectionDriver().mongo.db;
+  const collections = db.listCollections()
+  collections.forEach(({ name }) => {
+    if (name !== "passwordless_pending_credentials"
+      && name !== "users"
+      && name !== "meteor_accounts_loginServiceConfiguration"
+      && name !== "spaces"
+    )
+      // db.dropCollection(name);
+      Collections.add(name)
+  })
+
+  Spaces.find().forEach(space => {
+    db.dropCollection(space._id);
+  });
+  // Meteor.users.find().forEach(user => {
+  // });
+  // Meteor.users.remove({});
+  Spaces.remove({})
+  if (Spaces.find().count() === 0) {
+    const omId = Spaces.insert({
+      name: 'om',
+      theme: {
+        palette: {
+          primary: {
+            main: '#90a4ae',
+          },
+          secondary: {
+            main: '#bbdefb',
+          },
+          contrastThreshold: 3,
+          tonalOffset: 0.2,
+        },
+      }
+    });
+    const admin = Meteor.users.findOne({ email: "philippe.decrat@gmail.com" })
+    if (admin) {
+      db.dropCollection(admin._id);
+      Collections.get(admin._id).insert({
+        isActive: true,
+        isPublic: true,
+        type: 'header',
+        root: admin._id,
+        email: "philippe.decrat@gmail.com",
+      });
+
+      const membership = {
+        type: "membership",
+        memberOf: omId,
+        roles: ["admin"],
+      }
+      Data.insert({
+        root: omId,
+        ...membership,
+      })
+      Data.insert({
+        root: admin._id,
+        type: "menuItem",
+        label: "Settings",
+        icon: "SettingsIcon",
+        restrictedTo: "admin",
+      })
+      Data.insert({
+        root: admin._id,
+        type: "view",
+        name: "Settings",
+        restrictedTo: "admin",
+        order: [],
+      })
+      Data.insert({
+        root: admin._id,
+        ...membership,
+      })
+    }
+  }
+})
+
+
+
+================================================
+FILE: imports/startup/server/index.js
+================================================
+import './fixtures';
+import './ssr';
+
+
+
+================================================
+FILE: imports/startup/server/ssr.js
+================================================
+import React from 'react';
+import { renderToString } from 'react-dom/server';
+import { StaticRouter} from 'react-router-dom';
+import { onPageLoad } from 'meteor/server-render';
+import { Helmet } from 'react-helmet';
+import { createMemoryHistory } from 'history';
+import { ServerStyleSheets } from '@material-ui/core/styles';
+
+import App from '/imports/ui/App';
+
+onPageLoad((sink) => {
+  const history = createMemoryHistory({
+    initialEntries: [sink.request.url],
+  })
+  const Prerender = props => (
+    <StaticRouter context={history}>
+      <App />
+    </StaticRouter>
+  );
+
+  const stop = history.listen((match, type) => {
+    if (type === 'REPLACE') {
+      sink.setStatusCode('302');
+      sink.redirect(match.pathname);
+    }
+  })
+
+  const sheet = new ServerStyleSheets();
+  sink.renderIntoElementById('react-root', renderToString(sheet.collect(<Prerender location={sink.request.url} />)));
+  sink.appendToHead(sheet.toString());
+
+  const helmet = Helmet.renderStatic();
+  sink.appendToHead(helmet.meta.toString());
+  sink.appendToHead(helmet.title.toString());
+  stop();
+});
+
+
+
+================================================
+FILE: imports/ui/App.js
+================================================
+import React from 'react';
+import { Route, Switch, useHistory } from "react-router-dom";
+
+import UserProvider from '/imports/ui/_providers/UserProvider';
+import ContextProvider from '/imports/ui/_providers/ContextProvider';
+import StyleProvider from '/imports/ui/_providers/StyleProvider';
+import ViewProvider from '/imports/ui/_providers/ViewProvider';
+import UIProvider from '/imports/ui/_providers/UIProvider';
+import View from '/imports/ui/View';
+import NotFound from '/imports/ui/NotFound';
+
+const Providers = () =>
+  <UserProvider>
+    <ContextProvider>
+      <ViewProvider>
+        <StyleProvider>
+          <UIProvider>
+            <View />
+          </UIProvider>
+        </StyleProvider>
+      </ViewProvider>
+    </ContextProvider>
+  </UserProvider>
+
+const App = () => {
+  const history = useHistory();
+
+  if (history.location.pathname === '/') {
+    history.push('/s/om')
+    return null;
+  }
+
+  return (
+    <Switch>
+      <Route path='/:type([s, u])/:reference' component={Providers} />
+      <Route component={NotFound} />
+    </Switch>
+  );
+}
+
+export default App;
+
+
+
+================================================
+FILE: imports/ui/NotFound.js
+================================================
+import React from 'react';
+
+const NotFound = () =>
+  <div>Space not found (black hole ?)</div>
+
+export default NotFound;
+
+
+
+================================================
+FILE: imports/ui/View.js
+================================================
+import React, { useContext } from 'react';
+import { styled } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
+import Box from '@material-ui/core/Box';
+
+import Content from '/imports/ui/Content/Content';
+import FlexSpacer from '/imports/ui/_components/FlexSpacer';
+import { UIContext } from '/imports/ui/_providers/UIProvider';
+import AppBar from '/imports/ui/AppBar/AppBar';
+
+const StyledView = styled('div')({
+  display: 'flex',
+  flexDirection: 'column',
+  overflow: 'hidden'
+});
+const StyledContentContainer = styled(Box)({
+  flexGrow: 1,
+  display: 'flex',
+});
+
+const View = () => {
+  const { isEdited } = useContext(UIContext);
+
+  return (
+    <StyledView>
+      <AppBar />
+      <StyledContentContainer>
+        <FlexSpacer maxSize={'60px'} isOpen={isEdited} />
+        <div style={{ flexGrow: 1 }}>
+          <Content />
+        </div>
+        <FlexSpacer maxSize={'12px'} isOpen={isEdited} />
+      </StyledContentContainer>
+      <FlexSpacer maxSize={'12px'} isOpen={isEdited} />
+    </StyledView>
+  )
+}
+
+export default View;
+
+
+
+================================================
+FILE: imports/ui/_components/ActionBar.js
+================================================
+import React from 'react';
+import { styled } from '@material-ui/core/styles';
+
+const StyledActionBar = styled('div')({
+  display: 'flex',
+  alignItems: 'center',
+  flexGrow: 1,
+})
+
+const ActionBar = ({ children }) => {
+  return (
+    <StyledActionBar>
+      {children}
+    </StyledActionBar>
+  )
+}
+
+export default ActionBar;
+
+
+
+================================================
+FILE: imports/ui/_components/ActionButton.js
+================================================
+import React, { useState, useRef, useEffect } from 'react';
+import { useTracker } from 'meteor/react-meteor-data';
+import IconButton from '@material-ui/core/IconButton';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Button from '@material-ui/core/Button';
+
+import Actions from '/imports/core/Actions';
+import useCall from '/imports/ui/_hooks/useCall';
+
+const ActionButton = ({
+  name,
+  target,
+  callback = null,
+  defaultValue = {},
+  disableDialog = false,
+  children
+}) => {
+  const ref = useRef(false)
+  useEffect(() => {
+    ref.current = true
+    return () => {
+      ref.current = false
+    }
+  }, [])
+
+  const action = useTracker(() => {
+    const doc = Data.findOne({ name })
+
+    return doc;
+  }, [name]);
+
+  if (!action) return null;
+
+  const [isOpen, setOpen] = useState(false);
+  const [data, setData] = useState(disableDialog ? defaultValue : null);
+  const call = useCall(name, defaultValue, target);
+  const open = () => {
+    setData(defaultValue);
+    setOpen(true);
+  }
+  const toggle = () => {
+    setOpen(!isOpen)
+  }
+  const onChange = field => e => {
+    setData({
+      ...data,
+      [field]: e.target.value
+    });
+  }
+  const callAction = () => {
+    call(data, (err, res) => {
+      if (!err) {
+        if (ref.current) {
+          if (disableDialog)
+            setData(defaultValue);
+          else {
+            setData(null);
+            setOpen(false);
+          }
+        }
+        if (callback) callback(err, res);
+      }
+    });
+  }
+
+  return action ? (
+    <React.Fragment>
+      {React.cloneElement(children, { onClick: disableDialog ? callAction : open })}
+      { disableDialog || !data ?
+        null
+        : <Dialog open={isOpen} onClose={toggle} >
+            <DialogTitle id="form-dialog-title">Créer une vue</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                Ajouter une vue à votre espace.
+              </DialogContentText>
+              {action.effects.map(({ name, options }) => {
+                const effect = Actions.getEffect(name);
+
+                return effect.form ? effect.form(data, onChange, options): null;
+              })}
+              <DialogActions>
+                <Button onClick={toggle} color="primary">
+                  Annuler
+                </Button>
+                <Button onClick={callAction} color="primary">
+                  Créer la vue
+                </Button>
+              </DialogActions>
+            </DialogContent>
+          </Dialog>
+      }
+    </React.Fragment>
+  ) : null;
+}
+export default ActionButton;
+
+
+
+================================================
+FILE: imports/ui/_components/FlexSpacer.js
+================================================
+import React from 'react';
+import { styled } from '@material-ui/core/styles';
+
+const animationSpeed = '220ms cubic-bezier(0.4, 0, 0.2, 1) 0ms';
+
+const StyledFlexSpacer = styled(({ isOpen, maxSize, minSize, ...rest }) => <div {...rest} />)({
+  flex: ({ isOpen, maxSize, minSize }) => isOpen ? `0 0 ${maxSize}` : `0 0 ${minSize}`,
+  transition: `flex ${animationSpeed}`,
+});
+
+const FlexSpacer = ({ minSize = '0', maxSize = '48px', isOpen = false }) => {
+
+  return <StyledFlexSpacer minSize={minSize} maxSize={maxSize} isOpen={isOpen} />
+}
+
+export default FlexSpacer;
+
+
+
+================================================
+FILE: imports/ui/_components/Grower.js
+================================================
+import { styled } from '@material-ui/core/styles';
+
+const Grower = styled('div')({
+  flexGrow: 1,
+});
+
+export default Grower;
+
+
+
+================================================
+FILE: imports/ui/_hooks/useCall.js
+================================================
+import { useContext } from 'react';
+import { Context } from '/imports/ui/_providers/ContextProvider';
+
+const useCall = (name, defaultData, target) => {
+  const { context } = useContext(Context);
+  const options = {
+    returnStubValue: true,
+    throwStubxceptions: true
+  };
+
+  if (!target) {
+    target = {
+      _id: context._id,
+      root: context.root,
+    };
+  } else {
+    target = {
+      _id: target._id,
+      root: target.root,
+    };
+  }
+
+  const call = (data, callback = null, targetOverride = null) => {
+    Meteor.apply('do', [{
+      name,
+      target: targetOverride ? targetOverride : target,
+      data: { ...defaultData, ...data }
+    }], options, callback);
+  };
+
+  return call;
+}
+
+export default useCall;
+
+
+
+================================================
+FILE: imports/ui/_hooks/useLinks.js
+================================================
+import { useTracker } from 'meteor/react-meteor-data';
+import { useContext } from 'react';
+
+import { Context } from '/imports/ui/_providers/ContextProvider';
+
+const useLinks = () => {
+  const { context } = useContext(Context);
+  const links = useTracker(() => {
+    if (context && context._id) {
+      const views = Data.find({
+        root: context._id,
+        type: "view",
+      }).fetch();
+
+      return views;
+    }
+    return [];
+  });
+
+  return links;
+}
+
+export default useLinks;
+
+
+
+================================================
+FILE: imports/ui/_hooks/useQuery.js
+================================================
+import qs from 'query-string';
+import { useLocation } from 'react-router-dom';
+
+const useQuery = () => {
+  const location = useLocation();
+  const query = location.search ? qs.parse(location.search) : {};
+
+  return query;
+}
+
+export default useQuery;
+
+
+
+================================================
+FILE: imports/ui/_hooks/useSpace.js
+================================================
+import { useRouteMatch} from 'react-router-dom';
+import { useTracker } from 'meteor/react-meteor-data';
+
+const useSpace = () => {
+  const match = useRouteMatch();
+  const reference = encodeURI(match.params.reference);
+  const type = match.params.type === 's' ? 'space' : 'user';
+
+  const isReady = useTracker(() => {
+    const handle = Meteor.subscribe('context-data', reference);
+
+    return handle.ready();
+  }, [reference]);
+
+  const context = useTracker(() => {
+    if (isReady) {
+      const mongoQuery = Meteor.isServer ?
+        { reference, root: type }
+        : { reference }
+      const context = Data.findOne(mongoQuery);
+      return context;
+    }
+
+    return null;
+  }, [isReady]);
+
+    return { isReady, context };
+}
+
+export default useSpace;
+
+
+
+================================================
+FILE: imports/ui/_hooks/useUser.js
+================================================
+import { useTracker } from 'meteor/react-meteor-data';
+import { useHistory } from 'react-router-dom';
+import qs from 'query-string';
+
+const useUser = () => {
+  const isUserRegistered = useTracker(() => !!Meteor.userId())
+  const isLoggingIn = useTracker(() => Meteor.loggingIn());
+
+  const isReady = useTracker(() => {
+    if (isUserRegistered) {
+      const handle = Meteor.subscribe('user-data')
+      return handle.ready();
+    } else return true;
+  }, [isUserRegistered]);
+
+  const user = useTracker(() => {
+    if (isReady) return Meteor.user();
+    return null;
+  }, [isReady])
+
+  // const register = (query) => {
+  //   const history = useHistory();
+  //   Accounts.callLoginMethod({
+  //     methodArguments: [{
+  //       'passwordless': {
+  //         token: query.token
+  //       }
+  //     }],
+  //     userCallback: function(err, res) {
+  //       if (err) console.log(err);
+  //       const { token, ...rest } = query;
+  //       history.push(`${history.location.pathname}?${qs.stringify({ ...rest })}`)
+  //     }
+  //   });
+  }
+
+  return { isReady: (isReady && !isLoggingIn), user, register };
+}
+
+export default useUser;
+
+
+
+================================================
+FILE: imports/ui/_providers/BlockProvider.js
+================================================
+import React from 'react';
+import { useTracker } from 'meteor/react-meteor-data';
+
+
+export const BlockContext = React.createContext({})
+
+const BlockProvider = ({ blockId, children }) => {
+
+  const block = useTracker(() => {
+    return Data.findOne({
+      _id: blockId,
+    });
+  }, []);
+
+  return (
+    <BlockContext.Provider value={{ block }}>
+      {block && children}
+    </BlockContext.Provider>
+  )
+
+}
+
+export default BlockProvider;
+
+
+
+================================================
+FILE: imports/ui/_providers/ContextProvider.js
+================================================
+import React from 'react';
+import { useHistory } from 'react-router-dom';
+import { useTracker } from 'meteor/react-meteor-data';
+
+import useSpace from '/imports/ui/_hooks/useSpace';
+
+export const Context = React.createContext({})
+
+const ContextProvider = ({ children }) => {
+  const history = useHistory();
+
+  const { context, isReady } = useSpace();
+  if (!context && (Meteor.isServer || isReady)) {
+    history.replace('/not-found');
+    return null;
+  }
+  return (
+    <Context.Provider value={{ context, isReady }}>
+      {isReady ?
+        children
+        : null
+      }
+    </Context.Provider>
+  )
+}
+
+export default ContextProvider;
+
+
+
+================================================
+FILE: imports/ui/_providers/StyleProvider.js
+================================================
+import React, { useContext } from 'react';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import { ThemeProvider, StylesProvider, createMuiTheme } from '@material-ui/core/styles';
+
+import { Context } from '/imports/ui/_providers/ContextProvider';
+import { ViewContext } from '/imports/ui/_providers/ViewProvider';
+
+const StyleProvider = ({ children }) => {
+  const { context: { theme: ctxTheme = {} } } = useContext(Context);
+  const { view } = useContext(ViewContext);
+  if (view && view.theme)
+    ctxTheme = { ...ctxTheme, ...view.theme }
+  const muiTheme = React.useMemo(() => {
+      return createMuiTheme(ctxTheme)
+    },
+    [ctxTheme],
+  );
+
+  return (
+    <React.Fragment>
+      <CssBaseline />
+      <ThemeProvider theme={muiTheme}>
+        {children}
+      </ThemeProvider>
+    </React.Fragment>
+  )
+}
+
+export default StyleProvider;
+
+
+
+================================================
+FILE: imports/ui/_providers/UIProvider.js
+================================================
+import React, { useState } from 'react';
+
+export const UIContext = React.createContext({})
+
+const UIProvider = ({ children }) => {
+  const [isMenuOpen, setMenuOpen] = useState(false);
+  const [isNavHidden, setNavHidden] = useState(false);
+  const [isEdited, setEdit] = useState(false);
+
+  return (
+    <UIContext.Provider value={{
+      isMenuOpen,
+      setMenuOpen,
+      isNavHidden,
+      setNavHidden,
+      isEdited,
+      setEdit
+    }}>
+      {children}
+    </UIContext.Provider>
+  )
+}
+
+export default UIProvider;
+
+
+
+================================================
+FILE: imports/ui/_providers/UserProvider.js
+================================================
+import React from 'react';
+
+import ContextTracker from '/imports/ui/_providers/ContextProvider';
+import useQuery from '/imports/ui/_hooks/useQuery';
+import useUser from '/imports/ui/_hooks/useUser';
+
+export const UserContext = React.createContext({});
+
+const UserProvider = ({ children }) => {
+  const query = useQuery();
+  const { isReady, user, register } = useUser();
+
+  if (!!query.token && isReady && !user) {
+    register(query)
+  }
+
+  return (
+    <UserContext.Provider value={{ user, isUserSubReady: isReady }}>
+      {isReady ?
+        children
+        : null
+      }
+    </UserContext.Provider>
+  )
+}
+
+export default UserProvider;
+
+
+
+================================================
+FILE: imports/ui/_providers/ViewProvider.js
+================================================
+import React, { useContext } from 'react';
+import { useTracker } from 'meteor/react-meteor-data';
+
+import { Context } from '/imports/ui/_providers/ContextProvider';
+import useQuery from '/imports/ui/_hooks/useQuery';
+
+export const ViewContext = React.createContext({})
+
+const ViewProvider = ({ children }) => {
+  const { context, isReady } = useContext(Context);
+  const query = useQuery();
+
+  const view = useTracker(() => {
+    if (!isReady) return null;
+    let tempQuery = {
+      root: context.root,
+      type: 'view',
+    }
+
+    if (query.view) {
+      tempQuery.name = query.view;
+    } else {
+      tempQuery.isMainView = true;
+    }
+    return Data.findOne(tempQuery);
+  }, [context.root, isReady, query.view]);
+
+  return (
+    <ViewContext.Provider value={{ view }}>
+      {view && isReady ? children : null}
+    </ViewContext.Provider>
+  )
+
+}
+
+export default ViewProvider;
+
+
+
+================================================
+FILE: imports/ui/AppBar/AppBar.js
+================================================
+import React, { useContext, useEffect, useState } from 'react';
+import { styled } from '@material-ui/core/styles';
+import Toolbar from '@material-ui/core/Toolbar';
+import Slide from '@material-ui/core/Slide';
+import { SwitchTransition, Transition } from "react-transition-group";
+
+import Blocks from '/imports/core/Blocks';
+import UserMenu from '/imports/ui/AppBar/UserMenu/UserMenu';
+import SpaceMenu from '/imports/ui/AppBar/SpaceMenu/SpaceMenu';
+import { UIContext } from '/imports/ui/_providers/UIProvider';
+import { ViewContext } from '/imports/ui/_providers/ViewProvider';
+import { Context } from '/imports/ui/_providers/ContextProvider';
+import FlexSpacer from '/imports/ui/_components/FlexSpacer';
+
+const defaultMenu = {
+  name: 'DefaultMenu',
+  size: '48px',
+};
+
+const editMenu = {
+  name: 'EditMenu',
+  size: '96px',
+};
+
+const transitionStyles = {
+  entering: { opacity: 1 },
+  entered:  { opacity: 1 },
+  exiting:  { opacity: 0 },
+  exited:  { opacity: 0 },
+};
+
+
+const AppBar = () => {
+  const { isEdited } = useContext(UIContext);
+  const { context } = useContext(Context);
+  const { view } = useContext(ViewContext);
+  const getMenu = () => {
+    if (isEdited) {
+      return editMenu;
+    } else {
+      return {
+        ...defaultMenu,
+        ...context.menu,
+        ...view.menu
+      }
+    }
+  }
+
+  const [ currentMenu, setCurrentMenu ] = useState(getMenu());
+  const Component = currentMenu && Blocks.get(currentMenu.name);
+
+  useEffect(() => {
+    setCurrentMenu(getMenu());
+  }, [context.menu, view.menu, isEdited]);
+
+  return currentMenu ? (
+    <React.Fragment>
+      <SwitchTransition>
+        <Transition key={currentMenu.name} timeout={160}>
+          {state => (
+            <div style={{
+              transition: `opacity ${160}ms ease-in-out`,
+              ...transitionStyles[state]
+            }}>
+              <Component />
+            </div>
+          )}
+        </Transition>
+      </SwitchTransition>
+      <FlexSpacer maxSize={currentMenu.size} isOpen={true} />
+    </React.Fragment>
+  ) : null;
+}
+
+export default AppBar;
+
+
+
+================================================
+FILE: imports/ui/AppBar/EditSlider.js
+================================================
+import React, { useContext } from 'react';
+import { styled } from '@material-ui/core/styles';
+import Slide from '@material-ui/core/Slide';
+import Paper from '@material-ui/core/Paper';
+import Box from '@material-ui/core/Box';
+
+import ViewActionBar from '/imports/ui/AppBar/ViewActionBar';
+import { UIContext } from '/imports/ui/_providers/UIProvider';
+import { Context } from '/imports/ui/_providers/ContextProvider';
+
+const StyledEditSlider = styled(({ isEdited, ...rest }) => <Paper {...rest} />)({
+  opacity: ({ isEdited }) => { return isEdited ? 1 : 0 },
+  transition: 'opacity 0.1s linear',
+  position: 'absolute',
+  marginTop: '48px',
+  backgroundColor: 'white',
+  width: '100%',
+  height: '48px',
+})
+
+const EditSlider = () => {
+  const { isEdited } = useContext(UIContext);
+
+  return (
+      <StyledEditSlider isEdited={isEdited} elevation={0} square>
+        <Slide in={isEdited}>
+          <Box>
+            <ViewActionBar />
+          </Box>
+        </Slide>
+      </StyledEditSlider>
+  )
+}
+
+export default EditSlider;
+
+
+
+================================================
+FILE: imports/ui/AppBar/ViewActionBar.js
+================================================
+import React, { useContext } from 'react';
+import TextField from '@material-ui/core/TextField';
+import { styled } from '@material-ui/core/styles';
+import Box from '@material-ui/core/Box';
+
+import { ViewContext } from '/imports/ui/_providers/ViewProvider';
+
+const StyledViewActionBar = styled(Box)({
+  height: '48px',
+})
+
+const ViewActionBar = () => {
+  const { view } = useContext(ViewContext);
+
+  return (
+    <StyledViewActionBar>
+      <TextField
+        label="View"
+        value={view.name}
+      />
+    </StyledViewActionBar>
+  )
+}
+
+export default ViewActionBar;
+
+
+
+================================================
+FILE: imports/ui/AppBar/SpaceMenu/HomeButton.js
+================================================
+import React, { useContext, useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import Typography from '@material-ui/core/Typography';
+import Drawer from '@material-ui/core/Drawer';
+import IconButton from '@material-ui/core/IconButton';
+import MenuIcon from '@material-ui/icons/Menu';
+import { styled } from '@material-ui/core/styles';
+import { useTracker } from 'meteor/react-meteor-data';
+
+import Data from '/imports/core/Data';
+import Links from '/imports/ui/AppBar/SpaceMenu/Links';
+import { Context } from '/imports/ui/_providers/ContextProvider';
+import { UIContext } from '/imports/ui/_providers/UIProvider';
+
+const StyledSpaceName = styled(Typography)(({ theme }) => ({
+  textTransform: 'capitalize',
+  userSelect: 'none',
+  marginRight: theme.spacing(1)
+}))
+
+const StyledHomeButton = styled(({ hasBurger, ...rest }) => <div {...rest} />)({
+  transform: ({ hasBurger }) => { return hasBurger ? 'translateX(0)' : 'translateX(-48px)' },
+  transition: 'transform 0.1s linear',
+  display: 'flex',
+  alignItems: 'center'
+})
+
+const HomeButton = () => {
+  const { context } = useContext(Context);
+  const history = useHistory();
+  const { isEdited, setMenuOpen, isMenuOpen = false } = useContext(UIContext);
+  const viewCount = useTracker(() => {
+    return Data.find({ type: 'view', root: context._id }).count();
+  })
+
+  const goHome = () => {
+    history.push(history.location.pathname);
+  }
+  const handleOpen = () => {
+    setMenuOpen(true);
+  }
+  const handleClose = () => {
+    setMenuOpen(false);
+  }
+  const hasBurger = !isEdited && viewCount > 1;
+
+  return (
+    <StyledHomeButton hasBurger={hasBurger}>
+      <IconButton
+        aria-label="space-menu"
+        edge='start'
+        onClick={handleOpen}
+        disabled={!hasBurger}
+      >
+        <MenuIcon/>
+      </IconButton>
+      <StyledSpaceName
+        variant="h6"
+        onClick={goHome}
+      >
+        {context.name}
+      </StyledSpaceName>
+      <Drawer open={isMenuOpen} onClose={handleClose}>
+        <Links close={handleClose}/>
+      </Drawer>
+    </StyledHomeButton>
+  )
+}
+
+export default HomeButton;
+
+
+
+================================================
+FILE: imports/ui/AppBar/SpaceMenu/Links.js
+================================================
+import React from 'react';
+import { useHistory } from 'react-router-dom';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import List from '@material-ui/core/List';
+
+import useLinks from '/imports/ui/_hooks/useLinks';
+
+const isMainCategory = (path, category) => {
+  const split = path.split('/')
+  const space = split[split.length - 1];
+
+  return space === category;
+}
+
+const SpaceMenu = ({ close }) => {
+  const history = useHistory();
+  const links = useLinks();
+
+  return (
+    <List style={{ minWidth:'240px' }} >
+      {links.map((view, index) =>
+        <ListItem
+          button
+          key={index}
+          onClick={e => {
+            close();
+            history.push(`${history.location.pathname}?view=${view.name}`);
+          }}
+        >
+          <ListItemText primary={view.label} />
+        </ListItem>
+      )}
+    </List>
+  )
+}
+
+export default SpaceMenu;
+
+
+
+================================================
+FILE: imports/ui/AppBar/SpaceMenu/SpaceMenu.js
+================================================
+import React, { useContext } from 'react';
+import IconButton from '@material-ui/core/IconButton';
+import EditIcon from '@material-ui/icons/Edit';
+
+import Grower from '/imports/ui/_components/Grower';
+import HomeButton from '/imports/ui/AppBar/SpaceMenu/HomeButton';
+import { UIContext } from '/imports/ui/_providers/UIProvider';
+
+const SpaceMenu = () => {
+  const { setEdit, isEdited } = useContext(UIContext);
+
+  const handleEdit = () => {
+    setEdit(!isEdited);
+  }
+
+  return (
+    <React.Fragment>
+      <HomeButton />
+      <Grower />
+      <IconButton
+        aria-label="space-menu"
+        onClick={handleEdit}
+      >
+        <EditIcon/>
+      </IconButton>
+
+    </React.Fragment>
+  )
+}
+
+export default SpaceMenu;
+
+
+
+================================================
+FILE: imports/ui/AppBar/UserMenu/Register.js
+================================================
+import React, { useState } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
+import TextField from '@material-ui/core/TextField';
+import IconButton from '@material-ui/core/IconButton';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+
+import useCall from '/imports/ui/_hooks/useCall';
+
+const Register = () => {
+  const [email, setEmail] = useState('');
+  const [isOpen, setOpen] = useState(false);
+  const call = useCall('register user');
+  const location = useLocation();
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const registerUser = () => {
+    call({ email, url: location.pathname }, (err, res) => {
+      if (!err) setOpen(false);
+    })
+  }
+
+  return (
+    <React.Fragment>
+      <IconButton
+        aria-label="create account"
+        onClick={handleOpen}
+        edge='end'
+      >
+        <PersonAddIcon />
+      </IconButton>
+      <Dialog open={isOpen} onClose={handleClose} >
+        <DialogTitle id="form-dialog-title">Créer un compte</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Renseignez votre email pour créer un compte.
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Email"
+            id="email"
+            type="email"
+            fullWidth
+            value={email}
+            onChange={e => { setEmail(e.target.value) }}
+          />
+          <DialogActions>
+            <Button onClick={handleClose} color="primary">
+              Annuler
+            </Button>
+            <Button onClick={registerUser} color="primary">
+              Créer le compte
+            </Button>
+          </DialogActions>
+        </DialogContent>
+      </Dialog>
+    </React.Fragment>
+  )
+}
+
+export default Register
+
+
+
+================================================
+FILE: imports/ui/AppBar/UserMenu/UserMenu.js
+================================================
+import { useTracker } from 'meteor/react-meteor-data';
+import React, { useState, useContext } from 'react';
+import { useHistory } from 'react-router-dom';
+import { styled } from '@material-ui/core/styles';
+import Menu from '@mui/material/Menu';
+import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
+import MenuItem from '@mui/material/MenuItem';
+import Typography from '@mui/material/Typography';
+
+import { UserContext } from '/imports/ui/_providers/UserProvider';
+import Register from '/imports/ui/AppBar/UserMenu/Register';
+import UserMenuButton from '/imports/ui/AppBar/UserMenu/UserMenuButton';
+
+const StyledUserMenu = styled('div')({
+  // float: 'right'
+});
+const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+
+const UserMenu = () => {
+  const history = useHistory();
+  const { user } = useContext(UserContext);
+  const menuItems = useTracker(() => {
+    if (user && user._id) {
+      const results = Data.find({
+        root: user._id,
+        type: "menuItem",
+      }).fetch();
+
+      console.log(results)
+      return results;
+    }
+    return [];
+  });
+  const [anchorElUser, setAnchorElUser] = useState(null);
+
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+
+  return (
+    <StyledUserMenu>
+      <Tooltip title="Open settings">
+        <IconButton
+          edge='end'
+          aria-label="user menu"
+          onClick={handleOpenUserMenu}
+          sx={{ p: 0 }}
+        >
+          <UserMenuButton />
+        </IconButton>
+      </Tooltip>
+      <Menu
+        sx={{ mt: '45px' }}
+        id="menu-appbar"
+        anchorEl={anchorElUser}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        keepMounted
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        open={Boolean(anchorElUser)}
+        onClose={handleCloseUserMenu}
+      >
+        {menuItems.map((menuItem) => (
+          <MenuItem key={menuItem.label} onClick={e => {
+            handleCloseUserMenu()
+            history.push(`/u/${user._id}?view=${menuItem.label}`);
+          }}>
+            <Typography textAlign="center">{menuItem.label}</Typography>
+          </MenuItem>
+        ))}
+      </Menu>
+    </StyledUserMenu>
+  );
+}
+
+export default UserMenu;
+
+
+
+================================================
+FILE: imports/ui/AppBar/UserMenu/UserMenuButton.js
+================================================
+import React, { useContext } from 'react';
+import { styled } from '@material-ui/core/styles';
+import Avatar from '@material-ui/core/Avatar';
+
+import { UserContext } from '/imports/ui/_providers/UserProvider';
+
+const StyledAvatar = styled(Avatar)(({ theme }) => ({
+  width: theme.spacing(3),
+  height: theme.spacing(3),
+}));
+
+const UserMenuButton = () => {
+  const { user } = useContext(UserContext);
+
+  return (
+    <StyledAvatar>
+      {user.name}
+    </StyledAvatar>
+  );
+}
+
+export default UserMenuButton;
+
+
+
+================================================
+FILE: imports/ui/Block/AddBlock.js
+================================================
+import React, { useContext } from 'react';
+import { styled } from '@material-ui/core/styles';
+import AddBoxOutlinedIcon from '@material-ui/icons/AddBoxOutlined';
+
+import { UIContext } from '/imports/ui/_providers/UIProvider';
+import { ViewContext } from '/imports/ui/_providers/ViewProvider';
+import ActionButton from '/imports/ui/_components/ActionButton';
+
+const animationSpeed = '220ms cubic-bezier(0.4, 0, 0.2, 1) 0ms';
+
+const StyledAddBlockContainer = styled(({ isEdited, ...rest }) => <div {...rest} />)({
+  flex: ({ isEdited }) => isEdited ? `0 0 96px` : '0 0 0',
+  pointerEvents: ({ isEdited }) => isEdited ? `auto` : 'none',
+  transition: `flex ${animationSpeed}`,
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent:  'center',
+  alignItems: 'center'
+});
+
+const StyledAddBlock = styled(({ isEdited, ...rest }) => <div {...rest} />)({
+  opacity: ({ isEdited }) => isEdited ? `0.9` : '0',
+  transition: `opacity ${animationSpeed}`,
+  float: 'left',
+  marginTop: '-48px',
+  height: '48px',
+  display: 'flex',
+  justifyContent:  'center',
+  alignItems: 'center',
+  width: '148px',
+  cursor: 'pointer'
+});
+
+const StyledLine = styled('div')({
+  height: '2px',
+  width: '50px',
+  backgroundColor: 'grey',
+})
+
+const AddBlock = ({ index, isDragged }) => {
+  const { isEdited } = useContext(UIContext);
+  const { view } = useContext(ViewContext);
+
+  return (
+    <StyledAddBlockContainer isEdited={isEdited}>
+      <ActionButton
+        name='addBlock'
+        target={view}
+        defaultValue={{ name: 'Paragraph', index }}
+      >
+        <StyledAddBlock isEdited={isEdited && !isDragged}>
+          <StyledLine />
+          <AddBoxOutlinedIcon />
+          <StyledLine />
+        </StyledAddBlock>
+      </ActionButton>
+    </StyledAddBlockContainer>
+  )
+}
+
+export default AddBlock;
+
+
+
+================================================
+FILE: imports/ui/Block/Block.js
+================================================
+import React, { useContext, useState, useEffect } from 'react';
+import { styled } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
+
+import Blocks from '/imports/core/Blocks';
+import { UIContext } from '/imports/ui/_providers/UIProvider';
+import { BlockContext } from '/imports/ui/_providers/BlockProvider';
+import { Context } from '/imports/ui/_providers/ContextProvider';
+
+const animationSpeed = '220ms cubic-bezier(0.4, 0, 0.2, 1) 0ms';
+
+const StyledBlock = styled(Paper)({
+  overflowY: 'hidden',
+  minHeight: '48px',
+  transition: `box-shadow ${animationSpeed}`,
+})
+
+const Block = () => {
+  const { isEdited } = useContext(UIContext);
+  const { block } = useContext(BlockContext);
+  const Component = Blocks.get(block.name);
+
+  return (
+    <StyledBlock
+      elevation={isEdited ? 4 : 0}
+      square
+    >
+      <Component block={block} />
+    </StyledBlock>
+  );
+}
+
+export default Block;
+
+
+
+================================================
+FILE: imports/ui/Block/BlockActionBar.js
+================================================
+import React, { useContext } from 'react';
+import ActionButton from '/imports/ui/_components/ActionButton';
+import IconButton from '@material-ui/core/IconButton';
+import ClearIcon from '@material-ui/icons/Clear';
+import SettingsIcon from '@material-ui/icons/Settings';
+
+import ActionBar from '/imports/ui/_components/ActionBar';
+import Grower from '/imports/ui/_components/Grower';
+import { BlockContext } from '/imports/ui/_providers/BlockProvider';
+
+const BlockActionBar = () => {
+  const { block } = useContext(BlockContext);
+  return (
+    <ActionBar>
+      <ActionButton
+        name={`edit${block.name}`}
+        target={block}
+        defaultValue={{ ...block }}
+      >
+        <IconButton>
+          <SettingsIcon />
+        </IconButton>
+      </ActionButton>
+      <Grower />
+      <ActionButton
+        name="removeBlock"
+        target={block}
+        disableDialog
+      >
+        <IconButton
+          edge="end"
+          aria-label="delete"
+        >
+          <ClearIcon />
+        </IconButton>
+      </ActionButton>
+    </ActionBar>
+
+  )
+}
+
+export default BlockActionBar;
+
+
+
+================================================
+FILE: imports/ui/Block/BlockContainer.js
+================================================
+import React, { useContext } from 'react';
+import { styled } from '@material-ui/core/styles';
+import { Draggable } from "react-beautiful-dnd";
+import Slide from '@material-ui/core/Slide';
+
+import Block from '/imports/ui/Block/Block';
+import AddBlock from '/imports/ui/Block/AddBlock';
+import BlockToolbar from '/imports/ui/Block/BlockToolbar';
+import DragHandle from '/imports/ui/Block/DragHandle';
+import { UIContext } from '/imports/ui/_providers/UIProvider';
+import BlockProvider from '/imports/ui/_providers/BlockProvider';
+
+const animationSpeed = '220ms cubic-bezier(0.4, 0, 0.2, 1) 0ms';
+
+const StyledBlockContainer = styled('div')({
+  display: 'flex',
+  flexDirection: 'column',
+})
+
+const StyledBlockToolbar = styled(({ isEdited, ...rest }) => <div {...rest} />)({
+  opacity: ({ isEdited }) => isEdited ? `0.9` : '0',
+  transition: `opacity ${animationSpeed}`,
+  display: 'flex',
+  position: 'relative',
+  float: 'left',
+  minHeight: '48px',
+  marginLeft: '-48px',
+  marginTop: '-48px',
+  alignItems: 'center',
+})
+
+const BlockContainer = ({ blockId, index, isLast, isDragged }) => {
+  const { isEdited } = useContext(UIContext);
+
+  return (
+    <BlockProvider blockId={blockId}>
+      <Draggable
+        key={blockId}
+        draggableId={blockId}
+        index={index}
+        disableInteractiveElementBlocking
+      >
+        {(provided, snapshot) => (
+          <StyledBlockContainer
+            ref={provided.innerRef}
+            {...provided.draggableProps}
+          >
+              <AddBlock index={index} isDragged={isDragged} />
+              <BlockToolbar />
+              <div style={{ display: 'flex', flexGrow: 1, alignItems: 'center' }}>
+                <DragHandle
+                  dragHandleProps={provided.dragHandleProps}
+                  index={index}
+                  isLast={isLast}
+                />
+                <div style={{ flexGrow: 1 }}>
+                  <Block />
+                </div>
+              </div>
+          </StyledBlockContainer>
+        )}
+      </Draggable>
+    </BlockProvider>
+  );
+}
+
+export default BlockContainer;
+
+
+
+================================================
+FILE: imports/ui/Block/BlockToolbar.js
+================================================
+import React, { useContext } from 'react';
+import { styled } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
+
+import { UIContext } from '/imports/ui/_providers/UIProvider';
+import BlockActionBar from '/imports/ui/Block/BlockActionBar';
+import { BlockContext } from '/imports/ui/_providers/BlockProvider';
+
+const animationSpeed = '220ms cubic-bezier(0.4, 0, 0.2, 1) 0ms';
+
+const StyledBlockToolbar = styled(({ isEdited, ...rest }) => <div {...rest} />)({
+  opacity: ({ isEdited }) => isEdited ? `0.9` : '0',
+  pointerEvents: ({ isEdited }) => isEdited ? `auto` : 'none',
+  transition: `opacity ${animationSpeed}`,
+  display: 'flex',
+  position: 'relative',
+  float: 'left',
+  minHeight: '48px',
+  marginTop: '-48px',
+  alignItems: 'center',
+})
+
+const StyledLabel = styled('div')({
+  display: "flex",
+  alignItems: 'center',
+})
+
+const BlockToolbar = () => {
+  const { isEdited } = useContext(UIContext);
+  const { block } = useContext(BlockContext);
+
+  return (
+    <StyledBlockToolbar isEdited={isEdited}>
+      <StyledLabel>
+        {block.label}
+      </StyledLabel>
+      <BlockActionBar block={block} />
+    </StyledBlockToolbar>
+  )
+}
+
+export default BlockToolbar;
+
+
+
+================================================
+FILE: imports/ui/Block/DragHandle.js
+================================================
+import React, { useContext } from 'react';
+import { styled } from '@material-ui/core/styles';
+import IconButton from '@material-ui/core/IconButton';
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
+import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
+
+import { BlockContext } from '/imports/ui/_providers/BlockProvider';
+import useCall from '/imports/ui/_hooks/useCall';
+
+const StyledDragHandle = styled('div')({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  float: 'left',
+  marginLeft: '-48px',
+  marginTop: '-48px'
+})
+
+const StyledDragIcon = styled(DragIndicatorIcon)({
+  marginTop: '-12px',
+  marginBottom: '-12px',
+})
+
+const DragHandle = ({ index, dragHandleProps, isLast }) => {
+  const { block } = useContext(BlockContext);
+  const target = {
+    _id: block.viewId,
+    root: block.root
+  }
+  const call = useCall('pushAtIndex', { toPush: block._id }, target);
+
+  return (
+    <StyledDragHandle {...dragHandleProps}>
+      <IconButton
+        aria-label="move up"
+        disabled={index === 0}
+        onClick={e => call({ index: index - 1 })}
+      >
+        <ArrowUpwardIcon />
+      </IconButton>
+      <StyledDragIcon />
+      <IconButton
+        aria-label="move down"
+        disabled={isLast}
+        onClick={e => call({ index: index + 1 })}
+      >
+        <ArrowDownwardIcon />
+      </IconButton>
+    </StyledDragHandle>
+  )
+}
+
+export default DragHandle;
+
+
+
+================================================
+FILE: imports/ui/Content/Content.js
+================================================
+import React, { useContext, useState, useEffect } from 'react';
+import { styled } from '@material-ui/core/styles';
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
+
+import BlockContainer from '/imports/ui/Block/BlockContainer';
+import AddBlock from '/imports/ui/Block/AddBlock';
+import useCall from '/imports/ui/_hooks/useCall';
+import { ViewContext } from '/imports/ui/_providers/ViewProvider';
+import { Context } from '/imports/ui/_providers/ContextProvider';
+import { UIContext } from '/imports/ui/_providers/UIProvider';
+import FlexSpacer from '/imports/ui/_components/FlexSpacer';
+
+const animationSpeed = '220ms cubic-bezier(0.4, 0, 0.2, 1) 0ms';
+
+const StyledContent = styled('div')({
+  display: 'flex',
+  flexDirection: 'column',
+  flexGrow: 1,
+});
+
+const Content = () => {
+  const { view } = useContext(ViewContext);
+  const call = useCall('pushAtIndex', {}, {
+    _id: view._id, root: view.root
+  });
+  const { isReady } = useContext(Context);
+  const { isEdited } = useContext(UIContext);
+  const [ displayedOrder, setDisplayedOrder ] = useState(view.order)
+  const [ draggedBlockId, setDraggedBlockId ] = useState('');
+
+  useEffect(() => {
+    setDisplayedOrder(view.order);
+  }, [view.order])
+  const beforeCapture = ({ draggableId }) => {
+    setDraggedBlockId(draggableId)
+  }
+  const onDragEnd = ({ draggableId, destination, source }) => {
+    const order = displayedOrder;
+    order.splice(source.index, 1);
+    order.splice(destination.index, 0, draggableId);
+    setDisplayedOrder(order);
+    setDraggedBlockId('')
+    call({ index: destination.index, toPush: draggableId  });
+  }
+
+  return (
+    <React.Fragment>
+      <DragDropContext
+        onBeforeCapture={beforeCapture}
+        onDragEnd={onDragEnd}
+      >
+          <Droppable
+            droppableId="content"
+          >
+            {(provided, snapshot) => (
+              <StyledContent
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+              >
+                {displayedOrder.map((blockId, index) =>
+                  <BlockContainer
+                    isDragged={blockId === draggedBlockId}
+                    index={index}
+                    key={blockId}
+                    blockId={blockId}
+                    isLast={displayedOrder.length === index + 1}
+                  />
+                )}
+                {provided.placeholder}
+                <AddBlock index={displayedOrder.length} />
+              </StyledContent>
+            )}
+          </Droppable>
+      </DragDropContext>
+    </React.Fragment>
+  );
+}
+
+export default Content;
+
+
+
+================================================
+FILE: public/pwa.json
+================================================
+{
+    "name": "Future Web",
+    "short_name": "Future Web",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#fff",
+    "theme_color": "#fff",
+    "description": "Template project using Meteor, React, Apollo, Material UI.",
+    "icons": [
+        {
+            "src": "img/codeFTW.png",
+            "sizes": "48x48",
+            "type": "image/png"
+        },
+        {
+            "src": "img/codeFTW.png",
+            "sizes": "72x72",
+            "type": "image/png"
+        },
+        {
+            "src": "img/codeFTW.png",
+            "sizes": "96x96",
+            "type": "image/png"
+        },
+        {
+            "src": "img/codeFTW.png",
+            "sizes": "144x144",
+            "type": "image/png"
+        },
+        {
+            "src": "img/codeFTW.png",
+            "sizes": "168x168",
+            "type": "image/png"
+        },
+        {
+            "src": "img/codeFTW.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "img/codeFTW.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}
+
+
+
+================================================
+FILE: public/sw-register.js
+================================================
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(registration => {
+        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+      })
+      .catch(err => {
+        console.log('ServiceWorker registration failed: ', err);
+      });
+  });
+}
+
+
+
+================================================
+FILE: public/sw.js
+================================================
+const HTMLToCache = '/';
+const version = 'MSW V0.3';
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(caches.open(version).then((cache) => {
+    cache.add(HTMLToCache).then(self.skipWaiting());
+  }));
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+  caches.keys().then(cacheNames => Promise.all(cacheNames.map((cacheName) => {
+    if (version !== cacheName) return caches.delete(cacheName);
+  }))).then(self.clients.claim())
+  );
+});
+
+self.addEventListener('fetch', (event) => {
+  const requestToFetch = event.request.clone();
+  event.respondWith(
+  caches.match(event.request.clone()).then((cached) => {
+    // We don't return cached HTML (except if fetch failed)
+    if (cached) {
+      const resourceType = cached.headers.get('content-type');
+      // We only return non css/js/html cached response e.g images
+      if (!hasHash(event.request.url) && !/text\/html/.test(resourceType)) {
+        return cached;
+      }
+
+      // If the CSS/JS didn't change since it's been cached, return the cached version
+      if (hasHash(event.request.url) && hasSameHash(event.request.url, cached.url)) {
+        return cached;
+      }
+    }
+    return fetch(requestToFetch).then((response) => {
+      const clonedResponse = response.clone();
+      const contentType = clonedResponse.headers.get('content-type');
+
+      if (!clonedResponse || clonedResponse.status !== 200 || clonedResponse.type !== 'basic'
+      || /\/sockjs\//.test(event.request.url)) {
+        return response;
+      }
+
+      if (/html/.test(contentType)) {
+        caches.open(version).then(cache => cache.put(HTMLToCache, clonedResponse));
+      } else {
+        // Delete old version of a file
+        if (hasHash(event.request.url)) {
+          caches.open(version).then(cache => cache.keys().then(keys => keys.forEach((asset) => {
+            if (new RegExp(removeHash(event.request.url)).test(removeHash(asset.url))) {
+              cache.delete(asset);
+            }
+          })));
+        }
+
+        caches.open(version).then(cache => cache.put(event.request, clonedResponse));
+      }
+      return response;
+    }).catch(() => {
+      if (hasHash(event.request.url)) return caches.match(event.request.url);
+      // If the request URL hasn't been served from cache and isn't sockjs we suppose it's HTML
+      else if (!/\/sockjs\//.test(event.request.url)) return caches.match(HTMLToCache);
+      // Only for sockjs
+      return new Response('No connection to the server', {
+        status: 503,
+        statusText: 'No connection to the server',
+        headers: new Headers({ 'Content-Type': 'text/plain' }),
+      });
+    });
+  })
+  );
+});
+
+function removeHash(element) {
+  if (typeof element === 'string') return element.split('?hash=')[0];
+}
+
+function hasHash(element) {
+  if (typeof element === 'string') return /\?hash=.*/.test(element);
+}
+
+function hasSameHash(firstUrl, secondUrl) {
+  if (typeof firstUrl === 'string' && typeof secondUrl === 'string') {
+    return /\?hash=(.*)/.exec(firstUrl)[1] === /\?hash=(.*)/.exec(secondUrl)[1];
+  }
+}
+
+// Service worker created by Ilan Schemoul alias NitroBAY as a specific Service Worker for Meteor
+// Please see https://github.com/NitroBAY/meteor-service-worker for the official project source
+
+
+
+
+================================================
+FILE: server/main.js
+================================================
+import '/imports/startup/server'
+import '/imports/startup/common'
+
+
+
+================================================
+FILE: .meteor/packages
+================================================
+# Meteor packages used by this project, one per line.
+# Check this file (and the other files in this directory) into your repository.
+#
+# 'meteor add' and 'meteor remove' will edit this file for you,
+# but you can also edit it by hand.
+
+meteor-base@1.5.1             # Packages every Meteor app needs to have
+mobile-experience@1.1.0       # Packages for a great mobile UX
+mongo@1.16.7                   # The database Meteor supports right now
+static-html@1.3.2
+reactive-var@1.0.12            # Reactive variable for tracker
+tracker@1.3.2                 # Meteor's client-side reactive programming library
+
+standard-minifier-js@2.8.1    # JS minifier run for production mode
+es5-shim@4.8.0                # ECMAScript 5 compatibility for older browsers
+ecmascript@0.16.7              # Enable ECMAScript2015+ syntax in app code
+shell-server@0.5.0            # Server-side component of the `meteor shell` command
+
+email@2.2.5
+check@1.3.2
+accounts-base@2.2.8
+ostrio:base64
+standard-minifier-css@1.9.2
+force-ssl@1.1.0
+react-meteor-data@2.0.1
+server-render@0.4.1
+universe:i18n
+
+
+
+================================================
+FILE: .meteor/platforms
+================================================
+server
+browser
+
+
+
+================================================
+FILE: .meteor/release
+================================================
+METEOR@2.13.3
+
+
+
+================================================
+FILE: .meteor/versions
+================================================
+accounts-base@2.2.8
+allow-deny@1.1.1
+autoupdate@1.8.0
+babel-compiler@7.10.4
+babel-runtime@1.5.1
+base64@1.0.12
+binary-heap@1.0.11
+blaze-tools@1.1.3
+boilerplate-generator@1.7.1
+caching-compiler@1.2.2
+caching-html-compiler@1.2.1
+callback-hook@1.5.1
+check@1.3.2
+ddp@1.4.1
+ddp-client@2.6.1
+ddp-common@1.4.0
+ddp-rate-limiter@1.2.0
+ddp-server@2.6.2
+diff-sequence@1.1.2
+dynamic-import@0.7.3
+ecmascript@0.16.7
+ecmascript-runtime@0.8.1
+ecmascript-runtime-client@0.12.1
+ecmascript-runtime-server@0.11.0
+ejson@1.1.3
+email@2.2.5
+es5-shim@4.8.0
+fetch@0.1.3
+force-ssl@1.1.0
+force-ssl-common@1.1.0
+geojson-utils@1.0.11
+hot-code-push@1.0.4
+html-tools@1.1.3
+htmljs@1.1.1
+id-map@1.1.1
+inter-process-messaging@0.1.1
+launch-screen@1.3.0
+localstorage@1.2.0
+logging@1.3.2
+meteor@1.11.3
+meteor-base@1.5.1
+minifier-css@1.6.4
+minifier-js@2.7.5
+minimongo@1.9.3
+mobile-experience@1.1.0
+mobile-status-bar@1.1.0
+modern-browsers@0.1.9
+modules@0.19.0
+modules-runtime@0.13.1
+mongo@1.16.7
+mongo-decimal@0.1.3
+mongo-dev-server@1.1.0
+mongo-id@1.0.8
+npm-mongo@4.16.0
+ordered-dict@1.1.0
+ostrio:base64@2.0.2
+promise@0.12.2
+random@1.2.1
+rate-limit@1.1.1
+react-fast-refresh@0.2.7
+react-meteor-data@2.7.2
+reactive-var@1.0.12
+reload@1.3.1
+retry@1.1.0
+routepolicy@1.1.1
+server-render@0.4.1
+shell-server@0.5.0
+socket-stream-client@0.5.1
+spacebars-compiler@1.3.1
+standard-minifier-css@1.9.2
+standard-minifier-js@2.8.1
+static-html@1.3.2
+templating-tools@1.2.2
+tracker@1.3.2
+typescript@4.9.4
+underscore@1.0.13
+universe:i18n@1.32.6
+url@1.3.2
+webapp@1.13.5
+webapp-hashing@1.1.1
+
+
+
+================================================
+FILE: .meteor/.DS_Store
+================================================
+[Non-text file]
+
+
+================================================
+FILE: .meteor/.finished-upgraders
+================================================
+# This file contains information which helps Meteor properly upgrade your
+# app when you run 'meteor update'. You should check it into version control
+# with your project.
+
+notices-for-0.9.0
+notices-for-0.9.1
+0.9.4-platform-file
+notices-for-facebook-graph-api-2
+1.2.0-standard-minifiers-package
+1.2.0-meteor-platform-split
+1.2.0-cordova-changes
+1.2.0-breaking-changes
+1.3.0-split-minifiers-package
+1.4.0-remove-old-dev-bundle-link
+1.4.1-add-shell-server-package
+1.4.3-split-account-service-packages
+1.5-add-dynamic-import-package
+1.7-split-underscore-from-meteor-base
+1.8.3-split-jquery-from-blaze
+
+
+
+================================================
+FILE: .meteor/.gitignore
+================================================
+local
+
+
+
+================================================
+FILE: .meteor/.id
+================================================
+# This file contains a token that is unique to your project.
+# Check it into your repository along with the rest of this directory.
+# It can be used for purposes such as:
+#   - ensuring you don't accidentally deploy one app on top of another
+#   - providing package authors with aggregated statistics
+
+obtsqyn8d3u6.f48ly4jmmu55

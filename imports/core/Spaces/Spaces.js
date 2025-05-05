@@ -37,6 +37,10 @@ class SpaceCollection extends Mongo.Collection {
         },
         {
           name: 'addBlock',
+          data: { name: 'TitleBlock' },
+        },
+        {
+          name: 'addBlock',
           data: { name: 'Paragraph' },
         },
         {
@@ -167,11 +171,29 @@ class SpaceCollection extends Mongo.Collection {
       collection.insert({
         root: space._id,
         type: "action",
+        name: "applyThemeToSpace",
+        effects: [
+          { name: 'applyThemeToSpace' }
+        ]
+      });
+      collection.insert({
+        root: space._id,
+        type: "action",
         name: "pushAtIndex",
         effects: [
           {
             name: 'pushAtIndex',
             options: { fieldName: 'order' }
+          }
+        ]
+      })
+      collection.insert({
+        root: space._id,
+        type: "action",
+        name: "editTitleBlock",
+        effects: [
+          {
+            name: 'editTitleBlock'
           }
         ]
       })
@@ -202,23 +224,23 @@ if (Meteor.isServer) {
         isActive: true,
         type: { $in: [ 'header', "block", "view", "action" ] },
       };
-      if (!this.userId)
-        query.isPublic = true;
-      else {
-        const membership = this.userId && Collections.get(this.userId).findOne({
-          type: 'membership',
-          memberOf: space._id,
-        });
-
-        query.$or = [
-          { isPublic: true }
-        ];
-        if (membership) {
-          query.$or.push(
-            { restrictedTo: { $in: membership.roles } },
-          )
-        }
-      }
+      // if (!this.userId)
+      //   query.isPublic = true;
+      // else {
+      //   const membership = this.userId && Collections.get(this.userId).findOne({
+      //     type: 'membership',
+      //     memberOf: space._id,
+      //   });
+      //
+      //   query.$or = [
+      //     { isPublic: true }
+      //   ];
+      //   if (membership) {
+      //     query.$or.push(
+      //       { restrictedTo: { $in: membership.roles } },
+      //     )
+      //   }
+      // }
       const contentCursor = Collections.get(space._id).find(query);
       Mongo.Collection._publishCursor(contentCursor, this, 'data');
 

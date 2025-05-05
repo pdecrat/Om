@@ -1,0 +1,167 @@
+# Projet Om - Documentation Complète
+
+## 1. Vision et principes fondamentaux
+
+### 1.1 Concept central
+Le Projet Om vise à créer un "réseau sociétal", une évolution des réseaux sociaux centrée sur les activités productives plutôt que purement sociales. L'innovation fondamentale consiste à passer d'un internet où "une adresse = un service" à un internet où "une adresse = une entité" (personne, organisation, lieu, concept).
+
+### 1.2 Objectif transformatif
+Ce changement de paradigme permet à chaque entité d'exercer un contrôle souverain sur sa présence numérique tout en facilitant les connexions et interactions avec d'autres entités, créant ainsi une infrastructure pour de nouvelles formes d'organisation sociale.
+
+### 1.3 Principes directeurs
+- Souveraineté des entités sur leurs espaces et données
+- Interopérabilité et connexions facilitées entre espaces autonomes
+- Modularité et réutilisabilité des composants
+- Transparence des mécanismes de fonctionnement
+- Évolution progressive vers une gouvernance participative
+
+## 2. Architecture conceptuelle
+
+### 2.1 Paradigme "une adresse = une entité"
+Chaque entité (personne, organisation, lieu, concept) possède sa propre adresse numérique unique qui lui donne accès à un espace autonome. Cette inversion du modèle dominant restructure fondamentalement les relations de pouvoir dans l'écosystème numérique.
+
+### 2.2 Espaces autonomes
+Chaque espace dispose de sa propre base de données et logique métier, tout en pouvant établir des connexions avec d'autres espaces. Cette autonomie permet une diversité de modèles de fonctionnement et d'organisation coexistant sur le même réseau.
+
+### 2.3 Interface unifiée
+Un système de navigation commun permet aux utilisateurs de passer d'un espace à l'autre tout en préservant leur identité et leurs permissions, créant une expérience cohérente malgré l'hétérogénéité des espaces.
+
+### 2.4 Protocole de communication
+Le protocole ask/do établit un langage minimal standardisé permettant aux espaces d'interagir, de demander des informations ou d'effectuer des actions dans d'autres espaces, tout en respectant l'autonomie de chacun.
+
+## 3. Architecture technique
+
+### 3.1 Structure modulaire hiérarchisée
+La plateforme s'organise en trois niveaux de granularité:
+
+1. **Espaces tout faits**: Solutions complètes prêtes à l'emploi, nécessitant uniquement une configuration basique. Objectif: couvrir 80% des besoins génériques en quelques clics.
+
+2. **Modules**: Ensembles de blocs et actions organisés en vues, pouvant être déplacés et intégrés dans un espace existant. Ils constituent un niveau intermédiaire de personnalisation.
+
+3. **Blocs**: Composants élémentaires du système permettant une édition fine des vues. Niveau le plus granulaire de la structure pour utilisateurs avancés ou besoins spécifiques.
+
+### 3.2 Éléments constitutifs fondamentaux
+- **Blocs**: Composants d'interface réutilisables (textes, images, listes, etc.)
+- **Actions**: Mécanismes d'interaction avec capacité de déclencher des effets
+- **Vues**: Pages ou écrans composés de blocs organisés
+- **Rôles**: Définition des permissions d'accès aux fonctionnalités
+
+### 3.3 Forkabilité structurelle
+Possibilité de dupliquer la structure d'un espace (views, blocks, actions, effects) pour créer une alternative améliorée, tout en laissant les données et préférences visuelles dans l'espace d'origine. Cette caractéristique encourage l'innovation et limite les monopoles.
+
+### 3.4 Système d'identité et de permissions
+Le système s'inspirera des concepts d'identité décentralisée, avec des choix technologiques précis déterminés selon l'état de l'art au moment du développement. Il comprendra:
+- Gestion d'identité avec contrôle utilisateur
+- Badges vérifiables émis par des entités autorisées
+- Gestion granulaire des permissions entre espaces
+- Mécanismes explicites d'autorisation pour les interactions
+
+### 3.5 Mécanismes de découvrabilité
+Fonctionnalités permettant aux utilisateurs de naviguer et découvrir des espaces pertinents:
+- Cartographie du réel, explorable (découvrir ce qui est proche géographiquement)
+- Cartographie sémantique, explorable (découvrir des sujets sur des thèmes proches)
+- Recommandations inter-espaces (système de bouche à oreille numérique)
+
+## 4. Librairie Commune et propriété intellectuelle
+
+### 4.1 Définition de la Librairie Commune (LC)
+L'ensemble des standards, codes, processus développés et utilisés par le réseau, qui sont:
+- En open source
+- Sous responsabilité de la fondation
+- Accessibles à tous les participants du réseau
+
+### 4.2 Enrichissement de la LC
+Est considéré comme enrichissement:
+- Création d'un nouveau type de bloc, action, effet ou modèle
+- Modification importante apportant une nouvelle capacité fonctionnelle
+- Tout développement permettant de faire quelque chose qui n'était pas possible auparavant
+
+### 4.3 Structure de licences
+- Code de base en open source sous licences fortes
+- Standards et protocoles ouverts et documentés
+- Catalogue partagé de modules et blocs
+
+### 4.4 Processus de contribution
+- Évaluation unique déterminant l'admission dans la LC
+- Reconnaissance des contributeurs
+- Intégration continue des améliorations
+
+## 5. Modèle de gouvernance
+
+### 5.1 Structure organisationnelle
+Fondation à but non lucratif (modèle suisse) assurant:
+- Maintenance de l'infrastructure de base
+- Développement des standards fondamentaux
+- Gestion de la Librairie Commune
+- Administration des flux économiques
+
+### 5.2 Trajectoire de gouvernance en trois phases
+
+1. **Phase initiale**: Gouvernance centralisée par la fondation
+   - Prise de décision par l'équipe fondatrice
+   - Évaluation des contributions à la LC
+   - Établissement des standards fondamentaux
+
+2. **Phase transitoire**: Introduction progressive d'outils d'intelligence collective
+   - Développés sur la plateforme elle-même
+   - Appliqués d'abord à des domaines restreints de gouvernance
+   - Expansion graduelle après stabilisation de chaque domaine
+
+3. **Phase mature**: Gouvernance décentralisée par mécanismes d'intelligence collective
+   - Contrôle direct par les utilisateurs
+   - Transparence des mécanismes économiques et décisionnels
+   - Utilisation des outils développés sur la plateforme
+
+### 5.3 Transparence et modification
+- Formules et calculs des prélèvements visibles sur l'espace de la fondation
+- Possibilité de modification par processus démocratiques intégrés à la plateforme
+- Critères d'allocation des fonds soumis aux mêmes principes de transparence et modification
+
+## 6. Modèle économique
+
+### 6.1 Sources de revenus de la fondation
+La fondation collecte des revenus via trois flux principaux:
+
+1. **Micro-prélèvements sur transactions**: Pourcentage minime prélevé sur les transactions effectuées via la plateforme.
+
+2. **Pourcentage des coûts d'hébergement**: Part prélevée sur les frais d'hébergement payés par chaque espace.
+
+3. **Pourcentage sur développements**: Part prélevée sur les coûts de design et développement facturés par les contributeurs (développeurs indépendants, studios) lors de la création de nouveaux éléments pour la plateforme.
+
+### 6.2 Modèle d'hébergement des espaces
+- Chaque espace paie pour son propre hébergement
+- Espaces personnels limités offerts gratuitement, avec options payantes pour plus de stockage/fonctionnalités
+- Tarification proportionnelle à l'utilisation des ressources
+
+### 6.3 Statut d'investisseur et remboursement
+- **Définition d'investisseur**: Toute personne contribuant à enrichir la Librairie Commune
+- **Processus de qualification**: Le processus d'évaluation pour la LC confère automatiquement le statut d'investisseur
+- **Remboursement**: Les investisseurs sont progressivement remboursés via les revenus de la fondation
+- **Rémunération**: Possibilité de rémunération au-delà du remboursement initial
+- **Durée du statut**: Maintenu jusqu'à remboursement et rémunération complète
+
+### 6.4 Allocation des revenus
+Les revenus collectés par la fondation sont alloués à:
+- Remboursement des investisseurs selon les contributions qualifiées
+- Développement du "commun" (standards, codes, processus open source)
+- Fonctionnement de l'infrastructure de base
+
+## 7. Stratégie de développement et déploiement
+
+### 7.1 Approche de développement technique
+- Développement initial d'un prototype sur architecture web classique simulant la séparation des espaces
+- Focus initial sur un nombre limité d'espaces (3-5) et quelques centaines d'utilisateurs
+- Interfaces multiples possibles pour accéder au réseau, certaines simples, d'autres avancées
+- Développement progressif avec feedback continu des utilisateurs
+
+### 7.2 Stratégie d'adoption
+- **Approche d'écosystèmes locaux**: Concentration sur des communautés spécifiques pour créer des écosystèmes fonctionnels à petite échelle
+- Démonstration de valeur complète à échelle réduite plutôt que valeur partielle à grande échelle
+- Applications personnalisées comme incitatif pour les premiers utilisateurs
+- Programme d'espaces prédéfinis pour accélérer l'adoption
+
+### 7.3 Progression du développement
+- Priorisation sur les cas d'usage à forte valeur ajoutée
+- Camouflage de la complexité pour les utilisateurs débutants
+- Traitement des problèmes au fur et à mesure avec implication de la communauté émergente
+- Extension progressive des fonctionnalités et des cas d'usage

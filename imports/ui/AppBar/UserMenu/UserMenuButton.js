@@ -14,7 +14,7 @@ const UserMenuButton = () => {
 
   return (
     <StyledAvatar>
-      {user.name}
+      {user ? user.name : "Hello"}
     </StyledAvatar>
   );
 }

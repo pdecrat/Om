@@ -32,9 +32,9 @@ const useUser = () => {
   //       history.push(`${history.location.pathname}?${qs.stringify({ ...rest })}`)
   //     }
   //   });
-  }
+// }
 
-  return { isReady: (isReady && !isLoggingIn), user, register };
+  return { isReady: (isReady && !isLoggingIn), user };
 }
 
 export default useUser;
